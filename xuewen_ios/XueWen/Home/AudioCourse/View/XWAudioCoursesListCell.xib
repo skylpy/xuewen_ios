@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="14109" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14088"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="XWAudioCoursesListCellID" rowHeight="299" id="KGk-i7-Jjw" customClass="XWAudioCoursesListCell">
+            <rect key="frame" x="0.0" y="0.0" width="320" height="299"/>
+            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+            <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="KGk-i7-Jjw" id="H2p-sc-9uM">
+                <rect key="frame" x="0.0" y="0.0" width="320" height="298.5"/>
+                <autoresizingMask key="autoresizingMask"/>
+                <subviews>
+                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="vP6-Mh-msj">
+                        <rect key="frame" x="13" y="13" width="294" height="135"/>
+                        <constraints>
+                            <constraint firstAttribute="height" constant="135" id="xgX-PM-iGr"/>
+                        </constraints>
+                    </imageView>
+                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="icon_audio_listen" translatesAutoresizingMaskIntoConstraints="NO" id="sBz-yg-35p">
+                        <rect key="frame" x="28" y="29" width="10" height="15"/>
+                        <constraints>
+                            <constraint firstAttribute="height" constant="15" id="T5K-8S-3nF"/>
+                            <constraint firstAttribute="width" constant="10" id="n9V-d9-E8d"/>
+                        </constraints>
+                    </imageView>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="正在听" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="58d-lX-Bhg">
+                        <rect key="frame" x="46" y="26.5" width="42" height="20"/>
+                        <fontDescription key="fontDescription" name="PingFangSC-Regular" family="PingFang SC" pointSize="14"/>
+                        <color key="textColor" red="0.9882352941176471" green="0.396078431372549" blue="0.11764705882352941" alpha="1" colorSpace="calibratedRGB"/>
+                        <nil key="highlightedColor"/>
+                    </label>
+                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="YJQ-EC-8LQ">
+                        <rect key="frame" x="28" y="92" width="41" height="41"/>
+                        <constraints>
+                            <constraint firstAttribute="height" constant="41" id="ASF-0T-Z2K"/>
+                            <constraint firstAttribute="width" constant="41" id="vZg-pF-Tzn"/>
+                        </constraints>
+                        <state key="normal" image="icon_audio_play"/>
+                        <connections>
+                            <action selector="PlayBtnClick:" destination="KGk-i7-Jjw" eventType="touchUpInside" id="X9j-xW-Efa"/>
+                        </connections>
+                    </button>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="如何进行个人成长规划如何进行规划如何进行规划如何进行" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="nXe-v4-Ksv">
+                        <rect key="frame" x="19" y="158" width="280" height="76.5"/>
+                        <fontDescription key="fontDescription" name="PingFangSC-Semibold" family="PingFang SC" pointSize="16"/>
+                        <color key="textColor" red="0.20000000000000001" green="0.20000000000000001" blue="0.20000000000000001" alpha="1" colorSpace="calibratedRGB"/>
+                        <nil key="highlightedColor"/>
+                    </label>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="讲师：刘靖    著名培训导师" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="hgd-rg-bNb">
+                        <rect key="frame" x="19" y="236" width="160.5" height="18.5"/>
+                        <fontDescription key="fontDescription" name="PingFangSC-Regular" family="PingFang SC" pointSize="13"/>
+                        <color key="textColor" red="0.59215686274509804" green="0.59215686274509804" blue="0.59215686274509804" alpha="1" colorSpace="calibratedRGB"/>
+                        <nil key="highlightedColor"/>
+                    </label>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="    " lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="gpW-vX-CzL">
+                        <rect key="frame" x="19" y="264.5" width="16" height="17"/>
+                        <fontDescription key="fontDescription" name="PingFangSC-Regular" family="PingFang SC" pointSize="12"/>
+                        <color key="textColor" red="0.59215686270000001" green="0.59215686270000001" blue="0.59215686270000001" alpha="1" colorSpace="calibratedRGB"/>
+                        <nil key="highlightedColor"/>
+                    </label>
+                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="icon_audio_time" translatesAutoresizingMaskIntoConstraints="NO" id="Rpk-vv-xm8">
+                        <rect key="frame" x="59" y="267.5" width="11" height="11"/>
+                        <constraints>
+                            <constraint firstAttribute="height" constant="11" id="e6L-lz-4Re"/>
+                            <constraint firstAttribute="width" constant="11" id="euM-0S-xKw"/>
+                        </constraints>
+                    </imageView>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="07:23" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="NDD-14-xa4">
+                        <rect key="frame" x="76" y="264.5" width="32" height="17"/>
+                        <fontDescription key="fontDescription" name="PingFangSC-Regular" family="PingFang SC" pointSize="12"/>
+                        <color key="textColor" red="0.59215686270000001" green="0.59215686270000001" blue="0.59215686270000001" alpha="1" colorSpace="calibratedRGB"/>
+                        <nil key="highlightedColor"/>
+                    </label>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="￥29.9" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="FO4-EM-SyC">
+                        <rect key="frame" x="256" y="259.5" width="50" height="23"/>
+                        <fontDescription key="fontDescription" name="PingFangSC-Regular" family="PingFang SC" pointSize="16"/>
+                        <color key="textColor" red="0.9882352941176471" green="0.33725490196078434" blue="0.11764705882352941" alpha="1" colorSpace="calibratedRGB"/>
+                        <nil key="highlightedColor"/>
+                    </label>
+                </subviews>
+                <constraints>
+                    <constraint firstItem="Rpk-vv-xm8" firstAttribute="centerY" secondItem="NDD-14-xa4" secondAttribute="centerY" id="81t-CL-amC"/>
+                    <constraint firstItem="58d-lX-Bhg" firstAttribute="leading" secondItem="sBz-yg-35p" secondAttribute="trailing" constant="8" id="BwI-MP-kEP"/>
+                    <constraint firstItem="nXe-v4-Ksv" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="19" id="C8P-57-d9f"/>
+                    <constraint firstItem="YJQ-EC-8LQ" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="28" id="DRW-4R-HxP"/>
+                    <constraint firstItem="NDD-14-xa4" firstAttribute="leading" secondItem="Rpk-vv-xm8" secondAttribute="trailing" constant="6" id="ITf-hu-MJZ"/>
+                    <constraint firstItem="58d-lX-Bhg" firstAttribute="centerY" secondItem="sBz-yg-35p" secondAttribute="centerY" id="Iag-E7-hFm"/>
+                    <constraint firstAttribute="trailing" secondItem="FO4-EM-SyC" secondAttribute="trailing" constant="14" id="Nft-Yj-Ck5"/>
+                    <constraint firstAttribute="bottom" secondItem="nXe-v4-Ksv" secondAttribute="bottom" constant="64" id="NsZ-OJ-XrS"/>
+                    <constraint firstItem="YJQ-EC-8LQ" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="92" id="TQo-3D-lq1"/>
+                    <constraint firstItem="vP6-Mh-msj" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="13" id="Uic-xJ-upl"/>
+                    <constraint firstAttribute="bottom" secondItem="FO4-EM-SyC" secondAttribute="bottom" constant="16" id="X8M-4i-2kD"/>
+                    <constraint firstItem="gpW-vX-CzL" firstAttribute="top" secondItem="hgd-rg-bNb" secondAttribute="bottom" constant="10" id="XH9-9A-8TS"/>
+                    <constraint firstAttribute="trailing" secondItem="vP6-Mh-msj" secondAttribute="trailing" constant="13" id="aIB-JY-wuq"/>
+                    <constraint firstItem="sBz-yg-35p" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="29" id="iq5-nw-0Ne"/>
+                    <constraint firstItem="nXe-v4-Ksv" firstAttribute="top" secondItem="vP6-Mh-msj" secondAttribute="bottom" constant="10" id="kk5-iE-Eks"/>
+                    <constraint firstAttribute="trailing" secondItem="nXe-v4-Ksv" secondAttribute="trailing" constant="21" id="p5Q-Ak-B8M"/>
+                    <constraint firstItem="Rpk-vv-xm8" firstAttribute="centerY" secondItem="gpW-vX-CzL" secondAttribute="centerY" id="q2g-cW-k3U"/>
+                    <constraint firstItem="sBz-yg-35p" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="28" id="sHZ-EB-grA"/>
+                    <constraint firstItem="vP6-Mh-msj" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="13" id="uAL-zj-IIp"/>
+                    <constraint firstItem="hgd-rg-bNb" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="19" id="x1L-Sj-4yp"/>
+                    <constraint firstAttribute="bottom" secondItem="gpW-vX-CzL" secondAttribute="bottom" constant="17" id="xdo-wi-fRr"/>
+                    <constraint firstItem="gpW-vX-CzL" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="19" id="yXj-8l-vcc"/>
+                    <constraint firstItem="Rpk-vv-xm8" firstAttribute="leading" secondItem="gpW-vX-CzL" secondAttribute="trailing" constant="24" id="zJ5-C1-jwY"/>
+                </constraints>
+            </tableViewCellContentView>
+            <viewLayoutGuide key="safeArea" id="aW0-zy-SZf"/>
+            <connections>
+                <outlet property="bgImgView" destination="vP6-Mh-msj" id="9tb-sT-m4r"/>
+                <outlet property="listenCountLabel" destination="gpW-vX-CzL" id="H5f-d4-X08"/>
+                <outlet property="listenImgView" destination="sBz-yg-35p" id="l7X-qw-Alw"/>
+                <outlet property="listenLabel" destination="58d-lX-Bhg" id="Rto-Tt-eBq"/>
+                <outlet property="playBtn" destination="YJQ-EC-8LQ" id="Tui-Nn-BVt"/>
+                <outlet property="priceLabel" destination="FO4-EM-SyC" id="HLU-VS-ktK"/>
+                <outlet property="teacherLabel" destination="hgd-rg-bNb" id="tug-wB-YY6"/>
+                <outlet property="timeLabel" destination="NDD-14-xa4" id="gdg-PC-cJi"/>
+                <outlet property="titleLabel" destination="nXe-v4-Ksv" id="ON7-Fl-kci"/>
+            </connections>
+            <point key="canvasLocation" x="34" y="181.5"/>
+        </tableViewCell>
+    </objects>
+    <resources>
+        <image name="icon_audio_listen" width="10" height="14"/>
+        <image name="icon_audio_play" width="41" height="41"/>
+        <image name="icon_audio_time" width="11" height="11"/>
+    </resources>
+</document>

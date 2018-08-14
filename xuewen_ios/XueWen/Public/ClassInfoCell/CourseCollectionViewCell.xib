@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="14109" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14088"/>
+        <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" id="gTV-IL-0wX" customClass="CourseCollectionViewCell">
+            <rect key="frame" x="0.0" y="0.0" width="165" height="165"/>
+            <autoresizingMask key="autoresizingMask"/>
+            <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
+                <rect key="frame" x="0.0" y="0.0" width="165" height="165"/>
+                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                <subviews>
+                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="9Vt-CJ-BhL">
+                        <rect key="frame" x="0.0" y="0.0" width="165" height="102"/>
+                        <constraints>
+                            <constraint firstAttribute="width" secondItem="9Vt-CJ-BhL" secondAttribute="height" multiplier="165:102" id="DCQ-UI-1gL"/>
+                        </constraints>
+                    </imageView>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="lab" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="TJv-zU-JC6">
+                        <rect key="frame" x="0.0" y="113" width="165" height="16"/>
+                        <constraints>
+                            <constraint firstAttribute="height" relation="lessThanOrEqual" constant="32" id="Fad-rl-I6I"/>
+                        </constraints>
+                        <fontDescription key="fontDescription" type="system" pointSize="13"/>
+                        <color key="textColor" red="0.20000000000000001" green="0.20000000000000001" blue="0.20000000000000001" alpha="1" colorSpace="calibratedRGB"/>
+                        <nil key="highlightedColor"/>
+                    </label>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="0dr-L9-mq3">
+                        <rect key="frame" x="0.0" y="150" width="31" height="15"/>
+                        <constraints>
+                            <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="10" id="hYF-9H-Y6d"/>
+                            <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="10" id="osG-de-ndH"/>
+                        </constraints>
+                        <fontDescription key="fontDescription" type="system" pointSize="12"/>
+                        <nil key="textColor"/>
+                        <nil key="highlightedColor"/>
+                    </label>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="IjD-Aq-HdB">
+                        <rect key="frame" x="138" y="151.5" width="27" height="12"/>
+                        <constraints>
+                            <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="10" id="FRC-ef-QMd"/>
+                            <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="10" id="LRu-Rk-dhF"/>
+                        </constraints>
+                        <fontDescription key="fontDescription" type="system" pointSize="10"/>
+                        <color key="textColor" red="0.71764705882352942" green="0.71764705882352942" blue="0.71764705882352942" alpha="1" colorSpace="calibratedRGB"/>
+                        <nil key="highlightedColor"/>
+                    </label>
+                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="icoMember" translatesAutoresizingMaskIntoConstraints="NO" id="p1C-yc-DSV">
+                        <rect key="frame" x="126" y="152.5" width="10" height="10"/>
+                        <constraints>
+                            <constraint firstAttribute="height" constant="10" id="6Ki-Li-MG7"/>
+                            <constraint firstAttribute="width" constant="10" id="8cN-OD-scN"/>
+                        </constraints>
+                    </imageView>
+                </subviews>
+            </view>
+            <constraints>
+                <constraint firstItem="TJv-zU-JC6" firstAttribute="top" secondItem="9Vt-CJ-BhL" secondAttribute="bottom" constant="11" id="1jt-8X-k1N"/>
+                <constraint firstAttribute="trailing" secondItem="9Vt-CJ-BhL" secondAttribute="trailing" id="35N-RZ-LEt"/>
+                <constraint firstItem="IjD-Aq-HdB" firstAttribute="centerY" secondItem="0dr-L9-mq3" secondAttribute="centerY" id="7bB-N0-b9a"/>
+                <constraint firstAttribute="trailing" secondItem="TJv-zU-JC6" secondAttribute="trailing" id="I67-Tz-pcz"/>
+                <constraint firstAttribute="bottom" secondItem="0dr-L9-mq3" secondAttribute="bottom" id="Q4w-0s-nLE"/>
+                <constraint firstItem="IjD-Aq-HdB" firstAttribute="leading" secondItem="p1C-yc-DSV" secondAttribute="trailing" constant="2" id="QyF-AM-KIv"/>
+                <constraint firstAttribute="trailing" secondItem="IjD-Aq-HdB" secondAttribute="trailing" id="TYX-TC-oM6"/>
+                <constraint firstItem="0dr-L9-mq3" firstAttribute="leading" secondItem="gTV-IL-0wX" secondAttribute="leading" id="bKV-fd-BbO"/>
+                <constraint firstItem="p1C-yc-DSV" firstAttribute="centerY" secondItem="0dr-L9-mq3" secondAttribute="centerY" id="l2c-Pj-H2v"/>
+                <constraint firstItem="9Vt-CJ-BhL" firstAttribute="leading" secondItem="gTV-IL-0wX" secondAttribute="leading" id="m7M-nQ-81b"/>
+                <constraint firstItem="TJv-zU-JC6" firstAttribute="leading" secondItem="gTV-IL-0wX" secondAttribute="leading" id="xIj-bW-ord"/>
+                <constraint firstItem="9Vt-CJ-BhL" firstAttribute="top" secondItem="gTV-IL-0wX" secondAttribute="top" id="xOf-N0-phg"/>
+            </constraints>
+            <size key="customSize" width="165" height="165"/>
+            <connections>
+                <outlet property="countLabel" destination="IjD-Aq-HdB" id="WId-Lb-x20"/>
+                <outlet property="coverView" destination="9Vt-CJ-BhL" id="spk-US-CKA"/>
+                <outlet property="priceLabel" destination="0dr-L9-mq3" id="rn7-3D-7K4"/>
+                <outlet property="titleLabel" destination="TJv-zU-JC6" id="CnQ-dJ-Crs"/>
+            </connections>
+            <point key="canvasLocation" x="-159.5" y="2.5"/>
+        </collectionViewCell>
+    </objects>
+    <resources>
+        <image name="icoMember" width="12" height="12"/>
+    </resources>
+</document>
