@@ -40,11 +40,15 @@
     
     [self.iconImage sd_setImageWithURL:[NSURL URLWithString:model.coverPhoto] placeholderImage:DefaultImage];
     self.titleLabel.text = model.courseName;
-    self.connentLabel.text = model.labelName;
+    self.connentLabel.text = model.shortIntroduction;
     if (model.teacherName != nil&&model.teacherIntroduction != nil) {
-        
-        NSMutableAttributedString *attrString = [[NSMutableAttributedString alloc] initWithData:[[NSString stringWithFormat:@"%@  %@",model.teacherName,model.teacherIntroduction] dataUsingEncoding:NSUnicodeStringEncoding] options:@{NSDocumentTypeDocumentAttribute : NSHTMLTextDocumentType, NSFontAttributeName : [UIFont fontWithName:kRegFont size:13]} documentAttributes:nil error:nil];
+        NSString *text = [NSString stringWithFormat:@"%@  %@",model.teacherName,[NSString filterHTML:model.teacherIntroduction]];
+        NSRange range = [text rangeOfString:[NSString filterHTML:model.teacherIntroduction]];
+        NSMutableAttributedString *attrString = [[NSMutableAttributedString alloc] initWithString:text];
+        [attrString addAttribute:NSFontAttributeName value:[UIFont fontWithName:kRegFont size:11] range:range];
         self.nameLabel.attributedText = attrString;
+    }else{
+        self.nameLabel.text = model.teacherName;
     }
     
     self.learnLabel.text = [NSString stringWithFormat:@"已学%ld%%",model.percentage];

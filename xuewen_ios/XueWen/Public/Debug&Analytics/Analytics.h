@@ -13,4 +13,7 @@
 + (void)event:(NSString *)event label:(NSString *)label;
 
 + (void)event:(NSString *)event attributes:(NSDictionary *)attributes;
+
++ (void)event:(NSString *)event;
+
 @end

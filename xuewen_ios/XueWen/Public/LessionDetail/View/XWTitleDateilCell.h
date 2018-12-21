@@ -13,4 +13,6 @@
 
 @property (nonatomic, strong) XWCoursModel *model;
 
+@property (nonatomic, strong) NSString *classCourse;
+
 @end

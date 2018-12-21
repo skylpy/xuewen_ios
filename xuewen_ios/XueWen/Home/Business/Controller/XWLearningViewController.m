@@ -57,6 +57,10 @@ static NSString *const XWCompanyTabCellID = @"XWCompanyTabCellID";
     self.tableView.mj_footer = [MJRefreshAutoNormalFooter footerWithRefreshingTarget:self refreshingAction:@selector(loadMore)];
 }
 
+- (CGFloat)audioPlayerViewHieght{
+    return kHeight - kBottomH - 49 - kNaviBarH;;
+}
+
 - (void)loadData{
     XWWeakSelf
     [XWHttpTool getLearningDataWithIsFirstLoad:YES size:@"10" success:^(NSMutableArray *array, BOOL isLast) {
@@ -70,7 +74,7 @@ static NSString *const XWCompanyTabCellID = @"XWCompanyTabCellID";
         }
     } failure:^(NSString *errorInfo) {
         [MBProgressHUD showTipMessageInWindow:errorInfo];
-    }];
+    } companyId:@""];
 }
 
 - (void)loadMore{
@@ -86,7 +90,7 @@ static NSString *const XWCompanyTabCellID = @"XWCompanyTabCellID";
         }
     } failure:^(NSString *errorInfo) {
         [MBProgressHUD showTipMessageInWindow:errorInfo];
-    }];
+    } companyId:@""];
 }
 
 #pragma mark - UITableView Delegate / DataSource
@@ -115,11 +119,11 @@ static NSString *const XWCompanyTabCellID = @"XWCompanyTabCellID";
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
     XWLearningModel *model = self.dataArray[indexPath.row];
-    if ([model.courseType isEqualToString:@"2"]) {
-        [self.navigationController pushViewController:[ViewControllerManager detailViewControllerWithCourseID:model.courseId isAudio:YES] animated:YES];
-    }else{
+//    if ([model.courseType isEqualToString:@"2"]) {
+//        [self.navigationController pushViewController:[ViewControllerManager detailViewControllerWithCourseID:model.courseId isAudio:YES] animated:YES];
+//    }else{
         [self.navigationController pushViewController:[ViewControllerManager detailViewControllerWithCourseID:model.courseId isAudio:NO] animated:YES];
-    }
+//    }
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section{

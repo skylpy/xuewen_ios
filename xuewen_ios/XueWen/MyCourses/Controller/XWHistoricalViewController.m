@@ -17,12 +17,14 @@ static NSString * const XWRecordsCellID = @"XWRecordsCellID";
 @property (nonatomic,strong) UITableView * tableView;
 
 @property (nonatomic,strong) NSMutableArray * recordArray;
-
+@property (nonatomic,strong) NSMutableArray * dataArray;
 @property (nonatomic,assign) NSInteger page;
 
 @end
 
 @implementation XWHistoricalViewController
+
+
 
 - (NSMutableArray *)recordArray {
     
@@ -33,37 +35,68 @@ static NSString * const XWRecordsCellID = @"XWRecordsCellID";
     return _recordArray;
 }
 
+- (NSMutableArray *)dataArray {
+    
+    if (!_dataArray) {
+        NSMutableArray * array = [NSMutableArray array];
+        _dataArray = array;
+    }
+    return _dataArray;
+}
+
 - (void)viewDidLoad {
     [super viewDidLoad];
     
     self.title = @"历史记录";
-    self.page = 1;
+    self.page = 0;
     [self.view addSubview:self.tableView];
     [self.tableView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.edges.equalTo(self.view);
     }];
     [self loadClassData];
+    
+//    _tableView.mj_header = [MJRefreshNormalHeader headerWithRefreshingTarget:self refreshingAction:@selector(loadClassData)];
+//    self.tableView.mj_footer = [MJRefreshAutoFooter footerWithRefreshingTarget:self refreshingAction:@selector(loadClassData)];
+}
+
+- (CGFloat)audioPlayerViewHieght{
+    return kHeight - kBottomH - 49 - kNaviBarH;
 }
 
 - (void)loadClassData{
     // remove后需要reload collectionView 要不然连续刷新的时候会崩溃
     [MBProgressHUD showActivityMessageInWindow:@"正在加载..."];
+    self.page ++;
     WeakSelf;
-    [XWNetworking getMyLearningRecordWithPage:1 Size:@"30" CompletionBlock:^(NSArray *array, NSInteger totalCount, BOOL isLast) {
+    NSString * size = [self.size integerValue] > 150 ? @"150" : self.size;
+    [XWNetworking getMyLearningRecordWithPage:self.page Size:@"15" CompletionBlock:^(NSArray *array, NSInteger totalCount, BOOL isLast) {
         [MBProgressHUD hideHUD];
-//        if (self.page == 1) {
-//            [weakSelf.recordArray removeAllObjects];
-//        }
-//        if (isLast) {
-//            [self.tableView.mj_footer endRefreshingWithNoMoreData];
-//        }
-//        [self.tableView.mj_header endRefreshing];
-//        [self.tableView.mj_footer endRefreshing];
-        [weakSelf.recordArray removeAllObjects];
-        NSMutableArray * a = [weakSelf arraySplitSubArrays:array];
+
+        [self.tableView.mj_header endRefreshing];
+ 
+        if (isLast) {
+            [self.tableView.mj_footer endRefreshingWithNoMoreData];
+        }
+        if (self.page == 1) {
+            [weakSelf.recordArray removeAllObjects];
+            [weakSelf.dataArray removeAllObjects];
+            
+            [weakSelf.dataArray addObjectsFromArray:array];
+            NSMutableArray * a = [weakSelf arraySplitSubArrays:array];
+            
+            [weakSelf.recordArray addObjectsFromArray:a];
+            [weakSelf.tableView reloadData];
+        }else {
+            [weakSelf.recordArray removeAllObjects];
+            
+            [weakSelf.dataArray addObjectsFromArray:array];
+            NSMutableArray * a = [weakSelf arraySplitSubArrays:weakSelf.dataArray];
+            
+            [weakSelf.recordArray addObjectsFromArray:a];
+            [weakSelf.tableView reloadData];
+        }
+    
         
-        [weakSelf.recordArray addObjectsFromArray:a];
-        [weakSelf.tableView reloadData];
     }];
     
 }
@@ -73,7 +106,9 @@ static NSString * const XWRecordsCellID = @"XWRecordsCellID";
     NSMutableDictionary *dic = [[NSMutableDictionary alloc] initWithCapacity:0];
     for(CourseModel *obj in array) {
         
-        [dic setValue:obj forKey:[NSDate dateFormTimestamp:[NSString stringWithFormat:@"%f",obj.updateTime] withFormat:@"yyyy-MM-dd"]];
+        NSLog(@"==========%@",obj.learningTime);
+//        NSLog(@"=====%@",[NSDate dateFormTimestamp:[NSString stringWithFormat:@"%f",obj.updateTime]  withFormat:@"yyyy-MM-dd"]);
+        [dic setValue:obj forKey:[NSDate dateFormTimestamp:[NSString stringWithFormat:@"%@",obj.learningTime] withFormat:@"yyyy-MM-dd"]];
 
     }
     NSMutableArray *tempArr = [NSMutableArray array];
@@ -88,7 +123,7 @@ static NSString * const XWRecordsCellID = @"XWRecordsCellID";
     for (NSString *dictKey in sortedArray) {
         NSMutableArray *subTemps = [NSMutableArray array];
         for (CourseModel *obj in array) {
-            if ([dictKey isEqualToString:[NSDate dateFormTimestamp:[NSString stringWithFormat:@"%f",obj.updateTime] withFormat:@"yyyy-MM-dd"]]) {
+            if ([dictKey isEqualToString:[NSDate dateFormTimestamp:[NSString stringWithFormat:@"%@",obj.learningTime] withFormat:@"yyyy-MM-dd"]]) {
                 [subTemps addObject:obj];
                 
             }
@@ -106,7 +141,7 @@ static NSString * const XWRecordsCellID = @"XWRecordsCellID";
 //刷新
 - (void)loadData {
     
-    self.page = 1;
+    self.page = 0;
     [self loadClassData];
 }
 
@@ -127,9 +162,9 @@ static NSString * const XWRecordsCellID = @"XWRecordsCellID";
         [_tableView registerClass:NSClassFromString(@"ClassesInfoCell") forCellReuseIdentifier:@"ClassesId"];
         [_tableView registerClass:[XWRecordsCell class] forCellReuseIdentifier:XWRecordsCellID];
         
-//        _tableView.mj_header = [MJRefreshNormalHeader headerWithRefreshingTarget:self refreshingAction:@selector(loadData)];
-//        
-//        _tableView.mj_footer = [MJRefreshAutoNormalFooter footerWithRefreshingTarget:self refreshingAction:@selector(moreData)];//[MJRefreshNormalHeader headerWithRefreshingTarget:self refreshingAction:@selector(moreData)];
+        _tableView.mj_header = [MJRefreshNormalHeader headerWithRefreshingTarget:self refreshingAction:@selector(loadData)];
+        
+        _tableView.mj_footer = [MJRefreshAutoNormalFooter footerWithRefreshingTarget:self refreshingAction:@selector(moreData)];//[MJRefreshNormalHeader headerWithRefreshingTarget:self refreshingAction:@selector(moreData)];
     }
     return _tableView;
 }
@@ -176,7 +211,7 @@ static NSString * const XWRecordsCellID = @"XWRecordsCellID";
     @weakify(self)
     [cell setRecordsClick:^(NSString *couresId,BOOL isA) {
         @strongify(self)
-        [self.navigationController pushViewController:[ViewControllerManager detailViewControllerWithCourseID:couresId isAudio:isA] animated:YES];
+        [self.navigationController pushViewController:[ViewControllerManager detailViewControllerWithCourseID:couresId isAudio:NO] animated:YES];
     }];
     return cell;
 }

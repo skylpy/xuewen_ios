@@ -35,9 +35,33 @@
 - (void)setModel:(CourseModel *)model {
     _model = model;
     [self.iconImage sd_setImageWithURL:[NSURL URLWithString:model.coverPhoto] placeholderImage:DefaultImage];
-    self.priceLabel.text = [NSString stringWithFormat:@"￥%@",model.price];
+    
     self.personLabel.text = [NSString stringWithFormat:@"%ld人学习",model.total];
     self.titleLabel.text = model.courseName;
+    if (model.percentage == 0) {
+        if ([model.price isEqualToString:@"0.00"]) {
+            self.priceLabel.textColor = Color(@"#0EC950");
+            self.priceLabel.text = @"免费";
+        }else{
+            self.priceLabel.text = [NSString stringWithFormat:@"¥%@", model.price];
+            self.priceLabel.textColor = Color(@"#FD8829");
+        }
+        
+    }else{
+        self.priceLabel.text = [NSString stringWithFormat:@"已学%ld%%", model.percentage];
+        self.priceLabel.textColor = Color(@"#267DFF");
+    }
+}
+
+- (void)setBuy:(BOOL)buy{
+    _buy = buy;
+    if (_buy) {
+        self.priceLabel.text = [NSString stringWithFormat:@"已学%ld%%", _model.percentage];
+        self.priceLabel.textColor = Color(@"#267DFF");
+    }else{
+        self.priceLabel.text = [NSString stringWithFormat:@"¥%@", _model.price];
+        self.priceLabel.textColor = Color(@"#FD8829");
+    }
 }
 
 @end

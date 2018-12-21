@@ -21,4 +21,9 @@
 @property (nonatomic, strong) NSString *contacts;
 /** 公司简介 */
 @property (nonatomic, strong) NSString *introduction;
+/** 学院名称*/
+@property (nonatomic, strong) NSString *collegeName;
+/** 公司logo*/
+@property (nonatomic, strong) NSString *co_picture_all;
+
 @end

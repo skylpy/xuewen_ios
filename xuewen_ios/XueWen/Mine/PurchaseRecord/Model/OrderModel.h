@@ -28,10 +28,12 @@
 @property (nonatomic, strong) NSString *nickName;
 /** 下单人ID */
 @property (nonatomic, strong) NSString *userID;
-/** 订单类型 0课程1专题*/
+/** 订单类型 0课程1专题3超能组织*/
 @property (nonatomic, strong) NSString *type;
 /** 订单内容（课程信息||专题信息） */
 @property (nonatomic, strong) id purchaseInfo;
+/** 专题ID*/
+@property (nonatomic, strong) NSString *collegeID;
 @end
 /**
  "id": 1886,

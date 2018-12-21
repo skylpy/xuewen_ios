@@ -7,6 +7,7 @@
 //
 
 #import "ExamResultHeaderView.h"
+#import "NSMutableAttributedString+XWUtil.h"
 @interface ExamResultHeaderView ()
 
 @property (nonatomic, strong) UILabel *scoreLabel;
@@ -78,9 +79,42 @@
     
 }
 
+- (void)setIsTest:(BOOL)isTest {
+    _isTest = isTest;
+    if (isTest) {
+        [self.errorBtn setImage:LoadImage(@"Examination") forState:UIControlStateNormal];
+        [self.hosBtn setImage:LoadImage(@"icon_false") forState:UIControlStateNormal];
+        UIImage * URLImage = self.score >= 60 ? LoadImage(@"certificate_new") : LoadImage(@"hcertificate");
+        [self.shareBtn setImage:URLImage forState:UIControlStateNormal];
+        if (self.score >= 60) {
+            self.contentLabel.attributedText = [NSMutableAttributedString setupAttributeString:[NSString stringWithFormat:@"恭喜您成功通过了%@资格考试！",self.comment] rangeText:self.comment textFont:[UIFont fontWithName:kRegFont size:13] textColor:Color(@"#FF9F16")];//self.comment;
+        }else {
+
+            self.contentLabel.attributedText = [NSMutableAttributedString setupAttributeString:[NSString stringWithFormat:@"很遗憾，您没有通过%@资格考试！",self.comment] rangeText:self.comment textFont:[UIFont fontWithName:kRegFont size:13] textColor:Color(@"#FF9F16")];//self.comment;
+        }
+        
+        self.retestButton.hidden = YES;
+        self.continueButton.hidden = YES;
+    }else {
+        self.contentLabel.text = self.comment;
+        [self.errorBtn setImage:LoadImage(@"icon_false") forState:UIControlStateNormal];
+        [self.hosBtn setImage:LoadImage(@"ico_history") forState:UIControlStateNormal];
+        [self.shareBtn setImage:LoadImage(@"icon_test_share") forState:UIControlStateNormal];
+    }
+}
+
+- (void)setIsEduTest:(BOOL)isEduTest {
+    _isEduTest = isEduTest;
+    self.contentLabel.text = self.comment;
+    [self.errorBtn setImage:LoadImage(@"Examination") forState:UIControlStateNormal];
+    [self.hosBtn setImage:LoadImage(@"icon_false") forState:UIControlStateNormal];
+    [self.shareBtn setImage:LoadImage(@"school_report") forState:UIControlStateNormal];
+}
+
 - (void)setComment:(NSString *)comment{
     _comment = comment;
-    self.contentLabel.text = _comment;
+    
+    
     if (_score == 0) {
         self.scoreLabel.text = @"0分";
     }
@@ -113,6 +147,7 @@
         
         [self.contentLabel mas_makeConstraints:^(MASConstraintMaker *make) {
             make.top.mas_equalTo(self.scoreLabel.mas_bottom).offset(48);
+            make.width.offset(250);
             make.centerX.mas_equalTo(self);
         }];
         
@@ -241,7 +276,9 @@
 - (UILabel *)contentLabel{
     if (!_contentLabel) {
         _contentLabel = [UILabel new];
-        _contentLabel.textAlignment = 1;
+        _contentLabel.textAlignment = NSTextAlignmentCenter;
+        _contentLabel.numberOfLines = 2;
+        _contentLabel.text = @"很厉害哦！加油";
         _contentLabel.textColor = [UIColor whiteColor];
         _contentLabel.font = [UIFont fontWithName:kRegFont size:13];
     }
@@ -304,45 +341,80 @@
 }
 
 - (UIButton *)errorBtn{
-    if (!_errorBtn) {
+    if (!_errorBtn) {//
         _errorBtn = [UIButton buttonWithType:UIButtonTypeCustom];
-        [_errorBtn setImage:LoadImage(@"icon_false") forState:UIControlStateNormal];
+        [_errorBtn setImage:LoadImage(@"Examination") forState:UIControlStateNormal];
         @weakify(self)
         [[_errorBtn rac_signalForControlEvents:UIControlEventTouchUpInside] subscribeNext:^(__kindof UIControl * _Nullable x) {
             @strongify(self)
-            if (self.delegate && [self.delegate respondsToSelector:@selector(errorAction)]) {
-                [self.delegate errorAction];
+            //重新测试
+            if (self.isEduTest) {
+                if (self.delegate && [self.delegate respondsToSelector:@selector(retestAction)]) {
+                    [self.delegate retestAction];
+                }
+            }else{
+                if (self.isTest) {
+                    
+                    if (self.delegate && [self.delegate respondsToSelector:@selector(retestAction)]) {
+                        [self.delegate retestAction];
+                    }
+                }else {
+                    if (self.delegate && [self.delegate respondsToSelector:@selector(errorAction)]) {
+                        [self.delegate errorAction];
+                    }
+                }
             }
+            
+            
+            
         }];
     }
     return _errorBtn;
 }
 
 - (UIButton *)hosBtn{
-    if (!_hosBtn) {
+    if (!_hosBtn) {//ico_history
         _hosBtn = [UIButton buttonWithType:UIButtonTypeCustom];
-        [_hosBtn setImage:LoadImage(@"ico_history") forState:UIControlStateNormal];
+        [_hosBtn setImage:LoadImage(@"icon_false") forState:UIControlStateNormal];
         @weakify(self)
         [[_hosBtn rac_signalForControlEvents:UIControlEventTouchUpInside] subscribeNext:^(__kindof UIControl * _Nullable x) {
             @strongify(self)
-            if (self.delegate && [self.delegate respondsToSelector:@selector(hosAction)]) {
-                [self.delegate hosAction];
+            //查看错题
+            if (self.isEduTest) {
+                if (self.delegate && [self.delegate respondsToSelector:@selector(errorAction)]) {
+                    [self.delegate errorAction];
+                }
+            }else {
+                if (self.isTest) {
+                    if (self.delegate && [self.delegate respondsToSelector:@selector(errorAction)]) {
+                        [self.delegate errorAction];
+                    }
+                    
+                }else {
+                    if (self.delegate && [self.delegate respondsToSelector:@selector(hosAction)]) {
+                        [self.delegate hosAction];
+                    }
+                }
             }
+            
+            
+            
         }];
     }
     return _hosBtn;
 }
 
 - (UIButton *)shareBtn{
-    if (!_shareBtn) {
+    if (!_shareBtn) {//icon_test_share
         _shareBtn = [UIButton buttonWithType:UIButtonTypeCustom];
-        [_shareBtn setImage:LoadImage(@"icon_test_share") forState:UIControlStateNormal];
+        [_shareBtn setImage:LoadImage(@"hcertificate") forState:UIControlStateNormal];
         @weakify(self)
         [[_shareBtn rac_signalForControlEvents:UIControlEventTouchUpInside] subscribeNext:^(__kindof UIControl * _Nullable x) {
             @strongify(self)
-            if (self.delegate && [self.delegate respondsToSelector:@selector(shareAction)]) {
-                [self.delegate shareAction];
+            if (self.delegate && [self.delegate respondsToSelector:@selector(shareAction:)]) {
+                [self.delegate shareAction:self.isTest];
             }
+            
         }];
     }
     return _shareBtn;

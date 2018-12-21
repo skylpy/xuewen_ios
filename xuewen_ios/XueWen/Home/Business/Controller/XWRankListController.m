@@ -31,7 +31,7 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     
-    self.title = self.index == 0 ? @"学习排名" : @"目标排名";
+    self.title = self.index == 0 ? @"课时排名" : @"考核排名";
 }
 
 - (instancetype)initWithIndex:(NSInteger)index{

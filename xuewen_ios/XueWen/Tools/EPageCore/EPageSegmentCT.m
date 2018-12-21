@@ -20,6 +20,7 @@
 @property(nonatomic,retain)UIView *lineView;
 @property(nonatomic,retain)NSMutableArray *cellArray;
 
+@property(nonatomic,assign) BOOL isHide;
 
 @end
 
@@ -39,6 +40,7 @@
         self.selectedIndex = param.startIndex;
         self.param = param;
         self.dataArray = data;
+        self.isHide = YES;
         if (_dataArray) {[self collectionView];}
         self.backgroundColor = ERGBColor(param.bgColor);
     }
@@ -73,6 +75,18 @@
         tline.backgroundColor = ERGBColor(_param.topLineColor);
         [self addSubview:bline];
         [self addSubview:tline];
+        
+        //禁止和开始滑动
+        @weakify(self)
+        [[[[NSNotificationCenter defaultCenter] rac_addObserverForName:@"ISSRCOLLVIEW" object:nil] takeUntil:self.rac_willDeallocSignal] subscribeNext:^(NSNotification * _Nullable x) {
+            @strongify(self)
+            
+            if ([x.userInfo[@"IS"] isEqualToString:@"YES"]) {
+                self.isHide = NO;
+            }else {
+                self.isHide = YES;
+            }
+        }];
     }
     return _collectionView;
 }
@@ -92,6 +106,9 @@
         self.selectedIndex = indexPath.row;
         [collectionView reloadData];
     }
+    //横屏是不能点击按钮
+    if (!self.isHide) return ;
+    
     if (self.didSelectedIndexBlock) {
         self.didSelectedIndexBlock(indexPath.row);
     }

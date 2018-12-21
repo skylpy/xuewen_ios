@@ -11,6 +11,7 @@
 #import "XWBBusinessController.h"
 #import "MainNavigationViewController.h"
 #import "ClassesSearchViewController.h"
+#import "XWRedPakViewController.h"
 
 @interface XWHomeController () <YNPageViewControllerDataSource, YNPageViewControllerDelegate>
 
@@ -21,6 +22,10 @@
 /** 滚动视图*/
 @property (nonatomic, strong) UIScrollView *scrView;
 
+//悬浮按钮
+@property(nonatomic,strong) UIButton * suspensionBtn;
+//悬浮按钮 状态 点击或拖动
+@property(nonatomic,assign) NSInteger suspensionType;
 
 @end
 
@@ -41,6 +46,7 @@
         @weakify(self)
         [[_searchBtn rac_signalForControlEvents:UIControlEventTouchUpInside] subscribeNext:^(__kindof UIControl * _Nullable x) {
             @strongify(self)
+            [Analytics event:EventHomeSearch];
             MainNavigationViewController *navi = [[MainNavigationViewController alloc] initWithRootViewController:[ClassesSearchViewController new]];
             [self presentViewController:navi animated:NO completion:nil];
         }];
@@ -87,7 +93,7 @@
     
     configration.lineColor = Color(@"#6699FF");
     configration.selectedItemColor = Color(@"#6699FF");
-    configration.normalItemColor = Color(@"#999999");
+    configration.normalItemColor = Color(@"#000000");
     configration.suspenOffsetY = kStasusBarH;
     configration.headerViewCouldScrollPage = YES;
     
@@ -129,14 +135,54 @@
     // Do any additional setup after loading the view.
     self.automaticallyAdjustsScrollViewInsets = NO;
     self.view.backgroundColor = [UIColor whiteColor];
+    
+//    [self.view addSubview:self.suspensionBtn];
+//    
+//    [self.suspensionBtn mas_makeConstraints:^(MASConstraintMaker *make) {
+//        make.width.offset(60);
+//        make.height.offset(54);
+//        make.bottom.mas_equalTo(self.view.mas_bottom).offset(-kHeight/2+60);
+//        make.right.mas_equalTo(self.view.mas_right).offset(-30);
+//    }];
 }
 
+- (UIButton *)suspensionBtn {
+    if (!_suspensionBtn) {
+        _suspensionBtn = [UIButton buttonWithType:UIButtonTypeCustom];
 
+        [_suspensionBtn setImage:[UIImage imageNamed:@"red_envelopes"] forState:UIControlStateNormal];
+        
+        [_suspensionBtn addTarget:self action:@selector(dragMoving:withEvent: )forControlEvents: UIControlEventTouchDragInside];
+        [_suspensionBtn addTarget:self action:@selector(doClick:) forControlEvents:UIControlEventTouchUpInside];
+        _suspensionType=0;
+    }
+    return _suspensionBtn;
+}
+
+-(void)doClick:(UIButton*)sender {
+    
+    if (self.suspensionType==0) {
+        
+        NSLog(@"1111");
+        XWRedPakViewController * vc = [[XWRedPakViewController alloc] init];
+        [[UIViewController getCurrentVC].navigationController pushViewController:vc animated:YES];
+        
+    }
+    self.suspensionType=0;
+}
+
+- (void) dragMoving: (UIButton *) c withEvent:ev {
+    
+    self.suspensionType=1;
+    c.center = [[[ev allTouches] anyObject] locationInView:self.view];
+    NSLog(@"%f,,,%f",c.center.x,c.center.y);
+}
 
 #pragma mark - Custom Methods
 + (NSArray *)getArrayVCs{
     XWHomeBaseController *vc1 = [[XWHomeBaseController alloc] init];
     XWBBusinessController *vc2 = [[XWBBusinessController alloc] init];
+    vc2.companyId = [XWInstance shareInstance].userInfo.company_id;
     if ([[XWInstance shareInstance].userInfo.company_id isEqualToString:@"0"]) { // 个人用户
         return @[vc1];
     }else{
@@ -146,10 +192,17 @@
 }
 
 + (NSArray *)getArrayTitles{
+    
     if ([[XWInstance shareInstance].userInfo.company_id isEqualToString:@"0"]) { // 个人用户
         return @[@"首页"];
     }else{
-        return @[@"首页", @"商学院"];
+        NSString *string;
+        if ([[XWInstance shareInstance].collegeName isEqualToString:@""] || [XWInstance shareInstance].collegeName == nil) {
+            string = @"商学院";
+        }else{
+            string = [XWInstance shareInstance].collegeName;
+        }
+        return @[@"首页", string];
     }
 }
 
@@ -179,9 +232,11 @@
     
     UIViewController *vc = pageViewController.controllersM[index];
     if ([vc isKindOfClass:[XWHomeBaseController class]]) {
+        [Analytics event:EventHome];
         self.scrView = [(XWHomeBaseController *)vc tableView];
         return [(XWHomeBaseController *)vc tableView];
     } else {
+        [Analytics event:EventBusiness];
         self.scrView = [(XWBBusinessController *)vc tableView];
         return [(XWBBusinessController *)vc tableView];
     }

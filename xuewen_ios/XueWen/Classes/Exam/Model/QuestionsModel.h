@@ -23,6 +23,24 @@
 /** 是否选中 string类型的是上传下载时用到的属性 bool类型的是程序中用到的属性*/
 @property (nonatomic, strong) NSString *select;
 @property (nonatomic, assign) BOOL isSelected;
+//分数
+@property (nonatomic, assign) NSInteger score;
+
+@property (nonatomic, assign) BOOL isESelected;
+
+@end
+
+/** 观看记录返回 */
+@interface RecordModel : NSObject
+
+@property (nonatomic, copy) NSString * id;
+@property (nonatomic, copy) NSString * uourse_id;
+@property (nonatomic, copy) NSString * user_id;
+@property (nonatomic, copy) NSString * title;
+@property (nonatomic, copy) NSString * description;
+@property (nonatomic, copy) NSString * create_time;
+@property (nonatomic, copy) NSString * a_t_id;
+@property (nonatomic, copy) NSString * state;
 
 @end
 

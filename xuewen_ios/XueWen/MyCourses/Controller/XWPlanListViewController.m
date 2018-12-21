@@ -75,6 +75,10 @@ static NSString * const XWNoneTableCellID = @"XWNoneTableCellID";
     [self delayLoadLearningPlan];
 }
 
+- (CGFloat)audioPlayerViewHieght{
+    return kHeight - kBottomH - 49 - kNaviBarH;;
+}
+
 - (void)delayLoadLearningPlan{
     
     WeakSelf;

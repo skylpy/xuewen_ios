@@ -10,4 +10,6 @@
 
 @interface XWCompanyInfoController : XWBaseViewController
 
+@property (nonatomic, strong) NSString *companyId;
+
 @end

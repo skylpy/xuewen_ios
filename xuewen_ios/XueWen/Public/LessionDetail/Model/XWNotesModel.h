@@ -20,5 +20,6 @@
 @property (nonatomic, strong) NSString *nickName;
 @property (nonatomic, strong) NSString *companyID;
 @property (nonatomic, strong) NSString *ststus;
+@property (nonatomic, strong) NSString *sex;
 
 @end

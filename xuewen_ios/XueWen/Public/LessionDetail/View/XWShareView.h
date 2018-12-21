@@ -20,4 +20,6 @@
 
 @property (nonatomic, weak) id<XWShareViewDelegate> delegate;
 
+@property (nonatomic, copy) void (^codeClick)(void);
+
 @end

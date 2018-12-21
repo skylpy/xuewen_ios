@@ -31,4 +31,7 @@
 + (instancetype) shareInstance;
 /** 注销登陆 */
 - (void)logout;
+/** 商学院名称*/
+@property (nonatomic, strong) NSString *collegeName;
+
 @end

@@ -9,8 +9,10 @@
 #import "XWCompanyInfoController.h"
 #import "XWNoneDataTableCell.h"
 #import "XWCompanyInfoModel.h"
+#import "XWNewCompanyInfoCell.h"
 
 static NSString *const XWNoneDataTableCellID = @"XWNoneDataTableCellID";
+static NSString *const XWNewCompanyInfoCellID = @"XWNewCompanyInfoCellID";
 
 
 @interface XWCompanyInfoController () <UITableViewDelegate, UITableViewDataSource, UIWebViewDelegate>
@@ -19,12 +21,7 @@ static NSString *const XWNoneDataTableCellID = @"XWNoneDataTableCellID";
 
 @property (nonatomic, strong) XWCompanyInfoModel *infoModel;
 
-@property (nonatomic, strong) UIWebView *webView;
-@property (nonatomic, strong) UIWebView *webView1;
-@property (nonatomic, strong) UIWebView *webView2;
-@property (nonatomic, strong) UIWebView *webView3;
-
-@property (nonatomic, assign) CGFloat height;
+@property (nonatomic, assign) CGFloat cellHeight;
 @property (nonatomic, assign) CGFloat height1;
 @property (nonatomic, assign) CGFloat height2;
 @property (nonatomic, assign) CGFloat height3;
@@ -45,48 +42,13 @@ static NSString *const XWNoneDataTableCellID = @"XWNoneDataTableCellID";
         table.separatorStyle = UITableViewCellSeparatorStyleNone;
         table.backgroundColor = Color(@"#f4f4f4");
         [table registerNib:[UINib nibWithNibName:@"XWNoneDataTableCell" bundle:nil] forCellReuseIdentifier:XWNoneDataTableCellID];
+        [table registerClass:[XWNewCompanyInfoCell class] forCellReuseIdentifier:XWNewCompanyInfoCellID];
         _tableView = table;
     }
     return _tableView;
 }
 
-- (UIWebView *)webView{
-    if (!_webView) {
-        _webView = [[UIWebView alloc] init];
-        _webView.delegate = self;
-        _webView.scrollView.scrollEnabled = NO;
-        [_webView sizeToFit];
-        [_webView scalesPageToFit];
-    }
-    return _webView;
-}
 
-- (UIWebView *)webView1{
-    if (!_webView1) {
-        _webView1 = [[UIWebView alloc] init];
-        _webView1.delegate = self;
-        _webView1.scrollView.scrollEnabled = NO;
-    }
-    return _webView1;
-}
-
-- (UIWebView *)webView2{
-    if (!_webView2) {
-        _webView2 = [[UIWebView alloc] init];
-        _webView2.delegate = self;
-        _webView2.scrollView.scrollEnabled = NO;
-    }
-    return _webView2;
-}
-
-- (UIWebView *)webView3{
-    if (!_webView3) {
-        _webView3 = [[UIWebView alloc] init];
-        _webView3.delegate = self;
-        _webView3.scrollView.scrollEnabled = NO;
-    }
-    return _webView3;
-}
 
 #pragma mark - lifecycle
 - (void)viewDidLoad {
@@ -97,14 +59,19 @@ static NSString *const XWNoneDataTableCellID = @"XWNoneDataTableCellID";
 - (void)initUI{
     self.title = @"公司信息";
     [self.view addSubview:self.tableView];
-    self.height = 193;
+    self.cellHeight = self.height1 = self.height2 = self.height3 = 100;
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(changeHeight:) name:@"WEBVIEWHEIGHT" object:nil];
+}
+
+- (CGFloat)audioPlayerViewHieght{
+    return kHeight - kBottomH - 49 - kNaviBarH;;
 }
 
 - (void)loadData{
     XWWeakSelf
-    [XWHttpTool getCompanyInfoWithID:[XWInstance shareInstance].userInfo.company_id success:^(XWCompanyInfoModel *infoModel) {
+    [XWHttpTool getCompanyInfoWithID:self.companyId success:^(XWCompanyInfoModel *infoModel) {
         weakSelf.infoModel = infoModel;
-        
+
     } failure:^(NSString *errorInfo) {
         [MBProgressHUD showErrorMessage:errorInfo];
         [weakSelf.tableView.mj_header endRefreshing];
@@ -114,11 +81,32 @@ static NSString *const XWNoneDataTableCellID = @"XWNoneDataTableCellID";
 #pragma mark - Setter
 - (void)setInfoModel:(XWCompanyInfoModel *)infoModel{
     _infoModel = infoModel;
-    [self.webView loadHTMLString:_infoModel.co_introduction baseURL:nil];
-    [self.webView1 loadHTMLString:_infoModel.co_culture baseURL:nil];
-    [self.webView2 loadHTMLString:_infoModel.co_system baseURL:nil];
-    [self.webView3 loadHTMLString:_infoModel.co_product baseURL:nil];
+    NSString *qian = @"<div style='display: inline-block;pidding: 0px;margin-bottom: 10px;'";
+    NSString *hou = @"</div>";
+    NSString *introduction = [NSString stringWithFormat:@"%@%@%@", qian, _infoModel.co_introduction, hou];
+    NSString *co_product = [NSString stringWithFormat:@"%@%@%@", qian, _infoModel.co_product, hou];
+    NSString *co_culture = [NSString stringWithFormat:@"%@%@%@", qian, _infoModel.co_culture, hou];
+    NSString *co_system = [NSString stringWithFormat:@"%@%@%@", qian, _infoModel.co_system, hou];
+
+    _infoModel.co_system = [self replaceString:co_system];
+    _infoModel.co_introduction = [self replaceString:introduction];
+    _infoModel.co_product = [self replaceString:co_product];
+    _infoModel.co_culture = [self replaceString:co_culture];
     
+    [self.tableView reloadData];
+
+}
+
+/** 阿里云图片处理*/
+- (NSString *)replaceString:(NSString *)text {
+    NSString *png = [NSString stringWithFormat:@".png?x-oss-process=image/resize,w_%.f,/sharpen,100", kWidth];
+    NSString *jpg = [NSString stringWithFormat:@".jpg?x-oss-process=image/resize,w_%.f,/sharpen,100", kWidth];
+    NSString *str1 = [text stringByReplacingOccurrencesOfString:@".png" withString:png];
+    NSString *str2 = [str1 stringByReplacingOccurrencesOfString:@".jpg" withString:jpg];
+    return str2;
+//    NSString *src = [NSString stringWithFormat:@"data-original"];
+//    NSString *str3 = [str2 stringByReplacingOccurrencesOfString:@"src" withString:src];
+//    return str3;
 }
 
 #pragma mark - UITableView Delegate / DataSource
@@ -134,11 +122,13 @@ static NSString *const XWNoneDataTableCellID = @"XWNoneDataTableCellID";
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
+    
+    
     if (indexPath.section == 0) { //简介
         if ([self.infoModel.co_introduction isEqualToString:@""] || self.infoModel.co_introduction == nil) {
             return 193;
         }
-        return self.height;
+        return self.cellHeight;
     }else if (indexPath.section == 1){ // 文化
         if ([self.infoModel.co_culture isEqualToString:@""] || self.infoModel.co_culture == nil) {
             return 193;
@@ -162,84 +152,46 @@ static NSString *const XWNoneDataTableCellID = @"XWNoneDataTableCellID";
     if (indexPath.section == 0) { //简介
         if ([self.infoModel.co_introduction isEqualToString:@""] || self.infoModel.co_introduction == nil) {
             XWNoneDataTableCell *cell = [tableView dequeueReusableCellWithIdentifier:XWNoneDataTableCellID forIndexPath:indexPath];
-            
+            cell.infoLabel.text = @"暂无相关信息:) ";
             return cell;
         }
         
-        UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"cell"];
-        if (!cell) {
-            cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"cell"];
-        }
-        cell.contentView.backgroundColor = [UIColor whiteColor];
-        [cell setSelectionStyle:UITableViewCellSelectionStyleNone];
-        [cell.contentView addSubview:self.webView];
-        
-        [self.webView mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.top.bottom.mas_equalTo(cell.contentView);
-            make.left.mas_equalTo(cell.contentView).offset(15);
-            make.right.mas_equalTo(cell.contentView).offset(-15);
-        }];
+        XWNewCompanyInfoCell *cell = [tableView dequeueReusableCellWithIdentifier:XWNewCompanyInfoCellID forIndexPath:indexPath];
+        cell.html = self.infoModel.co_introduction;
         return cell;
+        
     }else if (indexPath.section == 1){ // 文化
         if ([self.infoModel.co_culture isEqualToString:@""] || self.infoModel.co_culture == nil) {
             XWNoneDataTableCell *cell = [tableView dequeueReusableCellWithIdentifier:XWNoneDataTableCellID forIndexPath:indexPath];
-            
+            cell.infoLabel.text = @"暂无相关信息:) ";
             return cell;
         }
-        UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"cell1"];
-        if (!cell) {
-            cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"cell1"];
-        }
-        cell.contentView.backgroundColor = [UIColor whiteColor];
-        [cell setSelectionStyle:UITableViewCellSelectionStyleNone];
-        [cell.contentView addSubview:self.webView1];
-        [self.webView1.scrollView addObserver:self forKeyPath:@"contentSize" options:NSKeyValueObservingOptionNew context:@"1"];
-        [self.webView1 mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.top.bottom.mas_equalTo(cell.contentView);
-            make.left.mas_equalTo(cell.contentView).offset(15);
-            make.right.mas_equalTo(cell.contentView).offset(-15);
-        }];
+        XWNewCompanyInfoCell *cell = [tableView dequeueReusableCellWithIdentifier:XWNewCompanyInfoCellID forIndexPath:indexPath];
+        cell.html = self.infoModel.co_culture;
         return cell;
+        
     }else if (indexPath.section == 2){ // 制度
         if ([self.infoModel.co_system isEqualToString:@""] || self.infoModel.co_system == nil) {
             XWNoneDataTableCell *cell = [tableView dequeueReusableCellWithIdentifier:XWNoneDataTableCellID forIndexPath:indexPath];
-            
+            cell.infoLabel.text = @"暂无相关制度:) ";
             return cell;
         }
-        UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"cell2"];
-        if (!cell) {
-            cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"cell2"];
-        }
-        cell.contentView.backgroundColor = [UIColor whiteColor];
-        [cell setSelectionStyle:UITableViewCellSelectionStyleNone];
-        [cell.contentView addSubview:self.webView2];
-        [self.webView2.scrollView addObserver:self forKeyPath:@"contentSize" options:NSKeyValueObservingOptionNew context:@"2"];
-        [self.webView2 mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.top.bottom.mas_equalTo(cell.contentView);
-            make.left.mas_equalTo(cell.contentView).offset(15);
-            make.right.mas_equalTo(cell.contentView).offset(-15);
-        }];
+        
+        XWNewCompanyInfoCell *cell = [tableView dequeueReusableCellWithIdentifier:XWNewCompanyInfoCellID forIndexPath:indexPath];
+        cell.html = self.infoModel.co_system;
         return cell;
+        
     }else{ // 产品
         if ([self.infoModel.co_product isEqualToString:@""] || self.infoModel.co_product == nil) {
             XWNoneDataTableCell *cell = [tableView dequeueReusableCellWithIdentifier:XWNoneDataTableCellID forIndexPath:indexPath];
-            
+            cell.infoLabel.text = @"暂无相关产品:) ";
             return cell;
         }
-        UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"cell3"];
-        if (!cell) {
-            cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"cell3"];
-        }
-        cell.contentView.backgroundColor = [UIColor whiteColor];
-        [cell setSelectionStyle:UITableViewCellSelectionStyleNone];
-        [cell.contentView addSubview:self.webView3];
-        [self.webView3.scrollView addObserver:self forKeyPath:@"contentSize" options:NSKeyValueObservingOptionNew context:@"3"];
-        [self.webView3 mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.top.bottom.mas_equalTo(cell.contentView);
-            make.left.mas_equalTo(cell.contentView).offset(15);
-            make.right.mas_equalTo(cell.contentView).offset(-15);
-        }];
+        
+        XWNewCompanyInfoCell *cell = [tableView dequeueReusableCellWithIdentifier:XWNewCompanyInfoCellID forIndexPath:indexPath];
+        cell.html = self.infoModel.co_product;
         return cell;
+        
     }
     
 }
@@ -298,90 +250,30 @@ static NSString *const XWNoneDataTableCellID = @"XWNoneDataTableCellID";
     return 10;
 }
 
-#pragma mark - UIWebViewDelegate
-- (void)webViewDidFinishLoad:(UIWebView *)webView{
-    NSString *js=@"var script = document.createElement('script');"
-    "script.type = 'text/javascript';"
-    "script.text = \"function ResizeImages() { "
-    "var myimg,oldwidth;"
-    "var maxwidth = %f;"
-    "for(i=0;i <document.images.length;i++){"
-    "myimg = document.images[i];"
-    "if(myimg.width > maxwidth){"
-    "oldwidth = myimg.width;"
-    "myimg.width = %f;"
-    "}"
-    "}"
-    "}\";"
-    "document.getElementsByTagName('head')[0].appendChild(script);";
-    
-    js=[NSString stringWithFormat:js, kWidth, kWidth - 30];
-    [webView stringByEvaluatingJavaScriptFromString:js];
-    [webView stringByEvaluatingJavaScriptFromString:@"ResizeImages();"];
-    
-    
-    
-    NSString *str = @"document.getElementsByTagName('body')[0].style.webkitTextSizeAdjust= '30%'";
-    [webView stringByEvaluatingJavaScriptFromString:str];
-    
-//    NSString *jsString = [[NSString alloc] initWithFormat:@"document.body.style.fontSize=%f",20.0];
-//    [webView stringByEvaluatingJavaScriptFromString:jsString];
-    
 
-    
-    CGFloat height = [[webView stringByEvaluatingJavaScriptFromString:@"document.body.offsetHeight"] floatValue] * 0.25;
-    if (webView == self.webView) {
-        NSLog(@"webVIew");
-        self.height = height;
-    }else if (webView == self.webView1){
-        NSLog(@"webVIew1");
-        self.height1 = height+300;
-    }else if (webView == self.webView2){
-        NSLog(@"webVIew2");
-        self.height2 = height;
-    }else if (webView == self.webView3){
-        NSLog(@"webVIew3");
-        self.height3 = height;
-    }
-    NSLog(@"height is %f", height);
-    [self.tableView reloadData];
-    
-}
 
-- (BOOL)webView:(UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType{
-    [MBProgressHUD showActivityMessageInWindow:@"加载中..."];
-    return YES;
-}
+- (void)changeHeight:(NSNotification *)noti{
 
-- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary<NSKeyValueChangeKey,id> *)change context:(void *)context{
-    NSString *text = [NSString stringWithFormat:@"%@", context];
-    if ([text isEqualToString:@"0"]) {
-        if ([keyPath isEqualToString:@"contentSize"]) {
-            CGSize contentSize = [self.webView sizeThatFits:CGSizeZero];
-            self.height = contentSize.height;
-            [self.tableView reloadData];
-            [MBProgressHUD hideHUD];
+    XWNewCompanyInfoCell *cell = noti.object;
+    if ([cell.html isEqualToString:self.infoModel.co_introduction]) { // 简介
+        if (self.cellHeight != cell.cellHeight) {
+            self.cellHeight = cell.cellHeight;
+            [self.tableView reloadSection:0 withRowAnimation:UITableViewRowAnimationNone];
         }
-    }else if ([text isEqualToString:@"1"]){
-        if ([keyPath isEqualToString:@"contentSize"]) {
-            CGSize contentSize = [self.webView1 sizeThatFits:CGSizeZero];
-            self.height1 = contentSize.height;
-            [self.tableView reloadData];
-            [MBProgressHUD hideHUD];
+    }else if ([cell.html isEqualToString:self.infoModel.co_culture]){ // 文化
+        if (self.height1 != cell.cellHeight) {
+            self.height1 = cell.cellHeight;
+            [self.tableView reloadSection:1 withRowAnimation:UITableViewRowAnimationNone];
         }
-    }else if ([text isEqualToString:@"2"]){
-        if ([keyPath isEqualToString:@"contentSize"]) {
-            CGSize contentSize = [self.webView2 sizeThatFits:CGSizeZero];
-            self.height2 = contentSize.height;
-            [self.tableView reloadData];
-            [MBProgressHUD hideHUD];
+    }else if ([cell.html isEqualToString:self.infoModel.co_system]){ // 制度
+        if (self.height2 != cell.cellHeight) {
+            self.height2 = cell.cellHeight;
+            [self.tableView reloadSection:2 withRowAnimation:UITableViewRowAnimationNone];
         }
-    }else if ([text isEqualToString:@"3"]){
-        if ([keyPath isEqualToString:@"contentSize"]) {
-            CGSize contentSize = [self.webView3 sizeThatFits:CGSizeZero];
-            self.height3 = contentSize.height;
-            [self.tableView reloadData];
-            [MBProgressHUD hideHUD];
+    }else if ([cell.html isEqualToString:self.infoModel.co_product]){ // 产品
+        if (self.height3 != cell.cellHeight) {
+            self.height3 = cell.cellHeight;
+            [self.tableView reloadSection:3 withRowAnimation:UITableViewRowAnimationNone];
         }
     }
     

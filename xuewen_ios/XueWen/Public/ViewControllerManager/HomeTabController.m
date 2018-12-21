@@ -11,10 +11,9 @@
 #import "ClassesViewController.h"
 #import "MineViewController.h"
 #import "MyCoursesViewController.h"
-#import "XWHomeViewController.h"
 #import "XWHomeController.h"
 #import "XWMyCoursesViewController.h"
-
+#import "XWFindViewController.h"
 
 @interface HomeTabController () <UITabBarControllerDelegate>
 @property (nonatomic, strong) NSMutableArray *viewControllers;  // 子控制器个数；
@@ -49,11 +48,9 @@
  */
 - (void)setupControllers
 {
-//    MainNavigationViewController *navOne = [[MainNavigationViewController alloc] initWithRootViewController:[[XWHomeViewController alloc] init]];
     MainNavigationViewController *navOne = [[MainNavigationViewController alloc] initWithRootViewController:[XWHomeController homePageVC]];
-    MainNavigationViewController *navTwo = [[MainNavigationViewController alloc] initWithRootViewController:[[ClassesViewController alloc] init]];
+    MainNavigationViewController *navTwo = [[MainNavigationViewController alloc] initWithRootViewController:[[XWFindViewController alloc] init]];
     MainNavigationViewController *navThree = [[MainNavigationViewController alloc] initWithRootViewController:[XWMyCoursesViewController new]];
-//    XWMyCoursesViewController MyCoursesViewController
     MainNavigationViewController *navFour = [[MainNavigationViewController alloc] initWithRootViewController:[[MineViewController alloc] init]];
     
     
@@ -122,7 +119,7 @@
     NSArray *arr =
   @[
     @{@"title":@"首页",@"normalImageName":@"ico_home_normal",@"selectImageName":@"ico_home_selected"},
-    @{@"title":@"课程库",@"normalImageName":@"ico_course_normal",@"selectImageName":@"ico_course_selected"},
+    @{@"title":@"发现",@"normalImageName":@"icon_find_normal",@"selectImageName":@"icon_find_selected"},
     @{@"title":@"我的学习",@"normalImageName":@"ico_my_study_normal",@"selectImageName":@"ico_my_study_selected"},
     @{@"title":@"我的",@"normalImageName":@"ico_my_normal",@"selectImageName":@"ico_my_selected"}
   ];
@@ -160,6 +157,13 @@
 }
 
 - (void)tabBarController:(UITabBarController *)tabBarController didSelectViewController:(UIViewController *)viewController{
+    if ([viewController isKindOfClass:[XWHomeController class]]) {
+        [Analytics event:EventTabbarHome];
+    }else if ([viewController isKindOfClass:[XWMyCoursesViewController class]]){
+        [Analytics event:EventTabbarStudy];
+    }else{
+        [Analytics event:EventTabbarMine];
+    }
     if ([self doubleClick]) {
         UINavigationController *navigation =(UINavigationController *)viewController;
         if ([navigation.topViewController respondsToSelector:@selector(tabbarDoubleClick)]) {

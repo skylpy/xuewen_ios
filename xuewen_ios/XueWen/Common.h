@@ -10,6 +10,7 @@
 #define Common_h
 /** 通知 **/
 #define PersonalInformationUpdate   @"PersonalInformationUpdate"        // 个人信息更新
+#define applePaySucceed   @"applePaySucceed"        // 苹果支付成功
 #define PaySucceed                  @"PaySucceed"                       // 支付成功
 #define PayFailure                  @"PayFailure"                       // 支付失败
 #define NotiExamAction              @"ExamAction"                       // 去考试
@@ -19,7 +20,7 @@
 #define TabbarDoubleHome            @"TabbarDoubleHome"                 // 首页双击了tabbar
 #define TabbarDoubleCollect         @"TabbarDoubleCollect"              // 商学院双击tabbar
 
-
+#define CollectionCourse      @"CollectionCourse"//　收藏课程
 
 
 #define Succeed @"Succeed"
@@ -52,6 +53,12 @@
 
 /** 默认图片*/
 #define DefaultImage LoadImage(@"default_cover")
+
+/** 默认男头像*/
+#define DefaultImageBoy LoadImage(@"boy")
+
+/** 默认女头像*/
+#define DefaultImageGril LoadImage(@"girl")
 
 /** 判断本机是否是iPhone X */
 #define IsIPhoneX ([UIScreen instancesRespondToSelector:@selector(currentMode)] ? CGSizeEqualToSize(CGSizeMake(1125, 2436), [[UIScreen mainScreen] currentMode].size) : NO)
@@ -125,7 +132,7 @@
 #define DefaultTitleCColor   (COLOR(153, 153, 153))
 #define DefaultTitleDColor   (COLOR(204,204,204))
 
-#define DefaultAlertColor    (Color(@"#2A2732"))
+#define DefaultAlertColor    (Color(@"#3366FF"))
 
 // 占位颜色
 #define kCustomColor (COLOR(247,247,247))

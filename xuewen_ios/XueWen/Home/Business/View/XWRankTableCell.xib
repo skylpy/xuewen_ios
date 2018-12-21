@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="14113" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="14313.18" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14088"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14283.14"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -28,8 +28,8 @@
                                     <constraint firstAttribute="width" constant="73" id="2F5-tX-L21"/>
                                 </constraints>
                             </imageView>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="default_cover" translatesAutoresizingMaskIntoConstraints="NO" id="6Nk-Fx-mhc">
-                                <rect key="frame" x="17.5" y="12" width="67" height="67"/>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="6Nk-Fx-mhc">
+                                <rect key="frame" x="17.5" y="12.5" width="67" height="67"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="67" id="T5b-hv-5LS"/>
                                     <constraint firstAttribute="width" constant="67" id="s6O-gr-flh"/>
@@ -107,6 +107,7 @@
                             <constraint firstItem="zVg-Ze-rPv" firstAttribute="top" secondItem="9JR-8d-8cA" secondAttribute="bottom" constant="10" id="dJC-0i-Ncb"/>
                             <constraint firstAttribute="trailing" secondItem="keG-lm-PSc" secondAttribute="trailing" id="gfd-Sk-Ndd"/>
                             <constraint firstItem="7OZ-s4-dlm" firstAttribute="centerX" secondItem="ceC-Ep-HBv" secondAttribute="centerX" id="nQQ-Qw-2Rg"/>
+                            <constraint firstItem="MOq-iJ-dBq" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="zVg-Ze-rPv" secondAttribute="trailing" constant="15" id="oT2-mN-RC6"/>
                             <constraint firstItem="9JR-8d-8cA" firstAttribute="top" secondItem="Tf9-oj-t2B" secondAttribute="top" constant="26" id="oYU-EY-tXx"/>
                             <constraint firstItem="zGL-jU-l9b" firstAttribute="top" secondItem="Tf9-oj-t2B" secondAttribute="top" constant="7" id="pjn-UW-8eC"/>
                             <constraint firstItem="zGL-jU-l9b" firstAttribute="leading" secondItem="Tf9-oj-t2B" secondAttribute="leading" constant="10" id="q0q-1Y-cWp"/>
@@ -132,6 +133,7 @@
                 <outlet property="leftConstraint" destination="Q8s-Aw-t6V" id="0Nm-rh-7Ce"/>
                 <outlet property="lineView" destination="xfY-NN-DQO" id="kLm-HB-Rr0"/>
                 <outlet property="nickLabel" destination="9JR-8d-8cA" id="gdB-Xa-FO4"/>
+                <outlet property="rLayout" destination="Jel-38-E4v" id="7A6-Pm-22w"/>
                 <outlet property="rightConstraint" destination="NSR-ZY-qnb" id="Gfm-ij-Jwy"/>
                 <outlet property="timeLabel" destination="MOq-iJ-dBq" id="RR1-SE-1I8"/>
                 <outlet property="timeTagLabel" destination="zwb-FT-CwB" id="MFf-Zu-L3U"/>
@@ -143,7 +145,6 @@
         </tableViewCell>
     </objects>
     <resources>
-        <image name="default_cover" width="690" height="320"/>
         <image name="icon_first" width="78" height="73"/>
     </resources>
 </document>

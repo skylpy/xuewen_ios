@@ -89,6 +89,7 @@ static NSString *const XWShareCollectionViewCellID = @"XWShareCollectionViewCell
     return _cancelBtn;
 }
 
+
 - (UIView *)backView{
     if (!_backView) {
         _backView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, kWidth, kHeight)];
@@ -138,6 +139,7 @@ static NSString *const XWShareCollectionViewCellID = @"XWShareCollectionViewCell
     spring1.toValue = [NSValue valueWithCGRect:CGRectMake(0, kHeight, kWidth, 194)];
     [self.bgView.layer pop_addAnimation:spring1 forKey:@"frame1"];
     spring1.completionBlock = ^(POPAnimation *anim, BOOL finished) {
+        !self.codeClick?:self.codeClick();
         [self removeFromSuperview];
     };
 }
@@ -169,7 +171,7 @@ static NSString *const XWShareCollectionViewCellID = @"XWShareCollectionViewCell
     XWShareCollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:XWShareCollectionViewCellID forIndexPath:indexPath];
     switch (indexPath.row) {
         case 0:{
-            [cell setIcon:@"icon_share_hb" title:@"生成海报"];
+            [cell setIcon:@"icon_share_hb" title:@"保存本地"];
         }break;
         case 1:{
             [cell setIcon:@"icon_share_wx" title:@"分享到微信"];

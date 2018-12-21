@@ -10,7 +10,7 @@
 @interface MyWalletHeaderView()
 
 @property (nonatomic, strong) UILabel *moneyLabel;
-@property (nonatomic, strong) UILabel *countLabel;
+
 
 @end
 @implementation MyWalletHeaderView
@@ -33,7 +33,7 @@
         _moneyLabel.font = [UIFont systemFontOfSize:12];
         _moneyLabel.textColor = DefaultTitleCColor;
         _moneyLabel.textAlignment = 1;
-        _moneyLabel.text = @"可用余额（元）";
+        _moneyLabel.text = @"可用余额（学币）";
     }
     return _moneyLabel;
 }

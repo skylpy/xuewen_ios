@@ -12,6 +12,10 @@
 #import "AliyunVodPlayerSDK.h"
 #import "XWPopupWindow.h"
 #import "Analytics.h"
+#import "XWCustomPopView.h"
+#import "ClassTestViewController.h"
+#import "QuestionsModel.h"
+#import <AVFoundation/AVFoundation.h>
 
 static XWAudioInstanceController *instance = nil;
 
@@ -27,22 +31,37 @@ static XWAudioInstanceController *instance = nil;
 
 @property (nonatomic, assign) NSTimeInterval oldTime;
 
+@property (nonatomic, strong) AVAudioPlayer *avPlayer;
+
 @end
 
 @implementation XWAudioInstanceController
 
+- (BOOL)canBecomeFirstResponder
+{
+    return YES;
+}
+
 #pragma mark- 锁屏界面控制回调
 - (void)remoteControlReceivedWithEvent:(UIEvent *)event{
     if (event.type == UIEventTypeRemoteControl) {
+        NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithDictionary:[[MPNowPlayingInfoCenter defaultCenter] nowPlayingInfo]];
         switch (event.subtype) {
             case UIEventSubtypeRemoteControlPlay:{
                 //播放
-                [self.player start];
+                [self play];
+                [dict setObject:@(1.0) forKey:MPNowPlayingInfoPropertyPlaybackRate];
+                [[MPNowPlayingInfoCenter defaultCenter] setNowPlayingInfo:dict];
                 break;
             }
             case UIEventSubtypeRemoteControlPause:{
+                self.oldModel.watchTime = [NSString stringWithFormat:@"%.f", self.player.currentTime*1000];
                 //暂停
-                [self.player pause];
+                [self.player stop];
+                [dict setObject:@(self.player.currentTime) forKey:MPNowPlayingInfoPropertyElapsedPlaybackTime]; //音乐当前已经过时间
+                [dict setObject:@(0.0) forKey:MPNowPlayingInfoPropertyPlaybackRate];
+                
+                
                 break;
             }
             case UIEventSubtypeRemoteControlNextTrack:{
@@ -63,11 +82,15 @@ static XWAudioInstanceController *instance = nil;
                 [self play];
                 break;
             }
+            
             default:
                 break;
         }
+        [[MPNowPlayingInfoCenter defaultCenter] setNowPlayingInfo:dict];
     }
 }
+
+
 
 #pragma mark - Getter / Lazy
 
@@ -124,11 +147,16 @@ static XWAudioInstanceController *instance = nil;
 #pragma mark - Custom Methods
 /** 播放*/
 - (void)play{
+    
     if (self.playIndex >= 0 && self.playIndex < self.dataArray.count) {
         XWAudioNodeModel *model = self.dataArray[self.playIndex];
         if (![self.oldModel.nodeID isEqualToString:model.nodeID]) {
+            if (![self.oldModel.nodeID isEqualToString:@""] && self.oldModel.nodeID != nil) {
+                [self updateTime:NO];
+            }
+            
             self.oldModel = model;
-            [self.player stop];
+            
             if ([self.infoModel.type isEqualToString:@"0"]) { // 该课程未购买
                 if ([model.state isEqualToString:@"0"]) { // 当前播放节点不免费
                     return;
@@ -144,8 +172,7 @@ static XWAudioInstanceController *instance = nil;
                 [self.player prepareWithURL:[NSURL URLWithString:model.nodeUrl]];
             }
         }
-        /** 开始播放,更新页面标题*/
-        [self postNotificationWithName:@"UPDATETITLE" object:@(self.playIndex)];
+        
     }
 }
 
@@ -185,8 +212,25 @@ static XWAudioInstanceController *instance = nil;
     @weakify(self)
     RACSignal *signal1 = [RACSignal createSignal:^RACDisposable * _Nullable(id<RACSubscriber>  _Nonnull subscriber) {
         @strongify(self)
-        [XWNetworking  updateUserViewingRecordWithCourseID:self.oldModel.courseID NodeID:self.oldModel.nodeID watchTime:self.player.currentTime finished:finished completionBlock:^(BOOL succeed) {
+        NSLog(@"currentTime is %.f, nodeID is %@", self.player.currentTime, self.oldModel.nodeID);
+        [XWNetworking  updateNewUserViewingRecordWithCourseID:self.oldModel.courseID NodeID:self.oldModel.nodeID watchTime:self.player.currentTime finished:finished completionBlock:^(NSArray<RecordModel *> *questions) {
             NSLog(@"播放时间更新成功");
+            
+            if (questions.count > 0) {
+                RecordModel * rmodel = questions[0];
+                
+                NSString * testID = rmodel.id;
+                [XWNetworking getQuestionsListWithTestID:testID CompletionBlock:^(NSArray<QuestionsModel *> *questions) {
+                    
+                    [[XWCustomPopView shareCustomNew] showFoemSuperView:[UIApplication sharedApplication].keyWindow withTitle:rmodel.title withExamClick:^{
+                        
+                        [[UIViewController getCurrentVC].navigationController pushViewController:[[ClassTestViewController alloc] initWithQuestions:questions withTest:YES withAtid:rmodel.a_t_id]  animated:YES];
+                        NSLog(@"考试");
+                    }];
+                }];
+                
+            }
+            
             [subscriber sendNext:@"1"];
         }];
         
@@ -196,6 +240,10 @@ static XWAudioInstanceController *instance = nil;
     RACSignal *signal2 = [RACSignal createSignal:^RACDisposable * _Nullable(id<RACSubscriber>  _Nonnull subscriber) {
         @strongify(self)
         NSInteger time = self.player.currentTime - self.oldTime;
+        if (time < 0) {
+            time = self.player.currentTime;
+        }
+        NSLog(@" time is %ld", time);
         [XWHttpTool postStudyTimeWithTime:time userID:[XWInstance shareInstance].userInfo.oid success:^{
             self.oldTime = self.player.currentTime;
             [subscriber sendNext:@"1"];
@@ -247,6 +295,7 @@ static XWAudioInstanceController *instance = nil;
     }
 }
 + (void)playerViewDisappear{
+    
     if (instance) {
         [instance.playerView disappear];
     }
@@ -271,43 +320,45 @@ static XWAudioInstanceController *instance = nil;
         [self.playerView.playBtn setImage:LoadImage(@"icon_audio_play") forState:UIControlStateNormal];
     }
     
-    /** 音频列表播放按钮状态*/
-    [self postNotificationWithName:@"AUDIOLISTSTATUS" object:@(_status == kStatusPlay)];
     [self.playerView.headImgView sd_setImageWithURL:[NSURL URLWithString:self.model.tchOrgPhotoAll]];
     self.playerView.titleLabel.text = self.oldModel.nodeTitle;
     [self getTime:status == kStatusPlay];
     switch (status) {
         case kStatusStop:{
-            [self updateTime:NO];
+            
             [[UIApplication sharedApplication] endReceivingRemoteControlEvents];
             
             [self resignFirstResponder];
         }break;
         case kStatusLoading:
         case kStatusPlay:{
-            [[UIApplication sharedApplication] beginReceivingRemoteControlEvents];
-            [self becomeFirstResponder];
-            
             // 设置锁屏信息
             if (NSClassFromString(@"MPNowPlayingInfoCenter")) {
                 
                 NSMutableDictionary *dict = [[NSMutableDictionary alloc] init];
                 
                 [dict setObject:self.oldModel.nodeTitle forKey:MPMediaItemPropertyTitle];
-                
+                // 歌手
                 [dict setObject:self.model.tchOrg forKey:MPMediaItemPropertyArtist];
-                
+                // 标题
                 [dict setObject:self.model.courseName forKey:MPMediaItemPropertyAlbumTitle];
+                // 总时长
+                [dict setObject:@(self.player.duration) forKey:MPMediaItemPropertyPlaybackDuration];
+                [dict setObject:@(self.player.currentTime) forKey:MPNowPlayingInfoPropertyElapsedPlaybackTime];
                 
                 MPMediaItemArtwork *artwork = [[MPMediaItemArtwork alloc] initWithImage:[UIImage imageWithData:[NSData dataWithContentsOfURL:[NSURL URLWithString:self.model.tchOrgPhotoAll]]]];
-                
+                [dict setObject:@(MPNowPlayingInfoMediaTypeAudio) forKey:MPNowPlayingInfoPropertyMediaType];
                 [dict setObject:artwork forKey:MPMediaItemPropertyArtwork];
                 
                 [[MPNowPlayingInfoCenter defaultCenter] setNowPlayingInfo:dict];
             }
+            
+            [self becomeFirstResponder];
+            [[UIApplication sharedApplication] beginReceivingRemoteControlEvents];
         }break;
         case kStatusPause:{
             [self updateTime:NO];
+            
         }break;
         default:
             break;
@@ -362,8 +413,8 @@ static XWAudioInstanceController *instance = nil;
 - (void)closeAction{
     [self.player stop];
     [self updateTime:NO];
-    [self postNotificationWithName:@"AUDIOLISTSTATUS" object:@"0"];
-    self.player = nil;
+    
+    [self.player releasePlayer];
     if (self.disposable) {
         [self.disposable dispose];
         self.disposable = nil;
@@ -387,7 +438,9 @@ static XWAudioInstanceController *instance = nil;
             /** 友盟统计*/
             [Analytics event:EventPlayCourse attributes:@{@"CourseID":(self.model.courseId.length > 0) ? self.model.courseId : @"",@"LessionID":(self.oldModel.nodeID.length > 0) ? self.oldModel.nodeID : @""}];
             /** 上次观看时间*/
+            /*
             if ([self.oldModel.play isEqualToString:@"1"] && ![self.oldModel.finished isEqualToString:@"1"]) {
+                // 大于10s才显示上次播放时间
                 if ([self.oldModel.watchTime integerValue] < 10000) {
                     return;
                 }
@@ -396,7 +449,15 @@ static XWAudioInstanceController *instance = nil;
             if (self.isContinue) {
                 [self.player seekToTime:[self.oldModel.watchTime integerValue] / 1000];
             }
+            */
             
+            NSLog(@"watchTime is %@, nodeID is %@", self.oldModel.watchTime, self.oldModel.nodeID);
+            NSTimeInterval time = [self.oldModel.watchTime integerValue] / 1000;
+            if ([self.oldModel.play isEqualToString:@"1"]) { // 如果已观看
+                if (self.player.duration * 0.8 > time) { // 如果观看时间大于总时长的80%,就重头开始播放
+                    [self.player seekToTime:time];
+                }
+            }
             
         }break;
         case AliyunVodPlayerEventPlay:{
@@ -414,23 +475,26 @@ static XWAudioInstanceController *instance = nil;
         }break;
         case AliyunVodPlayerEventStop:{
             //主动使用stop接口时触发
+//            [self updateTime:NO];
             self.status = kStatusStop;
             
         }break;
         case AliyunVodPlayerEventFinish:{
             //视频正常播放完成时触发
-            [self updateTime:YES];
+            self.status = kStatusStop;
             self.playIndex += 1;
             [self play];
-            self.status = kStatusStop;
+            
 
         }break;
         case AliyunVodPlayerEventBeginLoading:{
             //视频开始载入时触发
+            [MBProgressHUD showActivityMessageInWindow:@""];
             self.status = kStatusLoading;
         }break;
         case AliyunVodPlayerEventEndLoading:{
             //视频加载完成时触发
+            [MBProgressHUD hideHUD];
             if (self.player.playerState == AliyunVodPlayerStatePlay) {
                 self.status = kStatusPlay;
             }
@@ -438,6 +502,7 @@ static XWAudioInstanceController *instance = nil;
         case AliyunVodPlayerEventSeekDone:{
             //视频Seek完成时触发
             if (self.player.playerState == AliyunVodPlayerStatePlay) {
+                self.oldTime = self.player.currentTime;
                 self.status = kStatusPlay;
             }
         }break;

@@ -17,6 +17,8 @@
 #import "SubProjectViewController.h"
 #import "ConfirmOrderBuyView.h"
 #import <objc/runtime.h>
+#import "XWMineModel.h"
+
 @interface ConfirmOrderViewController ()<UITableViewDataSource,UITableViewDelegate>
 
 @property (nonatomic, copy) void (^UpdateBlock)(void);
@@ -33,12 +35,17 @@
 @property (nonatomic, strong) NSString *coupons;
 @property (nonatomic, assign) float couponPrice;
 
+@property (nonatomic,assign) NSInteger hide;
+
 
 @end
 
 @implementation ConfirmOrderViewController
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
+    
+    if ([self.order.type isEqualToString:@"3"]) return;
     if (indexPath.section == 1 && self.couponCount > 0) {
+        
         WeakSelf;
         SelectCouponViewController *vc = [[SelectCouponViewController alloc] initWithPrice:[self.order.price floatValue] completeBlock:^(NSString *coupons, float price) {
             weakSelf.coupons = coupons;
@@ -68,35 +75,51 @@
 }
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView{
-    return 3;
+    if ([self.order.type isEqualToString:@"3"]) { // 是超级组织购买
+        return 2;
+    }
+    
+    return self.hide == 1 ? 2:3;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
     if (indexPath.section == 0) {
         ClassesInfoCell *cell = [tableView dequeueReusableCellWithIdentifier:@"ClassInfo"];
-        [cell setCourse:[self.order.type isEqualToString:@"0"] ? self.order.purchaseInfo : nil project:[self.order.type isEqualToString:@"1"] ? self.order.purchaseInfo : nil price:self.order.price];
+        [cell setCourse:[self.order.type isEqualToString:@"0"] ? self.order.purchaseInfo : nil project:[self.order.type isEqualToString:@"1"] ? self.order.purchaseInfo : nil superOrg:[self.order.type isEqualToString:@"3"] ? self.order.purchaseInfo : nil price:self.order.price];
         return cell;
     }else{
         ConfirmOrderCell *cell = [tableView dequeueReusableCellWithIdentifier:CellID];
-        cell.title = (indexPath.section == 1) ? @"奖学金" : @"余额";
-        cell.showMore = (indexPath.section == 1);
-        cell.content = (indexPath.section == 1) ? ((self.couponCount == 0) ? @"暂无可用" : @"请选择") : [NSString stringWithFormat:@"%.2f",self.gold];
-        NSString *content = nil;
-        if (indexPath.section == 1) {
-            if (self.couponCount == 0) {
-                content = @"暂无可用";
-            }else{
-                if (self.coupons) {
-                    float price = MIN(self.couponPrice, [self.order.price floatValue]);
-                    content = [NSString stringWithFormat:@"-%.2f",price];
-                }else{
-                    content = @"请选择";
-                }
-            }
+        if ([self.order.type isEqualToString:@"3"] || self.hide == 1) { // 是超级组织购买
+            cell.title = @"余额";
+            cell.showMore = NO;
+            cell.content = [NSString stringWithFormat:@"%.2f",self.gold];
         }else{
-            content = [NSString stringWithFormat:@"%.2f",self.gold];
+            
+            cell.title = (indexPath.section == 1) ? @"奖学金" : @"余额";
+            cell.showMore = (indexPath.section == 1);
+            
+            cell.content = (indexPath.section == 1) ? ((self.couponCount == 0) ? @"暂无可用" : @"请选择") : [NSString stringWithFormat:@"%.2f",self.gold];
+            NSString *content = nil;
+            if (indexPath.section == 1) {
+                
+                if (self.couponCount == 0) {
+                    content = @"暂无可用";
+                }else{
+                    if (self.coupons) {
+                        float price = MIN(self.couponPrice, [self.order.price floatValue]);
+                        content = [NSString stringWithFormat:@"-%.2f",price];
+                    }else{
+                        content = @"请选择";
+                    }
+                }
+                
+            }else{
+                content = [NSString stringWithFormat:@"%.2f",self.gold];
+            }
+            cell.content = content;
         }
-        cell.content = content;
+        
+        
         
         
         cell.selectionStyle = 0;
@@ -130,15 +153,34 @@
     self.title = @"确认订单";
     
     self.view.backgroundColor = DefaultBgColor;
+    self.hide = 1;
     [self.view addSubview:self.tableView];
     [self.view addSubview:self.buyView];
     [self.view addSubview:self.tipLabel];
     self.buyView.sd_layout.leftSpaceToView(self.view, 0).rightSpaceToView(self.view, 0).bottomSpaceToView(self.view, kBottomH).heightIs(49);
     self.tipLabel.sd_layout.bottomSpaceToView(self.buyView, 10).centerXEqualToView(self.view).leftSpaceToView(self.view, 0).rightSpaceToView(self.view, 0).heightIs(16);
+    [self requestData];
 }
+
+- (void)requestData {
+    
+    NSString * version = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleVersion"];
+    WeakSelf;
+    [XWMineModel mineVersion:version success:^(NSInteger hide) {
+        
+        self.hide = hide;
+        
+        [weakSelf.tableView reloadData];
+        
+    } failure:^(NSString * _Nonnull error) {
+        
+        [weakSelf requestData];
+    }];
+}
+
 - (void)loadData{
     WeakSelf;
-    [XWNetworking creatOrderWithID:_identifier type:_type completeBlock:^(float gold, OrderModel *order) {
+    [XWNetworking creatOrderWithID:_identifier type:_type isSuperOrg:self.isSuper completeBlock:^(float gold, OrderModel *order) {
         weakSelf.gold = gold;
         weakSelf.order = order;
         [weakSelf checkMoney];

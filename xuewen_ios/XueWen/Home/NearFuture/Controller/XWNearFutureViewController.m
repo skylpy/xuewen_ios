@@ -202,11 +202,11 @@ static NSString *const XWNearFutureCellID = @"XWNearFutureCellID";
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
     XWCourseIndexModel *model = self.dataArray[indexPath.section][indexPath.row];
-    if ([model.courseType isEqualToString:@"2"]) {
-        [self.navigationController pushViewController:[ViewControllerManager detailViewControllerWithCourseID:model.courseId isAudio:YES] animated:YES];
-    }else{
+//    if ([model.courseType isEqualToString:@"2"]) {
+//        [self.navigationController pushViewController:[ViewControllerManager detailViewControllerWithCourseID:model.courseId isAudio:YES] animated:YES];
+//    }else{
         [self.navigationController pushViewController:[ViewControllerManager detailViewControllerWithCourseID:model.courseId isAudio:NO] animated:YES];
-    }
+//    }
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section{

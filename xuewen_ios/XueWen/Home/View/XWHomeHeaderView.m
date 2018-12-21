@@ -42,7 +42,7 @@
         _moreBtn = [UIButton buttonWithType:UIButtonTypeCustom];
         [_moreBtn setImage:LoadImage(@"icon_home_right") forState:UIControlStateNormal];
         [_moreBtn setTitle:@"查看全部 " forState:UIControlStateNormal];
-        [_moreBtn setTitleColor:Color(@"#999999") forState:UIControlStateNormal];
+        [_moreBtn setTitleColor:Color(@"#B4A695") forState:UIControlStateNormal];
         _moreBtn.titleLabel.font = [UIFont fontWithName:kRegFont size:14];
         _moreBtn.contentEdgeInsets = UIEdgeInsetsMake(0, -5, 0, 0);
         // 重点位置开始

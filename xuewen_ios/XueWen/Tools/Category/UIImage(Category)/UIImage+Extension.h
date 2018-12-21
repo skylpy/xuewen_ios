@@ -42,5 +42,7 @@
 //绘制带圆角的视图 （实现要通过GCD）
 - (UIImage *)drawCircleImage;
 
+//UIView 转化为Image
++ (UIImage *)imageViewView:(UIView *)view;
 
 @end

@@ -283,7 +283,21 @@
     return output;
 }
 
-
+//UIView 转化为Image
++ (UIImage *)imageViewView:(UIView *)view {
+    
+    CGFloat scale = [UIScreen mainScreen].scale;
+    
+    UIGraphicsBeginImageContextWithOptions(view.frame.size, NO, scale);
+    
+    [view.layer renderInContext:UIGraphicsGetCurrentContext()];
+    
+    UIImage * image = UIGraphicsGetImageFromCurrentImageContext();
+    
+    UIGraphicsEndImageContext();
+    
+    return image;
+}
 
 
 

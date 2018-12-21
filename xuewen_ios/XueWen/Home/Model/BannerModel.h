@@ -38,4 +38,6 @@
 @property (nonatomic, strong) NSString *type;
 /** 约定好的跳转url*/
 @property (nonatomic, strong) NSString *appurl;
+/** 半链接图片地址*/
+@property (nonatomic, strong) NSString *pictureUrl;
 @end

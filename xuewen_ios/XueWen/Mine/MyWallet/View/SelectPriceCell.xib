@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="11762" systemVersion="16G1036" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="14313.18" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11757"/>
-        <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14283.14"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -18,72 +18,72 @@
                 <rect key="frame" x="0.0" y="0.0" width="375" height="276.5"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
-                    <label hidden="YES" opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="1元=1金币" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="syb-QY-smn">
-                        <rect key="frame" x="91" y="32" width="56" height="15"/>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="1元=1学币" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="syb-QY-smn">
+                        <rect key="frame" x="99" y="35" width="56" height="15"/>
                         <constraints>
                             <constraint firstAttribute="height" constant="15" id="2xQ-Xp-o2s"/>
                             <constraint firstAttribute="width" constant="56" id="Jl8-u0-61A"/>
                         </constraints>
-                        <fontDescription key="fontDescription" type="system" pointSize="12"/>
-                        <color key="textColor" red="0.80000000000000004" green="0.80000000000000004" blue="0.80000000000000004" alpha="1" colorSpace="calibratedRGB"/>
+                        <fontDescription key="fontDescription" name="PingFangSC-Regular" family="PingFang SC" pointSize="12"/>
+                        <color key="textColor" red="0.44705882349999998" green="0.44705882349999998" blue="0.44705882349999998" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <nil key="highlightedColor"/>
                     </label>
                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Mbn-Qu-1WU" customClass="PriceButton">
-                        <rect key="frame" x="15" y="65" width="105" height="53"/>
+                        <rect key="frame" x="23" y="68" width="99.5" height="53"/>
                         <constraints>
                             <constraint firstAttribute="height" constant="53" id="sxH-5f-Oxh"/>
                         </constraints>
-                        <state key="normal" title="10元">
+                        <state key="normal" title="6学币">
                             <color key="titleColor" red="0.20000000000000001" green="0.20000000000000001" blue="0.20000000000000001" alpha="1" colorSpace="calibratedRGB"/>
                         </state>
                     </button>
                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="qZH-SB-15H" customClass="PriceButton">
-                        <rect key="frame" x="135" y="65" width="105" height="53"/>
+                        <rect key="frame" x="137.5" y="68" width="100" height="53"/>
                         <constraints>
                             <constraint firstAttribute="height" constant="53" id="Whg-ST-SwO"/>
                         </constraints>
-                        <state key="normal" title="50元">
+                        <state key="normal" title="12学币">
                             <color key="titleColor" red="0.20000000000000001" green="0.20000000000000001" blue="0.20000000000000001" alpha="1" colorSpace="calibratedRGB"/>
                         </state>
                     </button>
                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="hOT-eA-oQM" customClass="PriceButton">
-                        <rect key="frame" x="255" y="65" width="105" height="53"/>
+                        <rect key="frame" x="252.5" y="68" width="99.5" height="53"/>
                         <constraints>
                             <constraint firstAttribute="height" constant="53" id="wX3-cQ-brf"/>
                         </constraints>
-                        <state key="normal" title="100元">
+                        <state key="normal" title="30学币">
                             <color key="titleColor" red="0.20000000000000001" green="0.20000000000000001" blue="0.20000000000000001" alpha="1" colorSpace="calibratedRGB"/>
                         </state>
                     </button>
                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="nwG-Ta-Nhp" customClass="PriceButton">
-                        <rect key="frame" x="15" y="133" width="105" height="53"/>
+                        <rect key="frame" x="23" y="136" width="99.5" height="53"/>
                         <constraints>
                             <constraint firstAttribute="height" constant="53" id="gmo-gY-seQ"/>
                         </constraints>
-                        <state key="normal" title="500元">
+                        <state key="normal" title="68学币">
                             <color key="titleColor" red="0.20000000000000001" green="0.20000000000000001" blue="0.20000000000000001" alpha="1" colorSpace="calibratedRGB"/>
                         </state>
                     </button>
                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ead-6y-tV1" customClass="PriceButton">
-                        <rect key="frame" x="135" y="133" width="105" height="53"/>
+                        <rect key="frame" x="137.5" y="136" width="100" height="53"/>
                         <constraints>
                             <constraint firstAttribute="height" constant="53" id="Lcq-0w-WTT"/>
                         </constraints>
-                        <state key="normal" title="1000元">
+                        <state key="normal" title="108学币">
                             <color key="titleColor" red="0.20000000000000001" green="0.20000000000000001" blue="0.20000000000000001" alpha="1" colorSpace="calibratedRGB"/>
                         </state>
                     </button>
                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="rEa-Ka-fUX" customClass="PriceButton">
-                        <rect key="frame" x="255" y="133" width="105" height="53"/>
+                        <rect key="frame" x="252.5" y="136" width="99.5" height="53"/>
                         <constraints>
                             <constraint firstAttribute="height" constant="53" id="ObY-oW-uk0"/>
                         </constraints>
-                        <state key="normal" title="5000元">
+                        <state key="normal" title="1048学币">
                             <color key="titleColor" red="0.20000000000000001" green="0.20000000000000001" blue="0.20000000000000001" alpha="1" colorSpace="calibratedRGB"/>
                         </state>
                     </button>
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="充值金额" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="lUM-R4-duC">
-                        <rect key="frame" x="15" y="27" width="66" height="20"/>
+                        <rect key="frame" x="23" y="30" width="66" height="20"/>
                         <constraints>
                             <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="20" id="Bie-EV-oEc"/>
                             <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="66" id="Qha-kP-RYC"/>
@@ -92,8 +92,8 @@
                         <color key="textColor" red="0.20000000000000001" green="0.20000000000000001" blue="0.20000000000000001" alpha="1" colorSpace="calibratedRGB"/>
                         <nil key="highlightedColor"/>
                     </label>
-                    <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="自定义金额" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="wlh-gP-btL">
-                        <rect key="frame" x="15" y="201" width="345" height="50"/>
+                    <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" enabled="NO" contentHorizontalAlignment="left" contentVerticalAlignment="center" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="wlh-gP-btL">
+                        <rect key="frame" x="23" y="204" width="329" height="50"/>
                         <constraints>
                             <constraint firstAttribute="height" constant="50" id="Jkt-Em-mju"/>
                         </constraints>

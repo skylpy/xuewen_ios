@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="14460.31" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14460.20"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="XWBannerManagerCellID" rowHeight="138" id="KGk-i7-Jjw" customClass="XWBannerManagerCell">
+            <rect key="frame" x="0.0" y="0.0" width="375" height="138"/>
+            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+            <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="KGk-i7-Jjw" id="H2p-sc-9uM">
+                <rect key="frame" x="0.0" y="0.0" width="375" height="137.5"/>
+                <autoresizingMask key="autoresizingMask"/>
+                <subviews>
+                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="rzb-T5-UqS">
+                        <rect key="frame" x="15" y="15" width="345" height="122.5"/>
+                        <subviews>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="addico" translatesAutoresizingMaskIntoConstraints="NO" id="GV5-xd-L1u">
+                                <rect key="frame" x="152.5" y="41.5" width="40" height="40"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="40" id="GZ6-RC-i1Q"/>
+                                    <constraint firstAttribute="height" constant="40" id="jwO-zb-r0o"/>
+                                </constraints>
+                            </imageView>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="xsO-Fv-eWn">
+                                <rect key="frame" x="0.0" y="0.0" width="345" height="122.5"/>
+                            </imageView>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="tNc-Uz-KYJ">
+                                <rect key="frame" x="310" y="10" width="25" height="25"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="25" id="0eE-en-XeD"/>
+                                    <constraint firstAttribute="height" constant="25" id="0fA-Kf-zWX"/>
+                                </constraints>
+                                <state key="normal" image="txtclose"/>
+                                <connections>
+                                    <action selector="deleteBtnClick:" destination="KGk-i7-Jjw" eventType="touchUpInside" id="ki4-n3-jSA"/>
+                                </connections>
+                            </button>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <constraints>
+                            <constraint firstItem="GV5-xd-L1u" firstAttribute="centerX" secondItem="rzb-T5-UqS" secondAttribute="centerX" id="HDS-C0-hhy"/>
+                            <constraint firstAttribute="trailing" secondItem="tNc-Uz-KYJ" secondAttribute="trailing" constant="10" id="HJv-oS-T64"/>
+                            <constraint firstAttribute="trailing" secondItem="xsO-Fv-eWn" secondAttribute="trailing" id="LiJ-1b-9n0"/>
+                            <constraint firstItem="tNc-Uz-KYJ" firstAttribute="top" secondItem="rzb-T5-UqS" secondAttribute="top" constant="10" id="Nke-kh-5qp"/>
+                            <constraint firstItem="xsO-Fv-eWn" firstAttribute="top" secondItem="rzb-T5-UqS" secondAttribute="top" id="OtC-kt-j4q"/>
+                            <constraint firstItem="GV5-xd-L1u" firstAttribute="centerY" secondItem="rzb-T5-UqS" secondAttribute="centerY" id="VVa-QK-2KP"/>
+                            <constraint firstItem="xsO-Fv-eWn" firstAttribute="leading" secondItem="rzb-T5-UqS" secondAttribute="leading" id="Xxy-Jh-rCI"/>
+                            <constraint firstAttribute="bottom" secondItem="xsO-Fv-eWn" secondAttribute="bottom" id="eZx-pW-9mt"/>
+                        </constraints>
+                    </view>
+                </subviews>
+                <constraints>
+                    <constraint firstItem="rzb-T5-UqS" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="15" id="FGC-9n-KZu"/>
+                    <constraint firstAttribute="bottom" secondItem="rzb-T5-UqS" secondAttribute="bottom" id="Foy-FS-qvO"/>
+                    <constraint firstItem="rzb-T5-UqS" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="15" id="PcR-MK-T3s"/>
+                    <constraint firstAttribute="trailing" secondItem="rzb-T5-UqS" secondAttribute="trailing" constant="15" id="o53-kw-g73"/>
+                </constraints>
+            </tableViewCellContentView>
+            <viewLayoutGuide key="safeArea" id="aW0-zy-SZf"/>
+            <connections>
+                <outlet property="addIcon" destination="GV5-xd-L1u" id="6zo-UL-Hxh"/>
+                <outlet property="bgIcon" destination="xsO-Fv-eWn" id="l1G-ax-15a"/>
+                <outlet property="bgView" destination="rzb-T5-UqS" id="ytn-ry-ENR"/>
+                <outlet property="deleteBtn" destination="tNc-Uz-KYJ" id="HHZ-hI-Vn1"/>
+            </connections>
+            <point key="canvasLocation" x="181.59999999999999" y="188.00599700149925"/>
+        </tableViewCell>
+    </objects>
+    <resources>
+        <image name="addico" width="40" height="40"/>
+        <image name="txtclose" width="25" height="25"/>
+    </resources>
+</document>

@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="14109" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="14113" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14088"/>
+        <capability name="Constraints with non-1.0 multipliers" minToolsVersion="5.1"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -20,20 +21,31 @@
                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                 <subviews>
                     <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="Ufx-KG-9fh">
-                        <rect key="frame" x="0.0" y="0.0" width="186" height="97"/>
+                        <rect key="frame" x="78" y="19" width="30" height="30"/>
+                        <constraints>
+                            <constraint firstAttribute="height" constant="30" id="RGu-S1-MPc"/>
+                            <constraint firstAttribute="width" constant="30" id="g1z-Gm-hj8"/>
+                        </constraints>
                     </imageView>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Xn9-Yq-VGL">
+                        <rect key="frame" x="80.5" y="59" width="26" height="14"/>
+                        <fontDescription key="fontDescription" name="PingFangSC-Medium" family="PingFang SC" pointSize="10"/>
+                        <color key="textColor" red="0.27843137254901962" green="0.27843137254901962" blue="0.27843137254901962" alpha="1" colorSpace="calibratedRGB"/>
+                        <nil key="highlightedColor"/>
+                    </label>
                 </subviews>
             </view>
             <constraints>
-                <constraint firstAttribute="trailing" secondItem="Ufx-KG-9fh" secondAttribute="trailing" id="252-hK-gLN"/>
-                <constraint firstItem="Ufx-KG-9fh" firstAttribute="top" secondItem="gTV-IL-0wX" secondAttribute="top" id="AiF-UP-WAF"/>
-                <constraint firstAttribute="bottom" secondItem="Ufx-KG-9fh" secondAttribute="bottom" id="Sty-0U-A3H"/>
-                <constraint firstItem="Ufx-KG-9fh" firstAttribute="leading" secondItem="gTV-IL-0wX" secondAttribute="leading" id="hYt-an-vc4"/>
+                <constraint firstItem="Xn9-Yq-VGL" firstAttribute="top" secondItem="Ufx-KG-9fh" secondAttribute="bottom" constant="10" id="BqI-qs-zl7"/>
+                <constraint firstItem="Ufx-KG-9fh" firstAttribute="centerX" secondItem="gTV-IL-0wX" secondAttribute="centerX" id="Kag-GF-Ohx"/>
+                <constraint firstItem="Xn9-Yq-VGL" firstAttribute="centerX" secondItem="Ufx-KG-9fh" secondAttribute="centerX" id="XnK-8X-Ew3"/>
+                <constraint firstItem="Ufx-KG-9fh" firstAttribute="centerY" secondItem="gTV-IL-0wX" secondAttribute="centerY" multiplier="0.7" id="mJo-ZC-7CJ"/>
             </constraints>
             <viewLayoutGuide key="safeArea" id="SEy-5g-ep8"/>
             <size key="customSize" width="186" height="97"/>
             <connections>
                 <outlet property="imgView" destination="Ufx-KG-9fh" id="Bx3-wo-zji"/>
+                <outlet property="nickLabel" destination="Xn9-Yq-VGL" id="Qw2-pl-IDy"/>
             </connections>
             <point key="canvasLocation" x="102" y="77.5"/>
         </collectionViewCell>

@@ -207,6 +207,10 @@ static NSString * const XWPlanProgressCellID = @"XWPlanProgressCellID";
     self.timeLabel.text = [NSString stringWithFormat:@"%@-%@",[NSDate dateFormTimestamp:model.startTime withFormat:@"yyyy.MM.dd"],[NSDate dateFormTimestamp:model.endTime withFormat:@"yyyy.MM.dd"]];
 }
 
+- (CGFloat)audioPlayerViewHieght{
+    return kHeight - kBottomH - 49 - kNaviBarH;;
+}
+
 - (void)drawUI {
     
     self.selectionStyle = UITableViewCellSelectionStyleNone;

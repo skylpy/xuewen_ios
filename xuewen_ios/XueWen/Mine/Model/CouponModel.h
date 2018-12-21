@@ -27,6 +27,9 @@
 @property (nonatomic, strong) NSString *validity;
 /** 是否可以使用 */
 @property (nonatomic, assign) BOOL canUse;
+
+@property (nonatomic, assign) BOOL isSelect;
+
 /**
  "id": 1645,
  "user_id": 84,

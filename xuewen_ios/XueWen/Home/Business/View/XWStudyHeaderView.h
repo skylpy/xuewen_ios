@@ -9,11 +9,13 @@
 #import <UIKit/UIKit.h>
 #import "XWCountPlayTimeModel.h"
 #import "XWTargetRankModel.h"
+#import "XWRankViewController.h"
 
 @interface XWStudyHeaderView : UIView
 
 @property (nonatomic, strong) XWCountPlayTimeModel *rankModel;
 
 @property (nonatomic, strong) XWTargetRankModel *goalModel;
+@property (nonatomic, assign) RankControllerType type;
 
 @end

@@ -73,7 +73,7 @@ static NSString *const XWShareTitleCellID = @"XWShareTitleCellID";
 
 - (UIWebView *)webView{
     if (!_webView) {
-        _webView = [[UIWebView alloc] init];
+        _webView = [[UIWebView alloc] initWithFrame:CGRectMake(0, kHeight-140-kNaviBarH, kWidth, 140)];
         _webView.backgroundColor = [UIColor whiteColor];
         _webView.scrollView.showsVerticalScrollIndicator = NO;
         _webView.scrollView.showsHorizontalScrollIndicator = NO;
@@ -108,11 +108,12 @@ static NSString *const XWShareTitleCellID = @"XWShareTitleCellID";
 - (void)drawUI{
     self.title = @"分享给朋友";
     self.view.backgroundColor = [UIColor orangeColor];
+    [self.view addSubview:self.webView];
     [self.view addSubview:self.bgView];
     [self.bgView addSubview:self.collectionView];
     
     [self.webView loadHTMLString:self.model.course.introduction baseURL:nil];
-    
+    [self.webView.scrollView addObserver:self forKeyPath:@"contentSize" options:NSKeyValueObservingOptionNew context:@"1"];
     [self.view addSubview:self.tableView];
 }
 
@@ -133,6 +134,7 @@ static NSString *const XWShareTitleCellID = @"XWShareTitleCellID";
     UIImage *image = [[UIImage alloc] init];
     UIImage *newImage = [image screenshotForView:self.tableView];
     
+    UIImage *thumbImage = [[UIImage alloc] initWithData:[UIImage compressImage:newImage toByte:32000]];
     switch (index) {
         case 0: // 保存到本地的操作
         {
@@ -142,6 +144,8 @@ static NSString *const XWShareTitleCellID = @"XWShareTitleCellID";
         case 1: // 分享到微信
         {
             WXMediaMessage *message = [WXMediaMessage message];
+            
+            [message setThumbImage:thumbImage];
             WXImageObject *imgObj = [WXImageObject object];
             imgObj.imageData = UIImagePNGRepresentation(newImage);
             message.mediaObject = imgObj;
@@ -156,6 +160,7 @@ static NSString *const XWShareTitleCellID = @"XWShareTitleCellID";
         case 2: // 分享到朋友圈
         {
             WXMediaMessage *message = [WXMediaMessage message];
+            [message setThumbImage:thumbImage];
             WXImageObject *imgObj = [WXImageObject object];
             imgObj.imageData = UIImagePNGRepresentation(newImage);
             message.mediaObject = imgObj;
@@ -217,10 +222,24 @@ static NSString *const XWShareTitleCellID = @"XWShareTitleCellID";
     [webView stringByEvaluatingJavaScriptFromString:js];
     [webView stringByEvaluatingJavaScriptFromString:@"ResizeImages();"];
     
-    CGFloat height = [[webView stringByEvaluatingJavaScriptFromString:@"document.body.offsetHeight"] floatValue];
-    self.contentHeight = height + 50;
-    [self.tableView reloadRow:1 inSection:0 withRowAnimation:UITableViewRowAnimationNone];
-    [MBProgressHUD hideHUD];
+//    CGFloat height = [[webView stringByEvaluatingJavaScriptFromString:@"document.body.offsetHeight"] floatValue];
+//    NSLog(@"height %.f", height);
+//    self.contentHeight = height + 50;
+////    [self.tableView reloadData];
+//    [self.tableView reloadRow:1 inSection:0 withRowAnimation:UITableViewRowAnimationNone];
+//    [MBProgressHUD hideHUD];
+}
+
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary<NSKeyValueChangeKey,id> *)change context:(void *)context{
+    NSString *text = [NSString stringWithFormat:@"%@", context];
+    if ([text isEqualToString:@"1"]) {
+        if ([keyPath isEqualToString:@"contentSize"]) {
+            CGSize contentSize = [self.webView sizeThatFits:CGSizeZero];
+            self.contentHeight = contentSize.height + 70;
+            [self.tableView reloadData];
+            [MBProgressHUD hideHUD];
+        }
+    }
 }
 
 #pragma mark - UITableView Delegate / DataSource
@@ -282,7 +301,7 @@ static NSString *const XWShareTitleCellID = @"XWShareTitleCellID";
     UILabel *label = [[UILabel alloc] initWithFrame:CGRectZero];
     label.font = [UIFont fontWithName:kRegFont size:13];
     label.textColor = Color(@"#333333");
-    label.text = @"长按二维码观看课程";
+    label.text = @"长按二维码体验学习";
     [bgView addSubview:label];
     [label mas_makeConstraints:^(MASConstraintMaker *make) {
         make.right.mas_equalTo(bgView).offset(-28);

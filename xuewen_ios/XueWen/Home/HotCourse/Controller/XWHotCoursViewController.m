@@ -25,7 +25,7 @@ static NSString *const XWHotCoursTableCellID = @"XWHotCoursTableCellID";
 #pragma mark - Getter
 - (UITableView *)tableView{
     if (!_tableView) {
-        UITableView *table = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, kWidth, kHeight-kBottomH-kNaviBarH) style:UITableViewStyleGrouped];
+        UITableView *table = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, kWidth, kHeight-kBottomH-kNaviBarH-42) style:UITableViewStyleGrouped];
         table.delegate = self;
         table.dataSource = self;
         table.estimatedRowHeight = 0.0;
@@ -144,11 +144,11 @@ static NSString *const XWHotCoursTableCellID = @"XWHotCoursTableCellID";
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
     XWCourseIndexModel *model = self.dataArray[indexPath.row];
-    if ([model.courseType isEqualToString:@"2"]) {
-        [self.navigationController pushViewController:[ViewControllerManager detailViewControllerWithCourseID:model.courseId isAudio:YES] animated:YES];
-    }else{
+//    if ([model.courseType isEqualToString:@"2"]) {
+//        [self.navigationController pushViewController:[ViewControllerManager detailViewControllerWithCourseID:model.courseId isAudio:YES] animated:YES];
+//    }else{
         [self.navigationController pushViewController:[ViewControllerManager detailViewControllerWithCourseID:model.courseId isAudio:NO] animated:YES];
-    }
+//    }
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section{

@@ -22,6 +22,7 @@ static XWInstance *instance = nil;
     NSString    *_accessToken;
     NSString    *_invitationURL;
     BOOL        _isTest;
+    NSString    *_collegeName;
     NSArray<CourseLabelModel *> *_courseLabelList;
 }
 @end
@@ -40,11 +41,12 @@ static XWInstance *instance = nil;
 - (NSString *)url{
 
     // 测试环境
-//    return @"http://api.st.52xuewen.com/";
+    return @"http://api.st.52xuewen.com/";
 
-    // 正式环境
-    return @"http://xwapi.52xuewen.com/";
     
+    // 正式环境
+//    return @"http://xwapi.52xuewen.com/";
+ 
 //    return self.isTest ? @"http://api.st.52xuewen.com/" : @"http://xwapi.52xuewen.com/";
 }
 
@@ -94,6 +96,15 @@ static XWInstance *instance = nil;
     return _accessToken;
 }
 
+- (NSString *)collegeName{
+    @synchronized (self) {
+        if (!_collegeName) {
+            _collegeName = [[NSUserDefaults standardUserDefaults] objectForKey:@"collegeName"];
+        }
+    }
+    return _collegeName;
+}
+
 /** 获取签名信息 */
 - (NSString *)getSignWith:(NSString *)time{
     return [NSString encryptWithAppType:self.general.appType did:self.general.deviceID time:time];
@@ -110,6 +121,14 @@ static XWInstance *instance = nil;
 }
 
 #pragma mark- Setter
+- (void)setCollegeName:(NSString *)collegeName{
+    if (![_collegeName isEqualToString:collegeName]) {
+        _collegeName = collegeName;
+        [[NSUserDefaults standardUserDefaults] setObject:collegeName forKey:@"collegeName"];
+        [[NSUserDefaults standardUserDefaults] synchronize];
+    }
+}
+
 - (void)setInvitationURL:(NSString *)invitationURL{
     if (![_invitationURL isEqualToString:invitationURL]) {
         _invitationURL = invitationURL;

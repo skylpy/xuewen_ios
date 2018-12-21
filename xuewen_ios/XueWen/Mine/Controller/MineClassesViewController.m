@@ -31,7 +31,7 @@
 }
 
 - (CGFloat)audioPlayerViewHieght{
-    return kHeight - kNaviBarH - kBottomH - 50;
+    return kHeight - kBottomH - kNaviBarH - 50;
 }
 #pragma mark- Setter
 #pragma mark- Getter

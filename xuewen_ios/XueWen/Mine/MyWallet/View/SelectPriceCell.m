@@ -54,18 +54,18 @@
 - (void)awakeFromNib {
     [super awakeFromNib];
     self.selectionStyle = UITableViewCellSelectionStyleNone;
-    NSArray *price = @[@10,@50,@100,@500,@1000,@5000];
+    NSArray *price = @[@6,@12,@30,@68,@108,@1048];
     for (int i = 0 ; i < self.buttons.count; i++) {
         PriceButton *button = self.buttons[i];
         button.price = [price[i] integerValue];
-        button.isSelect = (i == 5);
+        button.isSelect = (i == 0);
         [button addTarget:self action:@selector(buttonAction:) forControlEvents:UIControlEventTouchUpInside];
     }
-    self.price = 5000;
-    self.customMoney.layer.borderWidth = 1;
-    self.customMoney.layer.borderColor = COLOR(204, 204, 204).CGColor;
-    [self.customMoney addTarget:self action:@selector(textChanged:) forControlEvents:UIControlEventEditingChanged];
-    self.customMoney.delegate = self;
+    self.price = 6;
+//    self.customMoney.layer.borderWidth = 1;
+//    self.customMoney.layer.borderColor = COLOR(204, 204, 204).CGColor;
+//    [self.customMoney addTarget:self action:@selector(textChanged:) forControlEvents:UIControlEventEditingChanged];
+//    self.customMoney.delegate = self;
 }
 
 - (void)clear{

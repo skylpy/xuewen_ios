@@ -52,7 +52,7 @@
     self.requireIcon.hidden = model.isOptional;
 }
 
-- (void)setCourse:(CourseModel *)course project:(ProjectModel *)project price:(NSString *)price{
+- (void)setCourse:(CourseModel *)course project:(ProjectModel *)project superOrg:(CourseModel *)superOrg price:(NSString *)price{
     NSString *imageUrl = nil;
     NSString *title = nil;
     if (course) {
@@ -61,6 +61,9 @@
     }else if (project){
         imageUrl = project.picture;
         title = project.projectName;
+    }else if (superOrg){
+        imageUrl = superOrg.coverPhoto;
+        title = superOrg.courseName;
     }
     [self.icon sd_setImageWithURL:[NSURL URLWithString:imageUrl] placeholderImage:LoadImage(@"default_cover")];
     self.titleLabel.text = title;

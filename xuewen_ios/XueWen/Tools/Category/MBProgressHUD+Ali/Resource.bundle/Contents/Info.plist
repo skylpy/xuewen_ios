@@ -6,8 +6,6 @@
 	<string>15G1611</string>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
-	<key>CFBundleExecutable</key>
-	<string>Resource</string>
 	<key>CFBundleIdentifier</key>
 	<string>com.dingwei.Resource</string>
 	<key>CFBundleInfoDictionaryVersion</key>

@@ -72,7 +72,7 @@
     
     OSSPutObjectRequest * put = [OSSPutObjectRequest new];
     // 必填字段
-    put.bucketName = @"xuewen-oss";
+    put.bucketName = @"xuewenweb-oss";
     NSDate *date = [NSDate date];
     NSDateFormatter *formatter = [[NSDateFormatter alloc]init];
     formatter.dateFormat = @"yyyy/MM/dd";

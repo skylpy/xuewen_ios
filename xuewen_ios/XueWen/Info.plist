@@ -5,7 +5,7 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>zh_CN</string>
 	<key>CFBundleDisplayName</key>
-	<string>学问</string>
+	<string>学问商学院</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
@@ -17,7 +17,7 @@
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
-	<string>0.3.3</string>
+	<string>1.0.0</string>
 	<key>CFBundleURLTypes</key>
 	<array>
 		<dict>
@@ -25,6 +25,8 @@
 			<string>Editor</string>
 			<key>CFBundleURLIconFile</key>
 			<string>AppIcon</string>
+			<key>CFBundleURLName</key>
+			<string>xuewen</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
 				<string>XueWen</string>
@@ -39,7 +41,15 @@
 			<string>weixin</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string>wxbcc7f95dca9933e1</string>
+				<string>wx29c64388f7cd0d75</string>
+			</array>
+		</dict>
+		<dict>
+			<key>CFBundleURLName</key>
+			<string>com.jinlanmeng.XueWen</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>xuewen</string>
 			</array>
 		</dict>
 	</array>
@@ -87,5 +97,7 @@
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>
 	</array>
+	<key>UIViewControllerBasedStatusBarAppearance</key>
+	<false/>
 </dict>
 </plist>

@@ -78,6 +78,10 @@
     
 }
 
+- (CGFloat)audioPlayerViewHieght{
+    return kHeight - kBottomH - 49 - kNaviBarH;;
+}
+
 #pragma mark- LifeCycle
 - (void)viewDidLoad {
     [super viewDidLoad];

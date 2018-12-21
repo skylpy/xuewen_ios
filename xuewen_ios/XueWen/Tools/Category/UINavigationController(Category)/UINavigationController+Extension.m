@@ -57,8 +57,8 @@
 {
     UIButton *Btn = [UIButton buttonWithType:UIButtonTypeCustom];
     [Btn setTitle:title forState:UIControlStateNormal];
-    [Btn setTitleColor:Color(@"#333333") forState:UIControlStateNormal];
-    Btn.titleLabel.font = [UIFont fontWithName:kRegFont size:16];
+    [Btn setTitleColor:Color(@"#2E6AE1") forState:UIControlStateNormal];
+    Btn.titleLabel.font = [UIFont fontWithName:kRegFont size:14];
     [Btn sizeToFit];
     [Btn addTarget:vc action:sel forControlEvents:UIControlEventTouchUpInside];
     return [[UIBarButtonItem alloc]initWithCustomView:Btn];

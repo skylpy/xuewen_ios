@@ -88,5 +88,6 @@
 - (NSString *)stringWithDataFormatter:(NSString *)dateFormatter;
 /** 时间戳转换成时间(刚刚、几分钟前、几小时前形式) */
 - (NSString *)translateDateFormatter:(NSString *)dateFormatter;
-
+/** 标准时间格式转化成任意格式*/
+- (NSString *)transTimeWithDateFormatter:(NSString *)dateFormatter;
 @end

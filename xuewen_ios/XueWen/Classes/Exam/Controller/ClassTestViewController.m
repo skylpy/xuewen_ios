@@ -11,6 +11,7 @@
 #import "ClassTestCell.h"
 #import "SwitchQuestionView.h"
 #import "ExamResultViewController.h"
+#import "XWEduTestResultViewController.h"
 @interface ClassTestViewController ()<UICollectionViewDelegate,UICollectionViewDataSource,UICollectionViewDelegateFlowLayout>
 
 @property (nonatomic, strong) NSArray<QuestionsModel *> *questions;
@@ -18,6 +19,8 @@
 @property (nonatomic, strong) UIButton *rightButton;
 @property (nonatomic, assign) NSInteger currentIndex;
 @property (nonatomic, strong) SwitchQuestionView *switchView;
+@property (nonatomic, assign) BOOL isTest;
+@property (nonatomic, copy) NSString * atid;
 
 @end
 
@@ -78,7 +81,17 @@
     if (canCommit) {
         // commit
         // 跳转成绩结算
-        [self.navigationController pushViewController:[[ExamResultViewController alloc] initWithQuestions:self.questions] animated:YES];
+
+        if (self.eduType) {
+            //测一测跳转
+            XWEduTestResultViewController *vc = [[XWEduTestResultViewController alloc] initWithQuestions:self.questions withTest:self.isTest withAtid:self.atid];
+            vc.testId = self.testId;
+            vc.tmodel = self.model;
+            [self.navigationController pushViewController:vc animated:YES];
+        }else {
+            [self.navigationController pushViewController:[[ExamResultViewController alloc] initWithQuestions:self.questions withTest:self.isTest withAtid:self.atid] animated:YES];
+        }
+        
     }else{
         [XWPopupWindow popupWindowsWithTitle:@"提示" message:@"抱歉！需要答完全部的题目\n才可以提交哦！" buttonTitle:@"继续答题" buttonBlock:nil];
     }
@@ -144,9 +157,11 @@
 }
 
 #pragma mark- LifeCycle
-- (instancetype)initWithQuestions:(NSArray<QuestionsModel *> *)questions{
+- (instancetype)initWithQuestions:(NSArray<QuestionsModel *> *)questions withTest:(BOOL)isTest withAtid:(NSString *)a_t_id{
     if (self = [super init]) {
         self.questions = questions;
+        self.isTest = isTest;
+        self.atid = a_t_id;
     }
     return self;
 }

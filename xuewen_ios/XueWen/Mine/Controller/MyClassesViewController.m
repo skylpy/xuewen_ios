@@ -70,10 +70,6 @@
     }
 }
 
-- (CGFloat)audioPlayerViewHieght{
-    return kHeight - kNaviBarH - kBottomH - 50;
-}
-
 #pragma mark- Getter
 - (UITableView *)tableView{
     if (!_tableView) {

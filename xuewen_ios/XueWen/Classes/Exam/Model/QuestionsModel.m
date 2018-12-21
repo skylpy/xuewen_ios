@@ -34,6 +34,11 @@
 
 @end
 
+/** 观看记录返回 */
+@implementation RecordModel
+
+@end
+
 @implementation QuestionsModel
 + (NSDictionary *)replacedKeyFromPropertyName{
     return @{

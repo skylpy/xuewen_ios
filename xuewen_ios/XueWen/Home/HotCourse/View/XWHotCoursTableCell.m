@@ -43,7 +43,14 @@
     self.titleLabel.text = _model.courseName;
     self.tchLabel.text = _model.name;
     self.countLabel.text = [NSString stringWithFormat:@" %@人学习 ", _model.total];
-    self.priceLabel.text = [NSString stringWithFormat:@"¥%@", _model.amount];
+    if ([_model.amount isEqualToString:@"0.00"]) {
+        self.priceLabel.textColor = Color(@"#0EC950");
+        self.priceLabel.text = @"免费";
+    }else{
+        self.priceLabel.text = [NSString stringWithFormat:@"¥%@", _model.amount];
+        self.priceLabel.textColor = Color(@"#FD8829");
+    }
+    
     self.intrLabel.text = _model.shortIntroduction;
     self.tchIndLabel.text = [NSString filterHTML:_model.teacherProfile];
 }

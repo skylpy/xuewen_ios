@@ -38,12 +38,14 @@
     _modelArray = modelArray;
     NSMutableArray *array = [[NSMutableArray alloc] init];
     for (BannerModel *banner in modelArray) {
-        if (banner.picture && banner.link) {
+        if (banner.picture) {
             [array addObject:banner.picture];
         }
     }
     self.banner.imageURLStringsGroup = array;
 }
+
+
 
 #pragma mark- SDCycleScrollViewDelegate
 - (void)cycleScrollView:(SDCycleScrollView *)cycleScrollView didSelectItemAtIndex:(NSInteger)index{
@@ -52,28 +54,40 @@
     NSString *url = banner.appurl;
     //@"xuewen://m.52xuewen.com/?action=course&open=model&id=504";
     //@"xuewen://m.52xuewen.com/?open=innerview&uri=https://a.eqxiu.com/s/cSk2xdQV";
-    NSRange range = [url rangeOfString:@"xuewen://m.52xuewen.com/?"];
+    NSString *urlStr = [XWInstance shareInstance].url;
+    NSRange range1 = [urlStr rangeOfString:@"api."];
+    
+    NSString *uri = [urlStr substringFromIndex:range1.length+range1.location];
+    NSString *str = [NSString stringWithFormat:@"xuewen://m.%@?", uri];
+    NSRange range = [url rangeOfString:str];
     NSString *subStr1 = [url substringFromIndex:range.length];
     
-    NSArray *subStr2Arr = [subStr1 componentsSeparatedByString:@"&"];
-    
-    NSMutableDictionary *dict = [[NSMutableDictionary alloc] init];
-    [subStr2Arr enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-        NSString *objStr = [NSString stringWithFormat:@"%@", obj];
-        NSArray *subStr3Arr = [objStr componentsSeparatedByString:@"="];
-        NSString *key = [subStr3Arr firstObject];
-        NSString *value = [subStr3Arr lastObject];
-        [dict setValue:value forKey:key];
-    }];
-    
-    NSString *actionValue = [dict valueForKey:@"action"];
-    if ([actionValue isEqualToString:@""] || actionValue == nil) { // 必定是用webView打开
-        [[UIApplication sharedApplication] openURL:[NSURL URLWithString:[dict valueForKey:@"uri"]]];
-    }else{
+    if ([subStr1 containsString:@"action="]) {
+        NSArray *subStr2Arr = [subStr1 componentsSeparatedByString:@"&"];
+        
+        NSMutableDictionary *dict = [[NSMutableDictionary alloc] init];
+        [subStr2Arr enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+            NSString *objStr = [NSString stringWithFormat:@"%@", obj];
+            NSArray *subStr3Arr = [objStr componentsSeparatedByString:@"="];
+            NSString *key = [subStr3Arr firstObject];
+            NSString *value = [subStr3Arr lastObject];
+            [dict setValue:value forKey:key];
+        }];
+        NSString *actionValue = [dict valueForKey:@"action"];
         if ([actionValue isEqualToString:@"course"]) {
             [self.navigationController pushViewController:[ViewControllerManager detailViewControllerWithCourseID:[dict valueForKey:@"id"] isAudio:NO] animated:YES];
         }
+        
+    }else if ([subStr1 containsString:@"uri="]){
+        NSRange uriRange = [subStr1 rangeOfString:@"uri="];
+        NSString *uriStr = [subStr1 substringFromIndex:uriRange.length+uriRange.location];
+        [[UIApplication sharedApplication] openURL:[NSURL URLWithString:uriStr]];
     }
+    
+    
+    
+    
+    
     
 }
 

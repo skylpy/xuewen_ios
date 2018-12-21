@@ -11,8 +11,10 @@
 #import "XWCommentViewController.h"
 #import "MainNavigationViewController.h"
 #import "XWPopMenuView.h"
-
+#import "XWEmptyDataCell.h"
 static NSString *const XWNotesTableCellID = @"XWNotesTableCellID";
+static NSString *const XWEmptyDataCellID = @"XWEmptyDataCellID";
+
 
 @interface XWNotesView() <UITableViewDelegate, UITableViewDataSource>
 
@@ -62,6 +64,7 @@ static NSString *const XWNotesTableCellID = @"XWNotesTableCellID";
         table.separatorStyle = UITableViewCellSeparatorStyleNone;
         table.backgroundColor = [UIColor whiteColor];
         [table registerClass:[XWNotesTableCell class] forCellReuseIdentifier:XWNotesTableCellID];
+        [table registerNib:[UINib nibWithNibName:@"XWEmptyDataCell" bundle:nil] forCellReuseIdentifier:XWEmptyDataCellID];
         _tableView = table;
     }
     return _tableView;
@@ -127,8 +130,10 @@ static NSString *const XWNotesTableCellID = @"XWNotesTableCellID";
             weakSelf.dataArray = array;
             if (isLast) {
                 [weakSelf.tableView.mj_footer endRefreshingWithNoMoreData];
+                weakSelf.tableView.mj_footer.hidden = YES;
             }else{
                 [weakSelf.tableView.mj_footer endRefreshing];
+                weakSelf.tableView.mj_footer.hidden = NO;
             }
             [weakSelf.tableView.mj_header endRefreshing];
             
@@ -137,14 +142,17 @@ static NSString *const XWNotesTableCellID = @"XWNotesTableCellID";
             [MBProgressHUD showErrorMessage:errorInfo];
             [weakSelf.tableView.mj_header endRefreshing];
             [weakSelf.tableView.mj_footer endRefreshing];
+            weakSelf.tableView.mj_footer.hidden = NO;
         }];
     }else{  // 讨论
         [XWHttpTool getCourseCommentWithCoursID:self.courseID isFirstLoad:YES success:^(NSMutableArray *array, BOOL isLast) {
             weakSelf.dataArray = array;
             if (isLast) {
                 [weakSelf.tableView.mj_footer endRefreshingWithNoMoreData];
+                weakSelf.tableView.mj_footer.hidden = YES;
             }else{
                 [weakSelf.tableView.mj_footer endRefreshing];
+                weakSelf.tableView.mj_footer.hidden = NO;
             }
             
             [weakSelf.tableView.mj_header endRefreshing];
@@ -153,6 +161,7 @@ static NSString *const XWNotesTableCellID = @"XWNotesTableCellID";
             [MBProgressHUD showErrorMessage:errorInfo];
             [weakSelf.tableView.mj_header endRefreshing];
             [weakSelf.tableView.mj_footer endRefreshing];
+            weakSelf.tableView.mj_footer.hidden = NO;
         }];
     }
     
@@ -189,8 +198,10 @@ static NSString *const XWNotesTableCellID = @"XWNotesTableCellID";
             [weakSelf.dataArray addObjectsFromArray:array];
             if (isLast) {
                 [weakSelf.tableView.mj_footer endRefreshingWithNoMoreData];
+                weakSelf.tableView.mj_footer.hidden = YES;
             }else{
                 [weakSelf.tableView.mj_footer endRefreshing];
+                weakSelf.tableView.mj_footer.hidden = NO;
             }
             [weakSelf.tableView.mj_header endRefreshing];
             [weakSelf.tableView reloadData];
@@ -198,14 +209,17 @@ static NSString *const XWNotesTableCellID = @"XWNotesTableCellID";
             [MBProgressHUD showErrorMessage:errorInfo];
             [weakSelf.tableView.mj_header endRefreshing];
             [weakSelf.tableView.mj_footer endRefreshing];
+            weakSelf.tableView.mj_footer.hidden = NO;
         }];
     }else{ // 讨论
         [XWHttpTool getCourseCommentWithCoursID:self.courseID isFirstLoad:NO success:^(NSMutableArray *array, BOOL isLast) {
             [weakSelf.dataArray addObjectsFromArray:array];
             if (isLast) {
                 [weakSelf.tableView.mj_footer endRefreshingWithNoMoreData];
+                weakSelf.tableView.mj_footer.hidden = YES;
             }else{
                 [weakSelf.tableView.mj_footer endRefreshing];
+                weakSelf.tableView.mj_footer.hidden = NO;
             }
             [weakSelf.tableView.mj_header endRefreshing];
             [weakSelf.tableView reloadData];
@@ -213,6 +227,7 @@ static NSString *const XWNotesTableCellID = @"XWNotesTableCellID";
             [MBProgressHUD showErrorMessage:errorInfo];
             [weakSelf.tableView.mj_header endRefreshing];
             [weakSelf.tableView.mj_footer endRefreshing];
+            weakSelf.tableView.mj_footer.hidden = NO;
         }];
     }
 }
@@ -242,7 +257,9 @@ static NSString *const XWNotesTableCellID = @"XWNotesTableCellID";
 #pragma mark - UITableView Delegate / DataSource
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-    
+    if (self.dataArray.count == 0) {
+        return 1;
+    }
     return self.dataArray.count;
 }
 
@@ -252,6 +269,9 @@ static NSString *const XWNotesTableCellID = @"XWNotesTableCellID";
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
+    if (self.dataArray.count == 0) {
+        return 150;
+    }
     XWWeakSelf
     return [tableView fd_heightForCellWithIdentifier:XWNotesTableCellID cacheByIndexPath:indexPath configuration:^(XWNotesTableCell* cell) {
         if (self.isNotes) {
@@ -263,7 +283,10 @@ static NSString *const XWNotesTableCellID = @"XWNotesTableCellID";
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    
+    if (self.dataArray.count == 0) {
+        XWEmptyDataCell *cell = [tableView dequeueReusableCellWithIdentifier:XWEmptyDataCellID forIndexPath:indexPath];
+        return cell;
+    }
     XWNotesTableCell *cell = [tableView dequeueReusableCellWithIdentifier:XWNotesTableCellID forIndexPath:indexPath];
     if (self.isNotes) {
         cell.noteModel = self.dataArray[indexPath.section];

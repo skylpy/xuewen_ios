@@ -72,6 +72,21 @@
     cell.delegate = self;
     return cell;
 }
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
+    OrderModel *model = self.dataSource[indexPath.section];
+    
+    if ([model.type isEqualToString:@"0"]) {
+        [self.navigationController pushViewController:[ViewControllerManager detailViewControllerWithCourseID:model.courseID isAudio:NO] animated:YES];
+    }else if ([model.type isEqualToString:@"1"]){
+        UIViewController * vc = [NSClassFromString(@"XWCollegeBaseViewController") new];
+        [vc setValue:model.collegeID forKey:@"labelID"];
+        [self.navigationController pushViewController:vc animated:YES];
+    }else if ([model.type isEqualToString:@"3"]){
+        [self.navigationController pushViewController:[NSClassFromString(@"XWSuperOrgViewController") new] animated:YES];
+    }
+}
+
 #pragma mark- CustomMethod
 - (void)initUI{
     self.view.backgroundColor = DefaultBgColor;

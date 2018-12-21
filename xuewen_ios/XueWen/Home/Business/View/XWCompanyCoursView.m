@@ -90,7 +90,7 @@ static NSString *const XWNoneDataTableCellID = @"XWNoneDataTableCellID";
     if (section == 0) {
         return 1;
     }
-    return 3;
+    return self.learnArray.count;
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
@@ -107,7 +107,10 @@ static NSString *const XWNoneDataTableCellID = @"XWNoneDataTableCellID";
     
     if (indexPath.section == 1) {
         XWCompanyTabCell *cell = [tableView dequeueReusableCellWithIdentifier:XWCompanyTabCellID forIndexPath:indexPath];
-        cell.model = self.learnArray[indexPath.row];
+        if (self.learnArray.count != 0) {
+            cell.model = self.learnArray[indexPath.row];
+        }
+        
         return cell;
     }
     
@@ -127,17 +130,20 @@ static NSString *const XWNoneDataTableCellID = @"XWNoneDataTableCellID";
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
     if (indexPath.section == 1) {
         XWLearningModel *model = self.learnArray[indexPath.row];
-        if ([model.courseType isEqualToString:@"2"]) {
-            [self.navigationController pushViewController:[ViewControllerManager detailViewControllerWithCourseID:model.courseId isAudio:YES] animated:YES];
-        }else{
+//        if ([model.courseType isEqualToString:@"2"]) {
+//            [self.navigationController pushViewController:[ViewControllerManager detailViewControllerWithCourseID:model.courseId isAudio:YES] animated:YES];
+//        }else{
             [self.navigationController pushViewController:[ViewControllerManager detailViewControllerWithCourseID:model.courseId isAudio:NO] animated:YES];
-        }
+//        }
     }
     
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section{
     if (section == 1) {
+        if (self.learnArray.count == 0) {
+            return 0.01;
+        }
         return 50;
     }
     return 0.01;
@@ -159,11 +165,22 @@ static NSString *const XWNoneDataTableCellID = @"XWNoneDataTableCellID";
         make.centerY.mas_equalTo(bgView);
     }];
     
+    
     [bgView addSubview:self.moreBtn];
     [self.moreBtn mas_makeConstraints:^(MASConstraintMaker *make) {
         make.right.mas_equalTo(bgView).offset(-25);
         make.centerY.mas_equalTo(bgView);
     }];
+    
+    if (self.isMyCompany) {
+        self.moreBtn.hidden = NO;
+    }else{
+        self.moreBtn.hidden = YES;
+    }
+    
+    if (self.learnArray.count == 0) {
+        return nil;
+    }
     return bgView;
 }
 

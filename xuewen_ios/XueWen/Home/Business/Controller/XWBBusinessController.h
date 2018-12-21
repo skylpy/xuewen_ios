@@ -12,5 +12,6 @@
 
 @property (nonatomic, strong) UITableView *tableView;
 
+@property (nonatomic, strong) NSString *companyId;
 
 @end

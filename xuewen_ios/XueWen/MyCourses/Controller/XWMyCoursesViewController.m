@@ -79,11 +79,22 @@ static NSString * const XWExplainCellID = @"XWExplainCellID";
     return _myCoursesArray;
 }
 
+- (void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
+    self.navigationController.interactivePopGestureRecognizer.enabled = NO;
+    
+}
+
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    [self.view addSubview:self.tableView];
     [self delayLoadData];
+    [self.view addSubview:self.tableView];
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.8 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        [self.tableView.mj_header beginRefreshing];
+    });
+    
+    
     // 去除导航栏底部细线
     [self.navigationController.navigationBar setBackgroundImage:[[UIImage alloc] init] forBarMetrics:UIBarMetricsDefault];
     
@@ -312,7 +323,7 @@ static NSString * const XWExplainCellID = @"XWExplainCellID";
             [cell setHistroyClick:^{
                  @strongify(self)
                 UIViewController * vc = [NSClassFromString(@"XWHistoricalViewController") new];
-                
+                [vc setValue:self.planModel.sumviewnum forKey:@"size"];
                 [self.navigationController pushViewController:vc animated:YES];
             }];
             [cell setNoteClick:^{
@@ -496,11 +507,6 @@ static NSString * const XWExplainCellID = @"XWExplainCellID";
     [self.tableView reloadData];
 }
 
-- (void)viewDidAppear:(BOOL)animated {
-    [super viewDidAppear:animated];
-    self.navigationController.interactivePopGestureRecognizer.enabled = NO;
-//    [self setHeaderInfo];
-}
 
 - (void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
@@ -508,6 +514,10 @@ static NSString * const XWExplainCellID = @"XWExplainCellID";
     // 设置导航控制器的代理为self
     self.navigationController.delegate = self;
     self.automaticallyAdjustsScrollViewInsets = NO;
+}
+
+- (CGFloat)audioPlayerViewHieght{
+    return kHeight - kBottomH - 35 - kNaviBarH;;
 }
 
 - (void)viewWillDisappear:(BOOL)animated{

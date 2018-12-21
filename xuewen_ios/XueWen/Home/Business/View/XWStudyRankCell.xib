@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="14113" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="14313.18" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14088"/>
-        <capability name="Constraints with non-1.0 multipliers" minToolsVersion="5.1"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14283.14"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -21,9 +20,9 @@
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="D7q-ax-ckJ">
-                        <rect key="frame" x="25" y="0.0" width="270" height="70"/>
+                        <rect key="frame" x="25" y="0.0" width="270" height="69.5"/>
                         <subviews>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="default_cover" translatesAutoresizingMaskIntoConstraints="NO" id="UZH-IB-bJo">
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="UZH-IB-bJo">
                                 <rect key="frame" x="38.5" y="12.5" width="45" height="45"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="45" id="Wva-Hu-Whx"/>
@@ -37,7 +36,7 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="业务部" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="GuC-BC-FA4">
-                                <rect key="frame" x="101.5" y="39" width="36" height="17"/>
+                                <rect key="frame" x="101.5" y="38.5" width="36" height="17"/>
                                 <fontDescription key="fontDescription" name="PingFangSC-Medium" family="PingFang SC" pointSize="12"/>
                                 <color key="textColor" red="0.40000000000000002" green="0.40000000000000002" blue="0.40000000000000002" alpha="1" colorSpace="calibratedRGB"/>
                                 <nil key="highlightedColor"/>
@@ -49,19 +48,19 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="200分钟" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="87e-BB-M2Z">
-                                <rect key="frame" x="176" y="40.5" width="42" height="15.5"/>
+                                <rect key="frame" x="176" y="40" width="42" height="15.5"/>
                                 <fontDescription key="fontDescription" name="PingFangSC-Medium" family="PingFang SC" pointSize="11"/>
                                 <color key="textColor" red="0.20000000000000001" green="0.20000000000000001" blue="0.20000000000000001" alpha="1" colorSpace="calibratedRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="tdx-wh-lFM">
-                                <rect key="frame" x="48" y="69" width="210" height="1"/>
+                                <rect key="frame" x="48" y="68.5" width="210" height="1"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="1" id="AY4-KD-MkJ"/>
                                 </constraints>
                             </view>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="4" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Dpg-sx-CEn">
-                                <rect key="frame" x="11" y="23.5" width="10.5" height="24"/>
+                                <rect key="frame" x="11" y="23" width="10.5" height="24"/>
                                 <fontDescription key="fontDescription" name="PingFangSC-Medium" family="PingFang SC" pointSize="17"/>
                                 <color key="textColor" red="0.20000000000000001" green="0.58431372549019611" blue="0.98431372549019602" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <nil key="highlightedColor"/>
@@ -101,6 +100,7 @@
                             <constraint firstAttribute="trailing" secondItem="x6R-sK-iDG" secondAttribute="trailing" constant="12" id="Owy-8O-IFL"/>
                             <constraint firstAttribute="bottom" secondItem="tdx-wh-lFM" secondAttribute="bottom" id="R76-Ik-Nra"/>
                             <constraint firstAttribute="trailing" secondItem="tdx-wh-lFM" secondAttribute="trailing" constant="12" id="TDA-Xo-Jqb"/>
+                            <constraint firstItem="87e-BB-M2Z" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="GuC-BC-FA4" secondAttribute="trailing" constant="15" id="VXn-dw-WQA"/>
                             <constraint firstAttribute="trailing" secondItem="Gha-av-5sR" secondAttribute="trailing" constant="50" id="fun-w2-kZ5"/>
                             <constraint firstItem="GuC-BC-FA4" firstAttribute="leading" secondItem="UZH-IB-bJo" secondAttribute="trailing" constant="18" id="hoK-eo-hmo"/>
                             <constraint firstItem="87e-BB-M2Z" firstAttribute="leading" secondItem="Gha-av-5sR" secondAttribute="leading" id="izc-90-cwD"/>
@@ -130,6 +130,7 @@
                 <outlet property="headImgView" destination="UZH-IB-bJo" id="QzC-nu-2fJ"/>
                 <outlet property="lineView" destination="tdx-wh-lFM" id="GQ0-hV-Rv3"/>
                 <outlet property="nickLabel" destination="Gmx-tB-sHK" id="cpV-3G-h3D"/>
+                <outlet property="rLayoutConstraint" destination="fun-w2-kZ5" id="UQZ-c7-9Q6"/>
                 <outlet property="rankLabel" destination="Dpg-sx-CEn" id="rac-Xu-h6y"/>
                 <outlet property="timeLabel" destination="87e-BB-M2Z" id="A1A-xl-78D"/>
                 <outlet property="timeTagLabel" destination="Gha-av-5sR" id="2J4-zb-fxB"/>
@@ -140,7 +141,4 @@
             <point key="canvasLocation" x="33.5" y="54"/>
         </tableViewCell>
     </objects>
-    <resources>
-        <image name="default_cover" width="690" height="320"/>
-    </resources>
 </document>

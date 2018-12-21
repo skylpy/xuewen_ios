@@ -140,20 +140,24 @@ static OSSClient * client;
 }
 
 /** 获取订单详情&&创建订单 */
-+ (void)creatOrderWithID:(NSString *)identifier type:(int)type completeBlock:(void (^)(float gold, OrderModel *order))completeBlock{
++ (void)creatOrderWithID:(NSString *)identifier type:(int)type isSuperOrg:(BOOL)isSuperOrg completeBlock:(void (^)(float gold, OrderModel *order))completeBlock{
     NSMutableDictionary *dict = [NSMutableDictionary dictionary];
     NSString *url = nil;
     if (type == 0 || type == 1) {
         url = BASE_URL(CreatOrder);
-        [dict setObject:identifier forKey:@"value_id"];
-        [dict setObject:[NSString stringWithFormat:@"%d",type] forKey:@"type"];
+        if (isSuperOrg) {
+            [dict setValue:@"1" forKey:@"jobs_type"];
+        }else{
+            [dict setObject:identifier forKey:@"value_id"];
+            [dict setObject:[NSString stringWithFormat:@"%d",type] forKey:@"type"];
+        }
     }else{
         url = kBASE_URL(OrderInfo, identifier);
     }
     [XWHttpSessionManager GET:url parameters:dict extra:0 completeBlock:^(NSInteger statusCode, id responseJson, NSError *error) {
         if (statusCode == 200) {
             OrderModel *order = [OrderModel mj_objectWithKeyValues:responseJson[@"data"][@"purchaserecord"]];
-            NSString *class = [order.type isEqualToString:@"0"] ? @"CourseModel" : @"ProjectModel";
+            NSString *class = [order.type isEqualToString:@"1"] ? @"ProjectModel" : @"CourseModel";
             order.purchaseInfo = [NSClassFromString(class) mj_objectWithKeyValues:responseJson[@"data"][@"purchaserecord"][@"purchase_info"]];
             float gold = [responseJson[@"data"][@"gold"] floatValue];
             if (completeBlock) {
@@ -218,6 +222,20 @@ static OSSClient * client;
             NSArray *array = [LearningPlanModel mj_objectArrayWithKeyValuesArray:responseJson[@"data"][@"data"]];
              completeBlock(array,([responseJson[@"data"][@"current_page"] integerValue] >= [responseJson[@"data"][@"last_page"] integerValue]));
             
+        }
+    }];
+}
+
+/** 获取发现轮播图 */
++ (void)getFindBannerImagesWithCompleteBlock:(void (^)(NSArray<BannerModel *> *banners))completeBlock{
+    
+    ParmDict
+    [dict setValue:@"0" forKey:@"cid"];
+    [dict setValue:@"4" forKey:@"type"];
+    [XWHttpSessionManager GET:BASE_URL(ShufflingFigure) parameters:dict extra:0 completeBlock:^(NSInteger statusCode, id responseJson, NSError *error) {
+        if (statusCode == 200 && completeBlock) {
+            NSArray *array = [BannerModel mj_objectArrayWithKeyValuesArray:responseJson[@"data"][@"data"]];
+            completeBlock(array);
         }
     }];
 }
@@ -300,7 +318,7 @@ static OSSClient * client;
             
             completeBlock(array,([responseJson[@"data"][@"current_page"] integerValue] >= [responseJson[@"data"][@"last_page"] integerValue]));
         }else{
-            [XWPopupWindow popupWindowsWithTitle:@"错误" message:responseJson buttonTitle:@"好的" buttonBlock:nil];
+            [XWPopupWindow popupWindowsWithTitle:@"错误" message:responseJson[@"message"] buttonTitle:@"好的" buttonBlock:nil];
         }
     }];
 }
@@ -367,9 +385,15 @@ static OSSClient * client;
 }
 
 /** 保存答题结果 */
-+ (void)saveTestResultWithCourseID:(NSString *)courseID rightCount:(NSInteger)rightCount errorCount:(NSInteger)errorCount score:(NSInteger)score questions:(NSArray<QuestionsModel *> *)questions completionBlock:(void (^)(id result))completeBlock{
++ (void)saveTestResultWithCourseID:(NSString *)courseID rightCount:(NSInteger)rightCount errorCount:(NSInteger)errorCount score:(NSInteger)score withTest:(BOOL)isTest questions:(NSArray<QuestionsModel *> *)questions completionBlock:(void (^)(id result))completeBlock{
     NSMutableDictionary *dict = [NSMutableDictionary dictionary];
-    [dict setObject:courseID forKey:@"course_id"];
+//    if (isTest) {
+//        [dict setObject:courseID forKey:@"a_t_id"];
+//    }else {
+//        [dict setObject:courseID forKey:@"course_id"];
+//    }
+    
+    [dict setObject:courseID forKey:@"test_id"];
     [dict setObject:[NSString stringWithFormat:@"%ld",(long)rightCount] forKey:@"correct"];
     [dict setObject:[NSString stringWithFormat:@"%ld",(long)errorCount] forKey:@"wrong"];
     [dict setObject:[NSString stringWithFormat:@"%ld",(long)score] forKey:@"fraction"];
@@ -377,6 +401,7 @@ static OSSClient * client;
     NSString *jsonStr = [NSString stringWithJsonData:contentDic];
     [dict setObject:jsonStr forKey:@"content"];
     [XWHttpSessionManager POST:BASE_URL(TestRecord) parameters:dict extra:0 completeBlock:^(NSInteger statusCode, id responseJson, NSError *error) {
+        
         if ([responseJson[@"status"] isEqualToString:@"success"] && completeBlock) {
             completeBlock(responseJson);
         }
@@ -395,7 +420,7 @@ static OSSClient * client;
                 NSArray *array = @[@"A",@"B",@"C",@"D",@"E",@"F",@"G",@"H",@"I",@"J",@"K",@"L",@"M",@"N"];
                 for (int i = 0; i < questions.count; i++) {
                     QuestionsModel *question = questions[i];
-                    question.title = [NSString stringWithFormat:@"（%@）%@（%d/%ld）",question.multiSelect ? @"多选" : @"单选" ,question.content,i + 1,(unsigned long)questions.count];
+                    question.title = [NSString stringWithFormat:@"%d.%@ (%@)(%d/%ld)", i + 1,question.content,question.multiSelect ? @"多选" : @"单选" ,i + 1,(unsigned long)questions.count];
                     for (int j = 0; j < question.options.count; j++) {
                         QuestionsOptionModel *option = question.options[j];
                         option.title = [NSString stringWithFormat:@"%@、%@",array[j],option.content];
@@ -530,23 +555,54 @@ static OSSClient * client;
 }
 
 /** 更新视频观看时间 */
-+ (void)updateUserViewingRecordWithCourseID:(NSString *)courseID NodeID:(NSString *)nodeID watchTime:(NSInteger)time finished:(BOOL)finished completionBlock:(void(^)(BOOL succeed))completionBlock{
++ (void)updateUserViewingRecordWithCourseID:(NSString *)courseID NodeID:(NSString *)nodeID watchTime:(NSInteger)time finished:(BOOL)finished completionBlock:(void(^)(NSArray<QuestionsModel *> *questions))completionBlock{
     NSMutableDictionary *dict = [NSMutableDictionary dictionary];
     [dict setValue:courseID forKey:@"course_id"];
     [dict setValue:nodeID forKey:@"course_node_id"];
     [dict setValue:[NSNumber numberWithInteger:time*1000] forKey:@"watch_time"];
     [dict setObject:finished ? @"1" : @"0" forKey:@"finished"];
     [XWHttpSessionManager POST:BASE_URL(UserViewingRecord) parameters:dict extra:0 completeBlock:^(NSInteger statusCode, id responseJson, NSError *error) {
-        if (completionBlock) {
-            if (statusCode == 201) {
-                completionBlock(YES);
-            }else{
-                completionBlock(NO);
-            }
+        
+        switch (statusCode) {
+            case 200:{
+                NSArray *questions = [QuestionsModel mj_objectArrayWithKeyValuesArray:responseJson[@"data"][@"data"]];
+                NSArray *array = @[@"A",@"B",@"C",@"D",@"E",@"F",@"G",@"H",@"I",@"J",@"K",@"L",@"M",@"N"];
+                for (int i = 0; i < questions.count; i++) {
+                    QuestionsModel *question = questions[i];
+                    question.title = [NSString stringWithFormat:@"（%@）%@（%d/%ld）",question.multiSelect ? @"多选" : @"单选" ,question.content,i + 1,(unsigned long)questions.count];
+                    for (int j = 0; j < question.options.count; j++) {
+                        QuestionsOptionModel *option = question.options[j];
+                        option.title = [NSString stringWithFormat:@"%@、%@",array[j],option.content];
+                    }
+                }
+                if (completionBlock) {
+                    completionBlock(questions);
+                }
+            }break;
+            default:
+                break;
         }
     }];
 }
 
+
+
+/** 新的更新视频观看时间 */
++ (void)updateNewUserViewingRecordWithCourseID:(NSString *)courseID NodeID:(NSString *)nodeID watchTime:(NSInteger)time finished:(BOOL)finished completionBlock:(void(^)(NSArray<RecordModel *> *questions))completionBlock{
+    NSMutableDictionary *dict = [NSMutableDictionary dictionary];
+    [dict setValue:courseID forKey:@"course_id"];
+    [dict setValue:nodeID forKey:@"course_node_id"];
+    [dict setValue:[NSNumber numberWithInteger:time*1000] forKey:@"watch_time"];
+    [dict setObject:finished ? @"1" : @"0" forKey:@"finished"];
+    NSLog(@"dict is %@", dict);
+    [XWHttpSessionManager POST:BASE_URL(UserViewingRecord) parameters:dict extra:0 completeBlock:^(NSInteger statusCode, id responseJson, NSError *error) {
+
+        NSArray * array = [NSArray modelArrayWithClass:[RecordModel class] json:responseJson[@"data"]];
+        if (completionBlock) {
+            completionBlock(array);
+        }
+    }];
+}
 
 
 /** 取消订单 */
@@ -698,9 +754,11 @@ static OSSClient * client;
 
 /** 收藏一个课程 */
 + (void)addFavoriteCourseWithID:(NSString *)courseID CompletionBlock:(void (^)(BOOL succeed))completeBlock{
-    NSMutableDictionary *dict = [NSMutableDictionary dictionary];
-    [dict setObject:courseID forKey:@"course_id"];
-    [XWHttpSessionManager POST:BASE_URL(FavoriteCourse) parameters:dict extra:0 completeBlock:^(NSInteger statusCode, id responseJson, NSError *error) {
+    NSString *url = [NSString stringWithFormat:@"%@%@",BASE_URL(FavoriteCourse),courseID];
+//    NSMutableDictionary *dict = [NSMutableDictionary dictionary];
+//    [dict setObject:courseID forKey:@"course_id"];
+    [XWHttpSessionManager POST:url parameters:nil extra:0 completeBlock:^(NSInteger statusCode, id responseJson, NSError *error) {
+        
         if (completeBlock) {
             completeBlock(statusCode == 200);
         }
@@ -917,7 +975,7 @@ static OSSClient * client;
         [MBProgressHUD showActivityMessageInWindow:@"上传中"];
         OSSPutObjectRequest * put = [OSSPutObjectRequest new];
         // 必填字段
-        put.bucketName = @"xuewen-oss";
+        put.bucketName = @"xuewenweb-oss";
         put.objectKey = [NSString stringWithFormat:@"uploads/%@/%@.jpg",getDateFormat(),getCurrentTime(13)];
         put.uploadingData = [image zip]; // 直接上传NSData
         OSSTask * putTask = [client putObject:put];
@@ -1048,7 +1106,7 @@ static OSSClient * client;
 
 /** 设置OSSClient */
 + (void)setupOSSClient{
-    [XWHttpSessionManager GET:BASE_URL(OSS) parameters:nil extra:0 completeBlock:^(NSInteger statusCode, id responseJson, NSError *error) {
+    [XWHttpSessionManager GET:BASE_URL(OSSSession) parameters:nil extra:0 completeBlock:^(NSInteger statusCode, id responseJson, NSError *error) {
         switch (statusCode) {
             case 200:{
                 NSString *AccessKeyId = responseJson[@"data"][@"Credentials"][@"AccessKeyId"];

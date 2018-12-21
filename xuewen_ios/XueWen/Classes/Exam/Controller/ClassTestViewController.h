@@ -7,9 +7,15 @@
 //
 // 新的课程测试界面，用于替换ExamViewController
 #import "XWBaseViewController.h"
+#import "XWTestEduModel.h"
 @class QuestionsModel;
 @interface ClassTestViewController : XWBaseViewController
 
-- (instancetype)initWithQuestions:(NSArray<QuestionsModel *> *)questions;
+@property (nonatomic,assign) BOOL eduType;
+
+- (instancetype)initWithQuestions:(NSArray<QuestionsModel *> *)questions withTest:(BOOL)isTest withAtid:(NSString *)a_t_id;
+
+@property (nonatomic, strong) NSString *testId;
+@property (nonatomic,strong) XWTestEduModel * model;
 
 @end

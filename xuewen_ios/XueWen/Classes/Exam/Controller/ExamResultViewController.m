@@ -20,6 +20,8 @@
 #import "XWExamShareImgView.h"
 #import "XWExamShareInfoModel.h"
 #import "XWNCourseDetailViewController.h"
+#import "XWCertificateModel.h"
+#import "XWCerViewController.h"
 
 static NSString *const XWExamResultCellID = @"XWExamResultCellID";
 static NSString *const XWOldCollectionCellID = @"XWOldCollectionCellID";
@@ -38,7 +40,9 @@ static NSString *const XWOldCollectionCellID = @"XWOldCollectionCellID";
 @property (nonatomic, strong) XWExamShareImgView *shareImgView;
 @property (nonatomic, strong) NSString *courseId;
 @property (nonatomic, strong) NSMutableArray *dataArray;
-
+@property (nonatomic, assign) BOOL isTest;
+@property (nonatomic, strong) UIButton *rightButton;
+@property (nonatomic, strong) UIButton *backButton;
 @end
 
 @implementation ExamResultViewController
@@ -62,7 +66,8 @@ static NSString *const XWOldCollectionCellID = @"XWOldCollectionCellID";
     ExamResultHeaderView *headView = [collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"headerV" forIndexPath:indexPath];
     headView.delegate = self;
     headView.score = self.score;
-    headView.comment = self.comment;
+    headView.comment = self.comment == nil?@"0":self.comment;
+    headView.isTest = self.isTest;
     return headView;
 }
 
@@ -103,6 +108,9 @@ static NSString *const XWOldCollectionCellID = @"XWOldCollectionCellID";
 - (void)didSelectShareItemAtIndex:(NSInteger)index{
     
     WXMediaMessage *message = [WXMediaMessage message];
+    NSData *imgData = [UIImage compressImage:self.shareImage toByte:32000];
+    UIImage *image = [[UIImage alloc] initWithData:imgData];
+    [message setThumbImage:image];
     WXImageObject *imgObj = [WXImageObject object];
     imgObj.imageData = UIImagePNGRepresentation(self.shareImage);
     message.mediaObject = imgObj;
@@ -136,7 +144,7 @@ static NSString *const XWOldCollectionCellID = @"XWOldCollectionCellID";
 #pragma mark- ExamResultHeaderViewDelegate
 - (void)retestAction{
     [self clearRecord];
-    [self.navigationController pushViewController:[[ClassTestViewController alloc] initWithQuestions:self.questions] animated:YES];
+    [self.navigationController pushViewController:[[ClassTestViewController alloc] initWithQuestions:self.questions withTest:self.isTest withAtid:self.atid] animated:YES];
 }
 
 - (void)continueAction{
@@ -153,11 +161,25 @@ static NSString *const XWOldCollectionCellID = @"XWOldCollectionCellID";
     [self.navigationController pushViewController:historyVC animated:YES];
 }
 
-- (void)shareAction{
-    [self createShareImg];
-    XWExamResultShareView *shareView = [[XWExamResultShareView alloc] initWithFrame:CGRectMake(0, 0, kWidth, kHeight)];
-    shareView.delegate = self;
-    [kMainWindow addSubview:shareView];
+- (void)shareAction:(BOOL)isTest{
+    if (isTest) {
+        if (self.score < 60) return;
+
+        [XWCertificateModel createcertificatetestId:self.atid withName:@"" success:^(XWCertificateModel *cmodel) {
+            
+            XWCerViewController * vc = [[UIStoryboard storyboardWithName:@"MyCertificate" bundle:nil] instantiateViewControllerWithIdentifier:@"XWCerView"];
+            vc.model = cmodel;
+            [self.navigationController pushViewController:vc animated:YES];
+            
+        } failure:^(NSString *error) {
+            NSLog(@"%@",error);
+        }];
+    }else {
+        [self createShareImg];
+        XWExamResultShareView *shareView = [[XWExamResultShareView alloc] initWithFrame:CGRectMake(0, 0, kWidth, kHeight)];
+        shareView.delegate = self;
+        [kMainWindow addSubview:shareView];
+    }
 }
 
 #pragma mark - Custom Methods
@@ -178,7 +200,8 @@ static NSString *const XWOldCollectionCellID = @"XWOldCollectionCellID";
     NSString *courseID = @"";
     for (QuestionsModel *question in self.questions) {
         question.commited = YES;
-        courseID = question.courseID;
+        //考试ID
+        courseID = question.testID;//self.isTest?self.atid:question.courseID;
         BOOL right = YES;
         for (QuestionsOptionModel *option in question.options) {
             if (option.isSelected != option.right) { // 选了但是该选项不正确或未选正确选项，这两种情况都是错误的
@@ -199,14 +222,21 @@ static NSString *const XWOldCollectionCellID = @"XWOldCollectionCellID";
 
 // 上传分数
 - (void)saveScoreWithCourseID:(NSString *)courseID rightCount:(NSInteger)rightCount errorCount:(NSInteger)errorCount score:(NSInteger)score{
+    
     XWWeakSelf
-    [XWNetworking saveTestResultWithCourseID:courseID rightCount:rightCount errorCount:errorCount score:score questions:self.questions completionBlock:^(id result) {
+    [XWNetworking saveTestResultWithCourseID:courseID rightCount:rightCount errorCount:errorCount score:score withTest:self.isTest questions:self.questions completionBlock:^(id result) {
+        NSLog(@"%@",result);
+        
         weakSelf.comment = result[@"data"][@"comment"];
+        
         weakSelf.model.courseName = result[@"data"][@"course_name"];
         weakSelf.model.teacherName = result[@"data"][@"teacher_name"];
         [weakSelf.collectionView reloadData];
     }];
 }
+
+
+
 
 - (void)initUI{
     self.title = @"考试结果";
@@ -216,7 +246,25 @@ static NSString *const XWOldCollectionCellID = @"XWOldCollectionCellID";
     [backButton setImage:LoadImage(@"navBack") forState:UIControlStateNormal];
     backButton.frame = CGRectMake(0, 0, 20, 20);
     [backButton addTarget:self action:@selector(backAction:) forControlEvents:UIControlEventTouchUpInside];
+    self.backButton = backButton;
     self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:backButton];
+    
+    UIButton *rightButton = [UIButton buttonWithType:0];
+    [rightButton setTitle:@"关闭" forState:UIControlStateNormal];
+    rightButton.frame = CGRectMake(0, 0, 20, 20);
+    [rightButton setTitleColor:Color(@"#333333") forState:UIControlStateNormal];
+    [rightButton addTarget:self action:@selector(backAction:) forControlEvents:UIControlEventTouchUpInside];
+    self.rightButton = rightButton;
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:rightButton];
+    
+    if (self.isTest) {
+        self.backButton.hidden = YES;
+        self.rightButton.hidden = NO;
+    }else {
+        self.rightButton.hidden = YES;
+        self.backButton.hidden = NO;
+    }
+    
 //    for (NSString *fontFamilyName in [UIFont familyNames]) {
 //        NSLog(@"----- %@ -----", fontFamilyName);
 //        for (NSString *fontName in [UIFont fontNamesForFamilyName:fontFamilyName]) {
@@ -232,7 +280,9 @@ static NSString *const XWOldCollectionCellID = @"XWOldCollectionCellID";
         weakSelf.QRImage = [UIImage QRImageWithString:url];
     }];
     
-    [XWHttpTool getRecommendCourseWith:self.courseId success:^(NSMutableArray *array) {
+    QuestionsModel *model = [self.questions firstObject];
+    NSString * courseId = self.isTest ? model.testID : model.courseID;
+    [XWHttpTool getRecommendCourseWith:courseId withTestId:self.atid withT:self.isTest success:^(NSMutableArray *array) {
         weakSelf.dataArray = array;
         [weakSelf.collectionView reloadData];
     } failure:^(NSString *errorInfo) {
@@ -312,11 +362,14 @@ static NSString *const XWOldCollectionCellID = @"XWOldCollectionCellID";
 }
 
 #pragma mark- LifeCycle
-- (instancetype)initWithQuestions:(NSArray<QuestionsModel *> *)questions{
+- (instancetype)initWithQuestions:(NSArray<QuestionsModel *> *)questions withTest:(BOOL)isTest withAtid:(NSString *)atid{
     if (self = [super init]) {
         self.questions = questions;
         QuestionsModel *model = [questions firstObject];
         self.courseId = model.courseID;
+        self.isTest = isTest;
+        self.atid = atid;
+        
     }
     return self;
 }

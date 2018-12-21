@@ -150,11 +150,11 @@ static NSString *const XWCompanyCollectionCellID = @"XWCompanyCollectionCellID";
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath{
     [collectionView deselectItemAtIndexPath:indexPath animated:YES];
     XWCompanyCoursModel *model = self.dataArr[indexPath.item];
-    if ([model.courseType isEqualToString:@"2"]) {
-        [self.navigationController pushViewController:[ViewControllerManager detailViewControllerWithCourseID:model.courseId isAudio:YES] animated:YES];
-    }else{
+//    if ([model.courseType isEqualToString:@"2"]) {
+//        [self.navigationController pushViewController:[ViewControllerManager detailViewControllerWithCourseID:model.courseId isAudio:YES] animated:YES];
+//    }else{
         [self.navigationController pushViewController:[ViewControllerManager detailViewControllerWithCourseID:model.courseId isAudio:NO] animated:YES];
-    }
+//    }
 }
 
 

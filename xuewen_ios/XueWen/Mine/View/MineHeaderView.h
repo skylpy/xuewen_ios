@@ -10,9 +10,7 @@
 
 @interface MineHeaderView : UIView
 
-@property (weak, nonatomic) IBOutlet UIImageView *headIcon;
-@property (weak, nonatomic) IBOutlet UILabel *nameLB;
-@property (weak, nonatomic) IBOutlet UILabel *signLB;
+
 - (instancetype)initWithFrame:(CGRect)frame target:(id)target infoAction:(SEL)infoAction setAction:(SEL)setAction;
 - (void)refresh;
 

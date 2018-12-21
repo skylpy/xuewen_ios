@@ -168,6 +168,7 @@ static NSString *const XWTitleDateilCellID = @"XWTitleDateilCellID";
     [[[[NSNotificationCenter defaultCenter] rac_addObserverForName:@"HideLearnBtn" object:nil] takeUntil:self.rac_willDeallocSignal] subscribeNext:^(NSNotification * _Nullable x) {
         @strongify(self)
         NSInteger status = [x.object integerValue];
+//        NSLog(@"status is %ld", status);
         if (status == 2) {
      
             [self.tableView mas_updateConstraints:^(MASConstraintMaker *make) {
@@ -217,9 +218,9 @@ static NSString *const XWTitleDateilCellID = @"XWTitleDateilCellID";
     }
     if (indexPath.section == 1) {
         if (self.isFull) {
-            return self.titleHeight + 80;
+            return self.titleHeight + 100;
         }else{
-            return self.titleHeight/2 + 80;
+            return self.titleHeight/2 + 100;
         }
     }
     return self.contentHeight;
@@ -231,6 +232,7 @@ static NSString *const XWTitleDateilCellID = @"XWTitleDateilCellID";
 
         XWTitleDateilCell * cell = [tableView dequeueReusableCellWithIdentifier:XWTitleDateilCellID forIndexPath:indexPath];
         cell.model = self.model.course;
+        cell.classCourse = self.model.class_course;
         return cell;
     }
     

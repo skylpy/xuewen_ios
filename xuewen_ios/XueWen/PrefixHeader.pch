@@ -57,7 +57,7 @@
 #import "UIView+LX_Frame.h"
 #import "UIView+FTCornerdious.h"
 #import "XWAliOSSManager.h"
-
+#import "NSMutableAttributedString+XWUtil.h"
 
 
 

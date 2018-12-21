@@ -328,7 +328,7 @@
         }
         self.headerView.backgroundColor = [UIColor whiteColor];
         
-        _pageView = [[ENestScrollPageView alloc] initWithFrame:CGRectMake(0, 20, self.view.frame.size.width, self.view.frame.size.height-20) headView:self.headerView subDataViews:self.vcArray setParam:self.estParam];
+        _pageView = [[ENestScrollPageView alloc] initWithFrame:CGRectMake(0, 20, self.view.frame.size.width, self.view.frame.size.height) headView:self.headerView subDataViews:self.vcArray setParam:self.estParam];
         [self.view addSubview:_pageView];
     }
     return _pageView;
@@ -428,15 +428,19 @@
         }else{
             self.buyView.price = infoModel.course.amount;
         }
-        if (self.isAudio) {
-            [weakSelf reloadData];
+        if ([infoModel.audioType isEqualToString:@"2"]) {
+            weakSelf.isAudio = YES;
+            [weakSelf reloadAllSubViews];
         }else{
-            if ([infoModel.audioType isEqualToString:@"2"]) {
-                [weakSelf reloadAllSubViews];
+            if ([infoModel.audioType isEqualToString:@"3"] && weakSelf.isAudio) {
+                weakSelf.isAudio = YES;
             }else{
-                [weakSelf reloadData];
+                weakSelf.isAudio = NO;
             }
+            
+            [weakSelf reloadData];
         }
+
         
     } failure:^(NSString *errorInfo) {
         [MBProgressHUD showErrorMessage:errorInfo];
@@ -457,15 +461,8 @@
     [self addKeyboardNoticationWithShowAction:@selector(keyboardWillShow:) hiddenAciton:@selector(keyboardWillHidden:)];
     
     @weakify(self)
-    [[[[NSNotificationCenter defaultCenter] rac_addObserverForName:@"UPDATETITLE" object:nil] takeUntil:self.rac_willDeallocSignal] subscribeNext:^(NSNotification * _Nullable x) {
-        @strongify(self)
-        NSInteger idx = [x.object integerValue];
-        XWAudioNodeModel *model1 = self.nodeArray[idx];
-        self.title = model1.nodeTitle;
-    }];
-    
     //点击选择介绍 / 笔记 / 讨论
-    [[[[NSNotificationCenter defaultCenter] rac_addObserverForName:@"SELECTEDINDEX" object:nil] takeUntil:self.rac_willDeallocSignal] subscribeNext:^(NSNotification * _Nullable x) {
+    [[[[NSNotificationCenter defaultCenter] rac_addObserverForName:@"SELECTEDINDEXNoti" object:nil] takeUntil:self.rac_willDeallocSignal] subscribeNext:^(NSNotification * _Nullable x) {
         @strongify(self)
         NSInteger idx = [x.userInfo[@"index"] integerValue];
         NSLog(@"====%ld",idx);
@@ -489,6 +486,27 @@
     [[[[NSNotificationCenter defaultCenter] rac_addObserverForName:@"BACK" object:nil] takeUntil:self.rac_willDeallocSignal] subscribeNext:^(NSNotification * _Nullable x) {
         @strongify(self)
         [self.navigationController popViewControllerAnimated:YES];
+    }];
+    
+    [[[[NSNotificationCenter defaultCenter] rac_addObserverForName:@"HideLearnBtn" object:nil] takeUntil:self.rac_willDeallocSignal] subscribeNext:^(NSNotification * _Nullable x) {
+        @strongify(self)
+        NSInteger status = [x.object integerValue];
+//        NSLog(@"status is %ld", status);
+        if (status == 2) {
+            
+            [self.buyView mas_updateConstraints:^(MASConstraintMaker *make) {
+                make.left.right.equalTo(self.view);
+                make.bottom.equalTo(self.view.mas_bottom).offset(51);
+                make.height.offset(50);
+            }];
+        }else{
+            
+            [self.buyView mas_updateConstraints:^(MASConstraintMaker *make) {
+                make.left.right.equalTo(self.view);
+                make.bottom.equalTo(self.view.mas_bottom).offset(1);
+                make.height.offset(50);
+            }];
+        }
     }];
 }
 
@@ -553,6 +571,9 @@
     /** 正在播放中的音频...*/
     if ([self.model.course.courseId isEqualToString:[XWAudioInstanceController shareInstance].model.courseId]) {
         self.selectedIndex = [XWAudioInstanceController shareInstance].playIndex;
+        if (self.selectedIndex > self.nodeArray.count-1) {
+            self.selectedIndex = self.nodeArray.count - 1;
+        }
         XWAudioNodeModel *model = self.nodeArray[self.selectedIndex];
         self.title = model.nodeTitle;
     }else{
@@ -664,7 +685,7 @@
 /** 跳转考试界面 */
 - (void)pushExamViewController{
     if (self.questions.count > 0) {
-        [self.navigationController pushViewController:[[ClassTestViewController alloc] initWithQuestions:self.questions] animated:YES];
+        [self.navigationController pushViewController:[[ClassTestViewController alloc] initWithQuestions:self.questions withTest:NO withAtid:self.courseID] animated:YES];
     }else{
         [XWPopupWindow popupWindowsWithTitle:@"错误" message:@"暂时没有对应的试题" buttonTitle:@"好的" buttonBlock:nil];
     }
@@ -679,10 +700,10 @@
     UIInterfaceOrientation currentOrientation = (UIInterfaceOrientation)[UIDevice currentDevice].orientation;
     if (currentOrientation == UIDeviceOrientationLandscapeRight || currentOrientation == UIDeviceOrientationLandscapeLeft) {
         self.videoPlayView.isFullScreen = YES;
-        
+        self.pageView.mj_y = 0;
     }else if (currentOrientation == UIDeviceOrientationPortrait || currentOrientation == UIDeviceOrientationPortraitUpsideDown){
         self.videoPlayView.isFullScreen = NO;
-        
+        self.pageView.mj_y = 20;
     }else{
         
     }
@@ -794,6 +815,9 @@
         [[NSNotificationCenter defaultCenter] postNotificationName:@"ISSRCOLLVIEW" object:nil userInfo:@{@"IS":@"YES"}];
         self.buyView.hidden = YES;
         self.noteInputView.hidden = YES;
+
+        self.pageView.mj_y = 0;
+
     }else{
         self.currentOrientation = UIInterfaceOrientationPortrait;
         [[NSNotificationCenter defaultCenter] postNotificationName:@"ISSRCOLLVIEW" object:nil userInfo:@{@"IS":@"NO"}];
@@ -804,6 +828,9 @@
             self.buyView.hidden = YES;
             self.noteInputView.hidden = NO;
         }
+
+        self.pageView.mj_y = kStasusBarH;
+
     }
     
     if (isFullScreen) {
@@ -884,7 +911,7 @@
         [weakSelf.cataArray addObject:cataView];
         [cataView mas_makeConstraints:^(MASConstraintMaker *make) {
             make.left.right.bottom.mas_equalTo(weakSelf.view);
-            make.top.mas_equalTo(weakSelf.playerHeight+55+kStasusBarH-20);
+            make.top.mas_equalTo(weakSelf.playerHeight+55+kStasusBarH-10);
         }];
     }else{ // 关闭目录
         [[NSNotificationCenter defaultCenter] postNotificationName:@"ISSRCOLLVIEW" object:nil userInfo:@{@"IS":@"NO"}];
@@ -933,6 +960,7 @@
         [UIView animateWithDuration:0.25 animations:^{
             weakSelf.videoPlayView.transform = CGAffineTransformMakeRotation(angle);
             weakSelf.videoPlayView.frame = frame;
+            weakSelf.headerView.frame = CGRectMake(frame.origin.x, frame.origin.y, frame.size.width, frame.size.height+55);
         } completion:^(BOOL finished) {
             
         }];

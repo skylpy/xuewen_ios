@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="14460.31" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14460.31"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view contentMode="scaleToFill" id="iN0-l3-epB" customClass="XWSelectCoursesView">
+            <rect key="frame" x="0.0" y="0.0" width="375" height="627"/>
+            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <subviews>
+                <view alpha="0.34999999999999998" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="di6-IF-yqy">
+                    <rect key="frame" x="0.0" y="0.0" width="375" height="627"/>
+                    <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                </view>
+                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="MJ2-iK-lYF">
+                    <rect key="frame" x="0.0" y="0.0" width="375" height="527"/>
+                    <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                </view>
+            </subviews>
+            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+            <constraints>
+                <constraint firstAttribute="bottom" secondItem="di6-IF-yqy" secondAttribute="bottom" id="2wk-UO-EhO"/>
+                <constraint firstAttribute="trailing" secondItem="di6-IF-yqy" secondAttribute="trailing" id="7m3-JR-Zif"/>
+                <constraint firstItem="di6-IF-yqy" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" id="JLx-t7-s7l"/>
+                <constraint firstAttribute="bottom" secondItem="MJ2-iK-lYF" secondAttribute="bottom" constant="100" id="JhV-KA-L7h"/>
+                <constraint firstAttribute="trailing" secondItem="MJ2-iK-lYF" secondAttribute="trailing" id="Ofl-YF-Tdo"/>
+                <constraint firstItem="MJ2-iK-lYF" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" id="P0X-1Q-zgH"/>
+                <constraint firstItem="di6-IF-yqy" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" id="kj8-7E-trF"/>
+                <constraint firstItem="MJ2-iK-lYF" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" id="xV2-Lw-PaQ"/>
+            </constraints>
+            <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
+            <connections>
+                <outlet property="showView" destination="MJ2-iK-lYF" id="4Fc-Jw-ZR4"/>
+            </connections>
+            <point key="canvasLocation" x="138.40000000000001" y="169.56521739130437"/>
+        </view>
+    </objects>
+</document>

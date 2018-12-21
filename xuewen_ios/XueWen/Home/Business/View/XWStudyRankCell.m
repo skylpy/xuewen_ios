@@ -20,6 +20,7 @@
 @property (weak, nonatomic) IBOutlet UILabel *zanCountLabel;
 @property (weak, nonatomic) IBOutlet UIButton *zanBtn;
 @property (weak, nonatomic) IBOutlet UILabel *timeTagLabel;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *rLayoutConstraint;
 
 
 @end
@@ -43,7 +44,13 @@
 
 - (void)setModel:(XWCountPlayTimeModel *)model{
     _model = model;
-    [self.headImgView sd_setImageWithURL:[NSURL URLWithString:_model.coverPictureAll] placeholderImage:DefaultImage];
+    UIImage *defaultImg = [[UIImage alloc] init];
+    if ([_model.sex isEqualToString:@"0"]){
+        defaultImg = DefaultImageGril;
+    }else{
+        defaultImg = DefaultImageBoy;
+    }
+    [self.headImgView sd_setImageWithURL:[NSURL URLWithString:_model.coverPictureAll] placeholderImage:defaultImg];
     self.nickLabel.text = _model.name;
     self.bmLabel.text = _model.departmentName;
     self.timeLabel.text = [NSString stringWithFormat:@"%@分钟", _model.totalTime];
@@ -62,7 +69,13 @@
 
 - (void)setTargetModel:(XWTargetRankModel *)targetModel{
     _targetModel = targetModel;
-    [self.headImgView sd_setImageWithURL:[NSURL URLWithString:_targetModel.pictureAll] placeholderImage:DefaultImage];
+    UIImage *defaultImg = [[UIImage alloc] init];
+    if ([_targetModel.sex isEqualToString:@"0"]){
+        defaultImg = DefaultImageGril;
+    }else{
+        defaultImg = DefaultImageBoy;
+    }
+    [self.headImgView sd_setImageWithURL:[NSURL URLWithString:_targetModel.pictureAll] placeholderImage:defaultImg];
     self.nickLabel.text = _targetModel.name;
     self.bmLabel.text = _targetModel.departmentName;
     self.timeLabel.text = [NSString stringWithFormat:@"达成率：%@%%", _targetModel.completion];
@@ -90,6 +103,21 @@
 - (void)setIdx:(NSInteger)idx{
     _idx = idx;
     self.rankLabel.text = [NSString stringWithFormat:@"%ld", _idx+1];
+}
+
+- (void)setIsMyCompany:(BOOL)isMyCompany{
+    _isMyCompany = isMyCompany;
+    if (_isMyCompany) {
+        self.zanBtn.hidden = NO;
+        self.zanImgView.hidden = NO;
+        self.zanCountLabel.hidden = NO;
+        self.rLayoutConstraint.constant = 50;
+    }else{
+        self.zanCountLabel.hidden = YES;
+        self.zanImgView.hidden = YES;
+        self.zanBtn.hidden = YES;
+        self.rLayoutConstraint.constant = 20;
+    }
 }
 
 - (IBAction)fabulousAction:(UIButton *)sender {

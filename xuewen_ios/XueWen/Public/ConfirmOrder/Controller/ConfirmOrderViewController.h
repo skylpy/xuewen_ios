@@ -12,4 +12,7 @@
 
 - (instancetype)initWithID:(NSString *)identifier type:(int)type updateBlcok:(void(^)(void))updateBlock;
 
+@property (nonatomic,assign) BOOL isSuper;
+
+
 @end

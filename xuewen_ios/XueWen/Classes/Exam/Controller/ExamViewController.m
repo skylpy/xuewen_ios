@@ -34,7 +34,7 @@
                 NSLog(@"返回");
             }else{
                 // 跳转成绩结算
-                [self.navigationController pushViewController:[[ExamResultViewController alloc] initWithQuestions:self.questions] animated:YES];
+                [self.navigationController pushViewController:[[ExamResultViewController alloc] initWithQuestions:self.questions withTest:NO withAtid:@""] animated:YES];
             }
         }
     }else{

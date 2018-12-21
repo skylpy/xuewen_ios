@@ -15,7 +15,7 @@
 - (void)continueAction;
 - (void)errorAction;
 - (void)hosAction;
-- (void)shareAction;
+- (void)shareAction:(BOOL)isTest;
 
 @end
 
@@ -26,5 +26,10 @@
 @property (nonatomic, weak) id<ExamResultHeaderViewDelegate> delegate;
 
 @property (nonatomic, strong) NSString *comment;
+
+@property (nonatomic, assign) BOOL isTest;
+
+//测一测考试
+@property (nonatomic, assign) BOOL isEduTest;
 
 @end

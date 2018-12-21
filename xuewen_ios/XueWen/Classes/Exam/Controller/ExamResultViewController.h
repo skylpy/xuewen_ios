@@ -6,10 +6,13 @@
 //  Copyright © 2017年 ShaJin. All rights reserved.
 //
 
-#import <UIKit/UIKit.h>
-@class QuestionsModel;
-@interface ExamResultViewController : UIViewController
+#import "XWBaseViewController.h"
 
-- (instancetype)initWithQuestions:(NSArray<QuestionsModel *> *)questions;
+
+@class QuestionsModel;
+@interface ExamResultViewController : XWBaseViewController
+
+- (instancetype)initWithQuestions:(NSArray<QuestionsModel *> *)questions withTest:(BOOL)isTest withAtid:(NSString *)atid;
+@property (nonatomic,copy) NSString * atid;
 
 @end

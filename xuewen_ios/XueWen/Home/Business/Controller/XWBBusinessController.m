@@ -22,7 +22,7 @@ static NSString *const XWCompanyInfoCellID = @"XWCompanyInfoCellID";
 
 @property (nonatomic, strong) XWHeaderBannerView *bannerView;
 
-@property(nonatomic,retain)EScrollPageView *pageView;
+@property (nonatomic, retain) EScrollPageView *pageView;
 
 @property (nonatomic, strong) XWStudyRankView *v1;
 @property (nonatomic, strong) XWStudyRankView *v2;
@@ -63,14 +63,16 @@ static NSString *const XWCompanyInfoCellID = @"XWCompanyInfoCellID";
 
 - (XWStudyRankView *)v1{
     if (!_v1) {
-        _v1 = [[XWStudyRankView alloc] initWithPageTitle:@"学习排名"];
+        _v1 = [[XWStudyRankView alloc] initWithPageTitle:@"课时排名"];
+        _v1.isMyCompany = [self.companyId isEqualToString:[XWInstance shareInstance].userInfo.company_id];
     }
     return _v1;
 }
 
 - (XWStudyRankView *)v2{
     if (!_v2) {
-        _v2 = [[XWStudyRankView alloc] initWithPageTitle:@"目标排名"];
+        _v2 = [[XWStudyRankView alloc] initWithPageTitle:@"考核排名"];
+        _v2.isMyCompany = [self.companyId isEqualToString:[XWInstance shareInstance].userInfo.company_id];
     }
     return _v2;
 }
@@ -78,6 +80,7 @@ static NSString *const XWCompanyInfoCellID = @"XWCompanyInfoCellID";
 - (XWCompanyCoursView *)v3{
     if (!_v3) {
         _v3 = [[XWCompanyCoursView alloc] initWithPageTitle:@"企业课程"];
+        _v3.isMyCompany = [self.companyId isEqualToString:[XWInstance shareInstance].userInfo.company_id];
     }
     return _v3;
 }
@@ -121,7 +124,7 @@ static NSString *const XWCompanyInfoCellID = @"XWCompanyInfoCellID";
         param.segmentParam.textSelectedColor = 0x6699FF;
         param.segmentParam.topLineColor = 0xffffff;
         param.segmentParam.botLineColor = 0xffffff;
-        _pageView = [[EScrollPageView alloc] initWithFrame:CGRectMake(0, 0, kWidth, 750+100+68+70) dataViews:vs setParam:param];
+        _pageView = [[EScrollPageView alloc] initWithFrame:CGRectMake(0, 0, kWidth, 988) dataViews:vs setParam:param];
         
     }
     return _pageView;
@@ -140,6 +143,14 @@ static NSString *const XWCompanyInfoCellID = @"XWCompanyInfoCellID";
     [self addObserver];
 }
 
+- (CGFloat)audioPlayerViewHieght{
+    return kHeight - kBottomH - 49 - 50;;
+}
+
+- (BOOL)hiddenNavigationBar{
+    return NO;
+}
+
 - (void)loadData{
     
     [MBProgressHUD showActivityMessageInWindow:@"正在加载..."];
@@ -151,7 +162,7 @@ static NSString *const XWCompanyInfoCellID = @"XWCompanyInfoCellID";
         [XWNetworking getBannerImagesWithCompleteBlock:^(NSArray<BannerModel *> *banners) {
             weakSelf.bannerView.modelArray = [banners mutableCopy];
             [subscriber sendNext:@"1"];
-        } cid:[XWInstance shareInstance].userInfo.company_id];
+        } cid:self.companyId];
         
         return nil;
     }];
@@ -160,7 +171,7 @@ static NSString *const XWCompanyInfoCellID = @"XWCompanyInfoCellID";
     RACSignal *signal4 = [RACSignal createSignal:^RACDisposable * _Nullable(id<RACSubscriber>  _Nonnull subscriber) {
         @strongify(self)
         XWWeakSelf
-        [XWHttpTool getCompanyInfoWithID:[XWInstance shareInstance].userInfo.company_id success:^(XWCompanyInfoModel *infoModel) {
+        [XWHttpTool getCompanyInfoWithID:self.companyId success:^(XWCompanyInfoModel *infoModel) {
             weakSelf.companyModel = infoModel;
             [weakSelf.tableView reloadData];
             [subscriber sendNext:@"1"];
@@ -184,7 +195,7 @@ static NSString *const XWCompanyInfoCellID = @"XWCompanyInfoCellID";
             [MBProgressHUD showTipMessageInWindow:errorInfo];
             [subscriber sendNext:@"0"];
             [weakSelf.tableView.mj_header endRefreshing];
-        }];
+        } companyId:self.companyId];
         
         return nil;
     }];
@@ -200,12 +211,12 @@ static NSString *const XWCompanyInfoCellID = @"XWCompanyInfoCellID";
             [MBProgressHUD showTipMessageInWindow:errorInfo];
             [subscriber sendNext:@"0"];
             [weakSelf.tableView.mj_header endRefreshing];
-        }];
+        } companyId:self.companyId];
 
         return nil;
     }];
     
-    /** 请求学习排名*/
+    /** 请求课时排名*/
     RACSignal *signal5 = [RACSignal createSignal:^RACDisposable * _Nullable(id<RACSubscriber>  _Nonnull subscriber) {
         @strongify(self)
         XWWeakSelf
@@ -217,13 +228,13 @@ static NSString *const XWCompanyInfoCellID = @"XWCompanyInfoCellID";
             [MBProgressHUD showTipMessageInWindow:errorInfo];
             [subscriber sendNext:@"0"];
             [weakSelf.tableView.mj_header endRefreshing];
-        } size:@"10"];
+        } size:@"10" companyId:self.companyId];
 
         
         return nil;
     }];
     
-    /** 请求目标排名*/
+    /** 请求考核排名*/
     RACSignal *signal6 = [RACSignal createSignal:^RACDisposable * _Nullable(id<RACSubscriber>  _Nonnull subscriber) {
         @strongify(self)
         XWWeakSelf
@@ -235,7 +246,7 @@ static NSString *const XWCompanyInfoCellID = @"XWCompanyInfoCellID";
             [MBProgressHUD showTipMessageInWindow:errorInfo];
             [subscriber sendNext:@"0"];
             [weakSelf.tableView.mj_header endRefreshing];
-        } size:@"10"];
+        } size:@"10" companyId:self.companyId];
         
         return nil;
     }];
@@ -284,7 +295,7 @@ static NSString *const XWCompanyInfoCellID = @"XWCompanyInfoCellID";
     if (indexPath.section == 0) {
         return 103;
     }
-    return 750+100+68+63;
+    return 981;//750+100+68+63;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -306,6 +317,7 @@ static NSString *const XWCompanyInfoCellID = @"XWCompanyInfoCellID";
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
     if (indexPath.section == 0) {
         XWCompanyInfoController *vc = [[XWCompanyInfoController alloc] init];
+        vc.companyId = self.companyId;
         [self.navigationController pushViewController:vc animated:YES];
     }
 }

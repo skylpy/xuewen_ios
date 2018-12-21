@@ -22,4 +22,6 @@
 
 @property (nonatomic, strong) XWTargetRankModel *targetModel;
 
+@property (nonatomic, assign) BOOL isMyCompany;
+
 @end

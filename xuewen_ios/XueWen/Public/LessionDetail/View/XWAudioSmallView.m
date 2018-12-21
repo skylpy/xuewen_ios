@@ -25,6 +25,7 @@
         _bgView = [[UIView alloc] init];
         _bgView.backgroundColor = Color(@"#454F58");
         [_bgView rounded:3];
+        [_bgView addTapTarget:self action:@selector(JumpToDetailController)];
     }
     return _bgView;
 }
@@ -123,6 +124,9 @@
         make.right.mas_equalTo(self.closeBtn.mas_left).offset(-22);
     }];
     
+    
+    
+    
 }
 
 #pragma mark - Setter
@@ -166,6 +170,11 @@
     }
 }
 
+- (void)JumpToDetailController{
+    NSLog(@"点击了");
+    [self.navigationController pushViewController:[ViewControllerManager detailViewControllerWithCourseID:[XWAudioInstanceController shareInstance].model.courseId isAudio:YES] animated:YES];
+    
+}
 
 
 @end

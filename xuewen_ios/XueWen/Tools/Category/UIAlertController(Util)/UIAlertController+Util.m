@@ -60,7 +60,7 @@
     {
         //修改title
         NSMutableAttributedString *alertControllerStr = [[NSMutableAttributedString alloc] initWithString:title];
-        [alertControllerStr addAttribute:NSForegroundColorAttributeName value:DefaultAlertColor range:NSMakeRange(0, title.length)];
+        [alertControllerStr addAttribute:NSForegroundColorAttributeName value:DefaultTitleAColor range:NSMakeRange(0, title.length)];
         [alertControllerStr addAttribute:NSFontAttributeName value:[UIFont fontWithName:kSemFont size:17] range:NSMakeRange(0, title.length)];
         [alertVC setValue:alertControllerStr forKey:@"attributedTitle"];
     }
@@ -69,7 +69,7 @@
     {
         //修改message
         NSMutableAttributedString *alertControllerMessageStr = [[NSMutableAttributedString alloc] initWithString:message];
-        [alertControllerMessageStr addAttribute:NSForegroundColorAttributeName value:DefaultAlertColor range:NSMakeRange(0, message.length)];
+        [alertControllerMessageStr addAttribute:NSForegroundColorAttributeName value:DefaultTitleAColor range:NSMakeRange(0, message.length)];
         [alertControllerMessageStr addAttribute:NSFontAttributeName value:[UIFont fontWithName:kRegFont size:13] range:NSMakeRange(0, message.length)];
         [alertVC setValue:alertControllerMessageStr forKey:@"attributedMessage"];
     }

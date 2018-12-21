@@ -30,6 +30,9 @@
 
 /** 课程模型 */
 @interface CourseModel : NSObject
+
+@property (nonatomic,copy) NSString * cover_photo_all;
+
 /** 课程ID */
 @property (nonatomic, strong) NSString *courseID;
 /** 课程名称 */
@@ -68,5 +71,8 @@
 @property (nonatomic, strong) NSString *hisID;
 //课程类型
 @property (nonatomic, strong) NSString *courseType;
-
+//18字简介
+@property (nonatomic, strong) NSString *shortIntroduction;
+//是否购买 1购买 0未购买
+@property (nonatomic, assign) BOOL buy;
 @end

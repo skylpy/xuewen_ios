@@ -21,5 +21,5 @@
 
 @property (nonatomic, assign) NSInteger idx;
 
-
+@property (nonatomic, assign) BOOL isMyCompany;
 @end

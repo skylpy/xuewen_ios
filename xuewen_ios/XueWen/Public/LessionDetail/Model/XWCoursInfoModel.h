@@ -33,5 +33,6 @@
 @property (nonatomic, strong) NSString *shareTitle;
 /** 分享对话内容*/
 @property (nonatomic, strong) NSString *shareContent;
-
+/** 课时数*/
+@property (nonatomic, strong) NSString *class_course;
 @end

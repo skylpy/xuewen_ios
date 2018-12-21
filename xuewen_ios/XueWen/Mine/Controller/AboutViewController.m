@@ -43,7 +43,7 @@
 
 - (UILabel *)infoLabel{
     if (!_infoLabel) {
-        NSString *text = [NSString stringWithFormat:@"Copyright © 2017\n深圳金合信息科技有限公司\n粤ICP备1714555号\nv%@",[[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleShortVersionString"]];
+        NSString *text = [NSString stringWithFormat:@"Copyright © 2017-2018广州学问信息科技有限公司\n粤ICP备18090951号-1\nv%@",[[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleShortVersionString"]];
         CGFloat height = [text heightWithWidth:kWidth size:15];
         _infoLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, kHeight - height - (IsIPhoneX ? 110 : 80), kWidth, height)];
         _infoLabel.textColor =  DefaultTitleBColor;

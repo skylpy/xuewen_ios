@@ -74,7 +74,7 @@
         CGFloat x = scrollView.contentOffset.x;
         NSInteger index = x == 0 ? 0 : x == kWidth ? 1 : x == 2* kWidth ? 2 : 3;
         NSLog(@"==%f",x);
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"SELECTEDINDEX" object:nil userInfo:@{@"index":@(index)}];
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"SELECTEDINDEXNoti" object:nil userInfo:@{@"index":@(index)}];
         if (x < -10) {
             [[NSNotificationCenter defaultCenter] postNotificationName:@"BACK" object:nil];
         }
@@ -103,7 +103,7 @@
         __weak EScrollPageView *weakSelf = self;
         _segmentCT.didSelectedIndexBlock = ^(NSInteger index) {
             [weakSelf.scrollView setContentOffset:CGPointMake(index * weakSelf.scrollView.frame.size.width , 0) animated:true];
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"SELECTEDINDEX" object:nil userInfo:@{@"index":@(index)}];
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"SELECTEDINDEXNoti" object:nil userInfo:@{@"index":@(index)}];//,@"isHide":@"Yes"
         };
         [self addSubview:_segmentCT];
     }

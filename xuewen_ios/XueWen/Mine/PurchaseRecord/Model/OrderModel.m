@@ -19,7 +19,8 @@
              @"courseID"    : @"course_id",
              @"coverPhoto"  : @"cover_photo_all",
              @"type"        : @"purchase_type",
-             @"orderPrice"  : @"order_price"
+             @"orderPrice"  : @"order_price",
+             @"collegeID"  : @"college_id",
              };
 }
 

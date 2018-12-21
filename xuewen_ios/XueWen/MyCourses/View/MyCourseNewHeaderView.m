@@ -27,7 +27,13 @@
 #pragma mark- CustomMethod
 - (void)refresh{
     XWUserInfo *userInfo = [XWInstance shareInstance].userInfo;
-    [self.headImage sd_setImageWithURL:[NSURL URLWithString:userInfo.picture] placeholderImage:LoadImage(@"default_head")];
+    UIImage *defaultImg = [[UIImage alloc] init];
+    if ([userInfo.sex isEqualToString:@"0"]){
+        defaultImg = DefaultImageGril;
+    }else{
+        defaultImg = DefaultImageBoy;
+    }
+    [self.headImage sd_setImageWithURL:[NSURL URLWithString:userInfo.picture] placeholderImage:defaultImg];
     self.namelabel.text = userInfo.nick_name;
     self.companyLabel.text = userInfo.company.name;
     self.companyLabel.sd_layout.widthIs([userInfo.company.name widthWithSize:self.companyLabel.font.pointSize]);

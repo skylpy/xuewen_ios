@@ -11,7 +11,6 @@
 #import "BaseCellModel.h"
 #import "MineHeaderView.h"
 #import "MyClassesViewController.h"
-#import "MyWalletViewController.h"
 #import "MineInfoViewController.h"
 #import "MyExamViewController.h"
 #import "SettingViewController.h"
@@ -22,187 +21,106 @@
 #import "MyCouponViewController.h"
 #import "InvitationViewController.h"
 #import "XWFeedBackViewController.h"
+#import "XWMyCertificateViewController.h"
+#import "XWMineTopCell.h"
+#import "MyWalletViewController.h"
+#import "XWMineModel.h"
 
 static NSString *const MineListTableViewCellID = @"MineListTableViewCellID";
+static NSString *const XWMineTopCellID = @"XWMineTopCellID";
 
 @interface MineViewController () <UINavigationControllerDelegate,UITableViewDelegate,UITableViewDataSource,UIScrollViewDelegate>
 
 @property (nonatomic, strong) UITableView *Table;
 @property (nonatomic, strong) MineHeaderView *headerView;
+@property (nonatomic,strong) NSMutableArray * dataArray;
 
 @end
 
 @implementation MineViewController
+
 #pragma mark - --- TableView Delegate&DataSource ---
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
-//    if (indexPath.section == 0) {
-//        switch (indexPath.row) {
-//            case 0:{
-//                // 我的课程
-//                if ([[XWInstance shareInstance].userInfo.role_id isEqualToString:@"3"]) {
-//                    [self.navigationController pushViewController:[[MyClassesViewController alloc] initWithType:kMyClasses] animated:YES];
-//                }else{
-//                    [self.navigationController pushViewController:[MineClassesViewController new] animated:YES];
-//                }
-//            }break;
-//            case 1:{
-//                [self.navigationController pushViewController:[LearningPlanViewController new] animated:YES];
-//            }break;
-//            case 2:{
-//                [self.navigationController pushViewController:[MyExamViewController new] animated:YES];
-//            }break;
-//            case 3:{
-//                // 我的笔记
-//                [self.navigationController pushViewController:[MyNotesViewController new] animated:YES];
-//            }break;
-//            default:
-//                break;
-//        }
-//    }else if (indexPath.section == 1){
-        switch (indexPath.row) {
-            case 3:{
-                // 邀请y有礼
-                [self.navigationController pushViewController:[InvitationViewController new] animated:YES];
-            }break;
-            case 0:{
-                // 我的钱包
-                [self.navigationController pushViewController:[MyWalletViewController new] animated:YES];
-            }break;
-            case 1:{
-                // 我的优惠券
-                [self.navigationController pushViewController:[MyCouponViewController new] animated:YES];
-            }break;
-            case 2:{
-                // 我的订单
-                [self.navigationController pushViewController:[PurchaseRecordViewController new] animated:YES];
-            }break;
-            case 4:{
-                // 个人设置
-                [self setAction:nil];
-            }break;
-            case 5:{
-                // 用户反馈
-                [self.navigationController pushViewController:[XWFeedBackViewController new] animated:YES];
-            }break;
-            default:
-                break;
-        }
-//    }
+    
+    XWMineModel * model = self.dataArray[indexPath.row];
+    [self.navigationController pushViewController:[NSClassFromString(model.controller) new] animated:YES];
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
+    /** 如需改成新版,打开注释即可*/
+
     return 59;
 }
 
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section{
+    
     return [UIView new];
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section{
-    return 10;
+    
+    return 0.01;
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section{
-    return 0.1;
+    
+    return 10;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
-    return 6;
-//    return (section == 0) ? 4 : 5;
+    /** 如需改成新版,注释上面一行,打开下面一行*/
+    
+    return self.dataArray.count;
+
 }
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView{
+    /** 如需改成新版,注释上面一行,打开下面一行*/
     return 1;
-//    return 2;
+
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
+    
     MineListTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:MineListTableViewCellID forIndexPath:indexPath];
     cell.detailLB.hidden = YES;
-    NSString *title = nil;
-    NSString *image = nil;
-//    if (indexPath.section == 0) {
-//        switch (indexPath.row) {
-//            case 0:{
-//                title = @"我的课程";
-//                image = @"iconMyCourse";
-//            }break;
-//            case 1:{
-//                title = @"学习计划";
-//                image = @"ico_learning_plan";
-//            }break;
-//            case 2:{
-//                title = @"我的考试";
-//                image = @"icoExamination";
-//            }break;
-//            case 3:{
-//                title = @"我的笔记";
-//                image = @"icoNote";
-//            }break;
-//            default:
-//                break;
-//        }
-//    }else if (indexPath.section == 1){
-        switch (indexPath.row) {
-            case 3:{
-                title = @"邀请有礼";
-                image = @"icoInvitation";
-                cell.detailLB.hidden = NO;
-                cell.detailLB.text = @"邀请1人得30元";
-            }break;
-            case 0:{
-                title = @"我的钱包";
-                image = @"iconMoney";
-                cell.detailLB.hidden = NO;
-                cell.detailLB.text = [NSString stringWithFormat:@"￥%@",[XWInstance shareInstance].userInfo.gold];
-            }break;
-            case 1:{
-                title = @"我的奖学金";
-                image = @"icoCoupon";
-                cell.detailLB.hidden = NO;
-                if ([[XWInstance shareInstance].userInfo.user_coupon isEqualToString:@""] || [XWInstance shareInstance].userInfo.user_coupon == nil) {
-                    cell.detailLB.text = @"";
-                }else{
-                    cell.detailLB.text = [NSString stringWithFormat:@"￥%@",[XWInstance shareInstance].userInfo.user_coupon];
-                }
-                
-            }break;
-            case 2:{
-                title = @"我的订单";
-                image = @"icoOrder";
-            }break;
-            case 4:{
-                title = @"个人设置";
-                image = @"icoSetUp-1";
-            }break;
-            case 5:{
-                title = @"用户反馈";
-                image = @"icoNote";
-            }break;
-            default:
-                break;
-        }
-//    }
-    cell.titleLB.text = title;
-    cell.imgV.image = LoadImage(image);
+    
+    XWMineModel * model = self.dataArray[indexPath.row];
+    
+    cell.titleLB.text = model.title;
+    cell.imgV.image = LoadImage(model.imageStr);
+    if (![model.subtitle isEqualToString:@""]) {
+        cell.detailLB.hidden = NO;
+        cell.detailLB.text = model.subtitle;
+    }
     cell.isFirst = (indexPath.row == 0);
     return cell;
+
+    
 }
 
 #pragma mark - --- Custom Method ---
 - (void)infoAction:(UIGestureRecognizer *)sender{
+    
     [self.navigationController pushViewController:[MineInfoViewController new] animated:YES];
 }
 
 - (void)setAction:(UIButton *)sender{
+    
     [self.navigationController pushViewController:[SettingViewController new] animated:YES];
 }
 
 - (void)initUI{
+    
     self.view.backgroundColor = DefaultBgColor;
     // 设置导航控制器的代理为self
     self.navigationController.delegate = self;
+    
+    /** 如需改成新版, 把topView给注释了即可*/
+    UIView *topView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, kWidth, kStasusBarH)];
+    topView.backgroundColor = [UIColor whiteColor];
+    [self.view addSubview:topView];
     [self.view addSubview:self.headerView];
     [self.view addSubview:self.Table];
     self.Table.contentOffset = CGPointMake(0, 1);
@@ -234,13 +152,15 @@ static NSString *const MineListTableViewCellID = @"MineListTableViewCellID";
 - (UITableView *)Table {
     if (!_Table) {
         
-        UITableView * tableview = [[UITableView alloc] initWithFrame:CGRectMake(0, 189, kWidth, kHeight - kTabBarH - 189 ) style:UITableViewStyleGrouped];
+        UITableView * tableview = [[UITableView alloc] initWithFrame:CGRectMake(0, 170+kStasusBarH, kWidth, kHeight - kTabBarH - 170 - kStasusBarH ) style:UITableViewStyleGrouped];
         
         [tableview registerNib:[UINib nibWithNibName:@"MineListTableViewCell" bundle:nil]  forCellReuseIdentifier:MineListTableViewCellID];
+        [tableview registerNib:[UINib nibWithNibName:@"XWMineTopCell" bundle:nil] forCellReuseIdentifier:XWMineTopCellID];
         tableview.delegate = self;
         tableview.dataSource = self;
         tableview.backgroundColor = self.view.backgroundColor;
         tableview.separatorStyle = 0;
+        tableview.estimatedSectionFooterHeight = 0.0;
         _Table = tableview;
     }
     
@@ -249,7 +169,7 @@ static NSString *const MineListTableViewCellID = @"MineListTableViewCellID";
 
 - (MineHeaderView *)headerView{
     if (!_headerView) {
-        _headerView = [[MineHeaderView alloc] initWithFrame:CGRectMake(0, 0, kWidth, 190) target:self infoAction:@selector(infoAction:) setAction:@selector(setAction:)];
+        _headerView = [[MineHeaderView alloc] initWithFrame:CGRectMake(0, kStasusBarH, kWidth, 170) target:self infoAction:@selector(infoAction:) setAction:@selector(setAction:)];
     }
     return _headerView;
 }
@@ -258,12 +178,38 @@ static NSString *const MineListTableViewCellID = @"MineListTableViewCellID";
 - (void)viewDidLoad {
     [super viewDidLoad];
     [self initUI];
+    [self requestData];
+}
+
+- (void)requestData {
+    
+    NSString *app_Version = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleShortVersionStrin"];
+    WeakSelf;
+    [XWMineModel mineVersion:app_Version success:^(NSInteger hide) {
+        
+        weakSelf.dataArray = [[XWMineModel sharemineHide:hide] mutableCopy];
+        
+        [weakSelf.Table reloadData];
+        
+    } failure:^(NSString * _Nonnull error) {
+        
+        [weakSelf requestData];
+    }];
+}
+
+- (NSMutableArray *)dataArray {
+    
+    if (!_dataArray) {
+        _dataArray = [NSMutableArray array];
+    }
+    return _dataArray;
 }
 
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
     self.navigationController.interactivePopGestureRecognizer.enabled = NO;
     [self loadData];
+    [self requestData];
 }
 
 - (void)viewWillAppear:(BOOL)animated{

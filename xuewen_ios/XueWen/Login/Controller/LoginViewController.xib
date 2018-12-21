@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="11762" systemVersion="16G1036" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="14313.18" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11757"/>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14283.14"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <customFonts key="customFonts">
@@ -37,7 +38,7 @@
                     <nil key="highlightedColor"/>
                 </label>
                 <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="ios-template-1024" translatesAutoresizingMaskIntoConstraints="NO" id="cnM-5V-WIY">
-                    <rect key="frame" x="157" y="84" width="60" height="60"/>
+                    <rect key="frame" x="157.5" y="84" width="60" height="60"/>
                     <constraints>
                         <constraint firstAttribute="width" constant="60" id="nzx-FK-Q7K"/>
                         <constraint firstAttribute="height" constant="60" id="ulu-57-DrH"/>
@@ -54,7 +55,7 @@
                     <nil key="highlightedColor"/>
                 </label>
                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="密码" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="7nw-U4-80f">
-                    <rect key="frame" x="20" y="241" width="30" height="25"/>
+                    <rect key="frame" x="20" y="240.5" width="30" height="25"/>
                     <constraints>
                         <constraint firstAttribute="height" constant="25" id="7UM-Uo-ZtW"/>
                         <constraint firstAttribute="width" constant="30" id="cW5-N1-eov"/>
@@ -84,24 +85,24 @@
                     </constraints>
                     <color key="textColor" red="0.20000000000000001" green="0.20000000000000001" blue="0.20000000000000001" alpha="1" colorSpace="calibratedRGB"/>
                     <fontDescription key="fontDescription" name="PingFangSC-Regular" family="PingFang SC" pointSize="14"/>
-                    <textInputTraits key="textInputTraits"/>
+                    <textInputTraits key="textInputTraits" keyboardType="phonePad" textContentType="tel"/>
                 </textField>
                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="dfH-v6-x90">
-                    <rect key="frame" x="20" y="227" width="335" height="1"/>
+                    <rect key="frame" x="20" y="227" width="335" height="0.5"/>
                     <color key="backgroundColor" red="0.8666666666666667" green="0.8666666666666667" blue="0.8666666666666667" alpha="1" colorSpace="calibratedRGB"/>
                     <constraints>
                         <constraint firstAttribute="height" constant="0.5" id="EL1-i2-co1"/>
                     </constraints>
                 </view>
                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="MSV-Vq-5YW">
-                    <rect key="frame" x="20" y="281" width="335" height="0.0"/>
+                    <rect key="frame" x="20" y="280.5" width="335" height="0.5"/>
                     <color key="backgroundColor" red="0.8666666666666667" green="0.8666666666666667" blue="0.8666666666666667" alpha="1" colorSpace="calibratedRGB"/>
                     <constraints>
                         <constraint firstAttribute="height" constant="0.5" id="6WJ-zn-N2q"/>
                     </constraints>
                 </view>
                 <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="输入密码" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="B0u-Z6-o3B">
-                    <rect key="frame" x="60" y="241" width="295" height="25"/>
+                    <rect key="frame" x="60" y="240.5" width="295" height="25"/>
                     <constraints>
                         <constraint firstAttribute="height" constant="25" id="xCu-w0-0Rl"/>
                     </constraints>

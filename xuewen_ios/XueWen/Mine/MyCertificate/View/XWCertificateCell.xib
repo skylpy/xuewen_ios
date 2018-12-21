@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="14109" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14088"/>
+        <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <customFonts key="customFonts">
+        <array key="PingFang.ttc">
+            <string>PingFangSC-Regular</string>
+        </array>
+    </customFonts>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="XWCertificateCellID" id="gTV-IL-0wX" customClass="XWCertificateCell">
+            <rect key="frame" x="0.0" y="0.0" width="76" height="106"/>
+            <autoresizingMask key="autoresizingMask"/>
+            <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
+                <rect key="frame" x="0.0" y="0.0" width="76" height="106"/>
+                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                <subviews>
+                    <imageView userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="inviteExpect" translatesAutoresizingMaskIntoConstraints="NO" id="4FR-8P-fDp">
+                        <rect key="frame" x="0.0" y="0.0" width="76" height="76"/>
+                        <constraints>
+                            <constraint firstAttribute="width" secondItem="4FR-8P-fDp" secondAttribute="height" multiplier="1:1" id="WjV-kj-7gc"/>
+                        </constraints>
+                    </imageView>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ofE-ks-J2r">
+                        <rect key="frame" x="0.0" y="86" width="76" height="10"/>
+                        <fontDescription key="fontDescription" name="PingFangSC-Regular" family="PingFang SC" pointSize="12"/>
+                        <nil key="textColor"/>
+                        <nil key="highlightedColor"/>
+                    </label>
+                </subviews>
+            </view>
+            <constraints>
+                <constraint firstItem="ofE-ks-J2r" firstAttribute="leading" secondItem="gTV-IL-0wX" secondAttribute="leading" id="C9e-9r-EM5"/>
+                <constraint firstAttribute="bottom" secondItem="ofE-ks-J2r" secondAttribute="bottom" constant="10" id="CIg-cY-Vwg"/>
+                <constraint firstItem="4FR-8P-fDp" firstAttribute="top" secondItem="gTV-IL-0wX" secondAttribute="top" id="KRn-cU-uoz"/>
+                <constraint firstItem="4FR-8P-fDp" firstAttribute="leading" secondItem="gTV-IL-0wX" secondAttribute="leading" id="Keb-Xk-v1V"/>
+                <constraint firstAttribute="trailing" secondItem="ofE-ks-J2r" secondAttribute="trailing" id="POb-7x-4II"/>
+                <constraint firstItem="ofE-ks-J2r" firstAttribute="top" secondItem="4FR-8P-fDp" secondAttribute="bottom" constant="10" id="UUO-kw-iWP"/>
+                <constraint firstAttribute="trailing" secondItem="4FR-8P-fDp" secondAttribute="trailing" id="uHG-L2-XEB"/>
+            </constraints>
+            <size key="customSize" width="76" height="106"/>
+            <connections>
+                <outlet property="iconImage" destination="4FR-8P-fDp" id="Eg0-w1-X6T"/>
+                <outlet property="titleLabel" destination="ofE-ks-J2r" id="5Ns-MV-JCO"/>
+            </connections>
+            <point key="canvasLocation" x="47" y="82"/>
+        </collectionViewCell>
+    </objects>
+    <resources>
+        <image name="inviteExpect" width="57" height="57"/>
+    </resources>
+</document>

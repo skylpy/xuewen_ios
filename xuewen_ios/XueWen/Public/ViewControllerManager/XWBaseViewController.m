@@ -8,6 +8,9 @@
 
 #import "XWBaseViewController.h"
 #import "MainNavigationViewController.h"
+#import <UMCommon/UMCommon.h>           // 公共组件是所有友盟产品的基础组件，必选
+#import <UMAnalytics/MobClick.h>
+
 @interface XWBaseViewController ()<UINavigationControllerDelegate>
 @end
 
@@ -51,6 +54,7 @@
         UIView *playerView = [XWAudioInstanceController getPlayerView];
         playerView.frame = CGRectMake(0, kHeight, kWidth, 50);
         [self.view addSubview:playerView];
+        [self.view bringSubviewToFront:playerView];
         [UIView animateWithDuration:0.25 animations:^{
             playerView.frame = CGRectMake(0, [self audioPlayerViewHieght], kWidth, 50);
             [XWAudioInstanceController shareInstance].origentFrame = playerView.frame;
@@ -136,13 +140,20 @@
     // 设置导航控制器的代理为self
     self.navigationController.delegate = self;
     self.automaticallyAdjustsScrollViewInsets = NO;
-    
+    NSString *pageName = NSStringFromClass([self class]);
+    NSLog(@"pageName is %@", pageName);
+    [MobClick beginLogPageView:NSStringFromClass([self class])];
+}
+
+- (void)viewDidAppear:(BOOL)animated{
+    [super viewDidAppear:animated];
     // 设置AudioPlayerView
     [self showAudioPlayerView];
 }
 
 - (void)viewWillDisappear:(BOOL)animated{
     [super viewWillDisappear:animated];
+    [MobClick endLogPageView:NSStringFromClass([self class])];
 }
 
 - (void)dealloc{

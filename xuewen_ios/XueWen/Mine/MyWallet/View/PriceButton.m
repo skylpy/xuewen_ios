@@ -30,7 +30,7 @@
 
 - (void)setPrice:(NSInteger)price{
     _price = price;
-    [self setTitle:[NSString stringWithFormat:@"%ld元",(long)price] forState:UIControlStateNormal];
+    [self setTitle:[NSString stringWithFormat:@"%ld学币",(long)price] forState:UIControlStateNormal];
 }
 
 - (void)setIsSelect:(BOOL)isSelect{

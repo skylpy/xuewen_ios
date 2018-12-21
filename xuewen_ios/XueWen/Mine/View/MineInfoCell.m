@@ -43,7 +43,17 @@
         case 0:{
             self.contentLabel.hidden = YES;
             self.headImage.hidden = NO;
-            [self.headImage sd_setImageWithURL:[NSURL URLWithString:content] placeholderImage:LoadImage(@"default_head")];
+            XWUserInfo *userInfo = [XWInstance shareInstance].userInfo;
+            UIImage *defaultImg = [[UIImage alloc] init];
+            if ([userInfo.sex isEqualToString:@"0"]){
+                defaultImg = DefaultImageGril;
+            }else{
+                defaultImg = DefaultImageBoy;
+            }
+            if ([kUserInfo.company.co_picture_all isEqualToString:content]) {
+                defaultImg = LoadImage(@"default_company");
+            }
+            [self.headImage sd_setImageWithURL:[NSURL URLWithString:content] placeholderImage:defaultImg];
         }break;
         case 1:{
             self.contentLabel.hidden = NO;

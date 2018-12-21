@@ -20,7 +20,7 @@
 @class BannerModel;
 @class LearningPlanModel;
 @class ProjectModel;
-@class InvitationedModel,XWMyPlanModel;
+@class InvitationedModel,XWMyPlanModel,RecordModel;
 typedef void(^XWCompleteBlock)(NSArray *array, NSInteger totalCount, BOOL isLast);
 
 @interface XWNetworking : NSObject
@@ -44,7 +44,7 @@ typedef void(^XWCompleteBlock)(NSArray *array, NSInteger totalCount, BOOL isLast
 /** 新的支付订单接口，2018.03.07以后使用这个接口 */
 + (void)purchaseOrderWithOrderID:(NSString *)orderID couponID:(NSString *)couponID completionBlock:(void(^)(BOOL succeed))completionBlock;
 /** 获取订单详情&&创建订单 */
-+ (void)creatOrderWithID:(NSString *)identifier type:(int)type completeBlock:(void (^)(float gold, OrderModel *order))completeBlock;
++ (void)creatOrderWithID:(NSString *)identifier type:(int)type isSuperOrg:(BOOL)isSuperOrg completeBlock:(void (^)(float gold, OrderModel *order))completeBlock;
 /** 获取我的优惠券列表 */
 + (void)getCouponListWithType:(NSString *)type page:(int)page completeBlock:(XWCompleteBlock)completeBlock;
 /** 根据专题ID获取专题详情 */
@@ -74,7 +74,7 @@ typedef void(^XWCompleteBlock)(NSArray *array, NSInteger totalCount, BOOL isLast
 /** 获取我的考试列表 */
 + (void)getMyTestListWithPage:(NSInteger)page completionBlock:(void (^)(NSArray<ExamModel *> *exams , BOOL isLast))completeBlock;
 /** 保存答题结果 */
-+ (void)saveTestResultWithCourseID:(NSString *)courseID rightCount:(NSInteger)rightCount errorCount:(NSInteger)errorCount score:(NSInteger)score questions:(NSArray<QuestionsModel *> *)questions completionBlock:(void (^)(id result))completeBlock;
++ (void)saveTestResultWithCourseID:(NSString *)courseID rightCount:(NSInteger)rightCount errorCount:(NSInteger)errorCount score:(NSInteger)score withTest:(BOOL)isTest questions:(NSArray<QuestionsModel *> *)questions completionBlock:(void (^)(id result))completeBlock;
 /** 根据试题ID获取试题 */
 + (void)getQuestionsListWithTestID:(NSString *)testID CompletionBlock:(void (^)(NSArray<QuestionsModel *> *questions))completeBlock;
 /** 搜索 */
@@ -89,7 +89,11 @@ typedef void(^XWCompleteBlock)(NSArray *array, NSInteger totalCount, BOOL isLast
 /** 交易列表 */
 + (void)getTransactionRecordWithType:(NSString *)type startTime:(NSTimeInterval)startTime endTime:(NSTimeInterval)endTime completionBlock:(void(^)(NSArray<TransactionModel *> *transactions, BOOL isLast))completionBlock;
 /** 更新视频观看时间 */
-+ (void)updateUserViewingRecordWithCourseID:(NSString *)courseID NodeID:(NSString *)nodeID watchTime:(NSInteger)time finished:(BOOL)finished completionBlock:(void(^)(BOOL succeed))completionBlock;
++ (void)updateUserViewingRecordWithCourseID:(NSString *)courseID NodeID:(NSString *)nodeID watchTime:(NSInteger)time finished:(BOOL)finished completionBlock:(void(^)(NSArray<QuestionsModel *> *questions))completionBlock;
+
+/** 新的更新视频观看时间 */
++ (void)updateNewUserViewingRecordWithCourseID:(NSString *)courseID NodeID:(NSString *)nodeID watchTime:(NSInteger)time finished:(BOOL)finished completionBlock:(void(^)(NSArray<RecordModel *> *questions))completionBlock;
+
 /** 取消订单 */
 + (void)deleteOrderOrderWithOrderID:(NSString *)orderID completionBlock:(void(^)(BOOL succeed))completionBlock;
 /** 购买专题 */
@@ -130,7 +134,8 @@ typedef void(^XWCompleteBlock)(NSArray *array, NSInteger totalCount, BOOL isLast
 /** 获取账号信息 */
 + (void)getAccountInfoWithCompletionBlock:(void(^)(NSString *status))completeBlock;
 
-
+/** 获取发现轮播图 */
++ (void)getFindBannerImagesWithCompleteBlock:(void (^)(NSArray<BannerModel *> *banners))completeBlock;
 
 /** 登陆 */
 + (void)loginWithAccount:(NSString *)account password:(NSString *)password completionBlock:(void(^)(NSString *status))completeBlock;

@@ -11,6 +11,7 @@
 @interface MyWalletHeaderView : UIImageView
 
 @property (nonatomic, strong) NSString *money;
+@property (nonatomic, strong) UILabel *countLabel;
 
 - (instancetype)initWithTarget:(id)target backAction:(SEL)backAction detailAction:(SEL)detailAction;
 

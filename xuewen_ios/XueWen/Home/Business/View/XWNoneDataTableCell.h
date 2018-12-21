@@ -9,5 +9,6 @@
 #import <UIKit/UIKit.h>
 
 @interface XWNoneDataTableCell : UITableViewCell
+@property (weak, nonatomic) IBOutlet UILabel *infoLabel;
 
 @end

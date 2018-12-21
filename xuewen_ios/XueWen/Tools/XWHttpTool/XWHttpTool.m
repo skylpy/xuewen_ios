@@ -8,7 +8,6 @@
 
 #import "XWHttpTool.h"
 #import "XWHttpSessionManager.h"
-#import "XWArticleModel.h"
 #import "XWHttpBaseModel.h"
 #import "XWAudioCoursModel.h"
 #import "XWNotesModel.h"
@@ -17,6 +16,14 @@
 #import "XWLearningModel.h"
 #import "XWCompanyCoursModel.h"
 #import "XWCountPlayTimeModel.h"
+#import "XWIncomeModel.h"
+#import "XWTransactionListModel.h"
+#import "XWTransactionRecordModel.h"
+#import "XWOrgManagerModel.h"
+#import "XWDepartmentListModel.h"
+#import "XWStaffInfoModel.h"
+#import "XWLabelModel.h"
+#import "XWDiscountModel.h"
 
 #define PageSize  @"10"
 static NSInteger page = 1;
@@ -27,13 +34,15 @@ static NSInteger learnPage = 1;
 static NSInteger CompanyCoursePage = 1;
 static NSInteger CountPlayTimePage = 1;
 static NSInteger TargetPage = 1;
-
+static NSInteger incomePage = 1;
+static NSInteger TransactionPage = 1;
+static NSInteger OrgPage = 1;
 @implementation XWHttpTool
 
 #pragma mark - 新版首页
 
 /** 近期上线和热门课程*/
-+ (void)getCourseIndexWithOrderType:(NSString *)order_type success:(XWSuccessBlock)success failure:(XWFailureBlock)failure {
++ (void)getCourseIndexWithOrderType:(NSString *)order_type success:(void (^)(NSMutableArray *, BOOL, NSMutableArray *))success failure:(XWFailureBlock)failure {
     ParmDict
     [dict setValue:order_type forKey:@"order_type"];
     
@@ -63,21 +72,15 @@ static NSInteger TargetPage = 1;
         if (hModle.hitCourse == nil) {
             hModle.hitCourse = [[XWCourseIndexModel alloc] init];
         }
+        NSArray *labelArray = [NSArray modelArrayWithClass:[XWCourseLabelModel class] json:model.data[@"thematic_name"]];
         if ([order_type isEqualToString:@"3"]) { // 最新版首页返回的数据
             // 免费课程
             [dataArray addObject:hModle.freeCourse];
             [dataArray addObject:popular];
             [dataArray addObject:hModle.hitCourse];
             [dataArray addObject:newCourse];
-        }else{ // 老首页返回的数据
-            // 热点资讯
-            NSArray *article = [NSArray modelArrayWithClass:[XWArticleModel class] json:hModle.article.results];
-            
-            [dataArray addObject:popular];
-            [dataArray addObject:newCourse];
-            [dataArray addObject:article];
         }
-        !success ? : success(dataArray, YES);
+        !success ? : success(dataArray, YES, [labelArray mutableCopy]);
     } failure:failure];
 }
 
@@ -89,7 +92,7 @@ static NSInteger TargetPage = 1;
     } failure:failure];
 }
 
-/** 猜你喜欢*/
+/** 为你推荐*/
 + (void)getLickCourseWith:(NSString *)size isFirstLoad:(BOOL)isFirstLoad success:(XWSuccessBlock)success failure:(XWFailureBlock)failure {
     ParmDict
     [dict setValue:size forKey:@"size"];
@@ -111,36 +114,6 @@ static NSInteger TargetPage = 1;
         !success ? : success([array mutableCopy], isLast);
     } failure:failure];
 
-}
-
-/** 文章-获取列表*/
-+ (void)getArticleListWithIsFirstLoad:(BOOL)isFirstLoad title:(NSString *)title success:(XWSuccessBlock)success failure:(XWFailureBlock)failure{
-    ParmDict
-    [dict setValue:PageSize forKey:@"size"];
-    [dict setValue:title forKey:@"title"];
-    if (isFirstLoad) {
-        page = 1;
-    }else{
-        page++;
-    }
-    [dict setValue:@(page) forKey:@"page"];
-    
-    [XWHttpBaseModel BGET:BASE_URL(Article) parameters:dict extra:kShowProgress success:^(XWHttpBaseModel *model) {
-        XWHttpModel *bModel = [XWHttpModel modelWithJSON:model.data];
-        NSArray *data = [NSArray modelArrayWithClass:[XWArticleContentModel class] json:bModel.results];
-        NSInteger currentPage = [bModel.currentPage integerValue];
-        NSInteger lastPage = [bModel.lastPage integerValue];
-        !success ? : success([data mutableCopy], currentPage >= lastPage);
-    } failure:failure];
-    
-}
-
-/** 文章-获取单个文章*/
-+ (void)getArticleContentWith:(NSString *)articleId success:(void (^)(XWArticleContentModel *))success failure:(XWFailureBlock)failure{
-    [XWHttpBaseModel BGET:kBASE_URL(Article, articleId) parameters:nil extra:kShowProgress success:^(XWHttpBaseModel *model) {
-        XWArticleContentModel *contentModel = [XWArticleContentModel modelWithJSON:model.data];
-        !success ? : success(contentModel);
-    } failure:failure];
 }
 
 #pragma mark - 音频列表
@@ -170,7 +143,7 @@ static NSInteger TargetPage = 1;
 /** 查询一个课程详情*/
 + (void)getCourseDetailWithCourseID:(NSString *)courseID success:(void (^)(XWCoursInfoModel *))success failure:(XWFailureBlock)failure{
     
-    [XWHttpBaseModel BGET:kBASE_URL(Cours, courseID) parameters:nil extra:kShowProgress success:^(XWHttpBaseModel *model) {
+    [XWHttpBaseModel BGET:kBASE_URL(Cours, courseID) parameters:nil extra:0 success:^(XWHttpBaseModel *model) {
         XWCoursInfoModel *infoModel = [XWCoursInfoModel modelWithJSON:model.data];
         !success ? : success(infoModel);
     } failure:^(NSString *error) {
@@ -222,7 +195,7 @@ static NSInteger TargetPage = 1;
 + (void)postCouresNodePlayWithNodeId:(NSString *)nodeId{
     ParmDict
     [dict setValue:nodeId forKey:@"node_id"];
-    [XWHttpBaseModel BPOST:BASE_URL(PlayCourseNodePlay) parameters:dict extra:kShowProgress success:^(XWHttpBaseModel *model) {
+    [XWHttpBaseModel BPOST:BASE_URL(PlayCourseNodePlay) parameters:dict extra:0 success:^(XWHttpBaseModel *model) {
         
     } failure:^(NSString *error) {
         
@@ -249,9 +222,9 @@ static NSInteger TargetPage = 1;
     [dict setValue:orderType forKey:@"order_type"];
     [dict setValue:@"10" forKey:@"size"];
     [dict setValue:@(nearPage) forKey:@"page"];
-//    if (![popularOrder isEqualToString:@""] && popularOrder != nil) {
-//        [dict setValue:popularOrder forKey:@"popular_order"];
-//    }
+    if (![popularOrder isEqualToString:@""] && popularOrder != nil) {
+        [dict setValue:popularOrder forKey:@"popular_order"];
+    }
     
     
     [XWHttpBaseModel BGET:BASE_URL(CourseIndex) parameters:dict extra:kShowProgress success:^(XWHttpBaseModel *model) {
@@ -291,19 +264,23 @@ static NSInteger TargetPage = 1;
 }
 
 /** 个人课程标签*/
-+ (void)getRecommendCourseWith:(NSString *)courseId success:(void (^)(NSMutableArray *))success failure:(XWFailureBlock)failure{
++ (void)getRecommendCourseWith:(NSString *)courseId withTestId:(NSString *)testId withT:(BOOL)isTest success:(void (^)(NSMutableArray *))success failure:(XWFailureBlock)failure{
+    NSString * atid = isTest?testId:@"0";
     ParmDict
-    [dict setValue:@(10) forKey:@"size"];
+    [dict setValue:@"10" forKey:@"size"];
+    [dict setValue:atid forKey:@"a_t_id"];
     [XWHttpBaseModel BGET:kBASE_URL(RecommendCourse, courseId) parameters:dict extra:kShowProgress success:^(XWHttpBaseModel *model) {
         XWHttpModel *httpModel = [XWHttpModel modelWithJSON:model.data];
         NSArray *dataArray = [NSArray modelArrayWithClass:[XWRecommendCourseModel class] json:httpModel.results];
         !success ? : success([dataArray mutableCopy]);
-    } failure:failure];
+    } failure:^(NSString *error) {
+        
+    }];
 }
 
 #pragma mark - 商学院
 /** 大家在学*/
-+ (void)getLearningDataWithIsFirstLoad:(BOOL)isFirstLoad size:(NSString *)size success:(XWSuccessBlock)success failure:(XWFailureBlock)failure{
++ (void)getLearningDataWithIsFirstLoad:(BOOL)isFirstLoad size:(NSString *)size success:(XWSuccessBlock)success failure:(XWFailureBlock)failure companyId:(NSString *)companyId{
     if (isFirstLoad) {
         learnPage = 1;
     }else{
@@ -312,7 +289,7 @@ static NSInteger TargetPage = 1;
     ParmDict
     [dict setValue:size forKey:@"size"];
     [dict setValue:@(learnPage) forKey:@"page"];
-    
+    [dict setValue:companyId forKey:@"company_id"];
     [XWHttpBaseModel BGET:BASE_URL(GetLearning) parameters:dict extra:kShowProgress success:^(XWHttpBaseModel *model) {
         XWHttpModel *httpModel = [XWHttpModel modelWithJSON:model.data];
         NSInteger currentPage = [httpModel.currentPage integerValue];
@@ -325,7 +302,7 @@ static NSInteger TargetPage = 1;
 }
 
 /** 企业课程列表*/
-+ (void)getCompanyCourseWithIsFirstLoad:(BOOL)isFirstLoad size:(NSString *)size success:(XWSuccessBlock)success failure:(XWFailureBlock)failure{
++ (void)getCompanyCourseWithIsFirstLoad:(BOOL)isFirstLoad size:(NSString *)size success:(XWSuccessBlock)success failure:(XWFailureBlock)failure companyId:(NSString *)companyId{
     if (isFirstLoad) {
         CompanyCoursePage = 1;
     }else{
@@ -334,6 +311,7 @@ static NSInteger TargetPage = 1;
     ParmDict
     [dict setValue:size forKey:@"size"];
     [dict setValue:@(CompanyCoursePage) forKey:@"page"];
+    [dict setValue:companyId forKey:@"company_id"];
     [XWHttpBaseModel BGET:BASE_URL(CompanyCourse) parameters:dict extra:kShowProgress success:^(XWHttpBaseModel *model) {
         XWHttpModel *httpModel = [XWHttpModel modelWithJSON:model.data];
         NSInteger currentPage = [httpModel.currentPage integerValue];
@@ -357,7 +335,7 @@ static NSInteger TargetPage = 1;
 }
 
 /** 商学院学习排名*/
-+ (void)getCountPlayTimeWithOrderType:(NSString *)orderType isFirstLoad:(BOOL)isFirstLoad success:(void (^)(NSMutableArray *, BOOL,  XWCountPlayTimeModel*))success failure:(XWFailureBlock)failure size:(NSString *)size{
++ (void)getCountPlayTimeWithOrderType:(NSString *)orderType isFirstLoad:(BOOL)isFirstLoad success:(void (^)(NSMutableArray *, BOOL,  XWCountPlayTimeModel*))success failure:(XWFailureBlock)failure size:(NSString *)size companyId:(NSString *)companyId{
     if (isFirstLoad) {
         CountPlayTimePage = 1;
     }else{
@@ -367,6 +345,7 @@ static NSInteger TargetPage = 1;
     [dict setValue:orderType forKey:@"order_type"];
     [dict setValue:size forKey:@"size"];
     [dict setValue:@(CountPlayTimePage) forKey:@"page"];
+    [dict setValue:companyId forKey:@"company_id"];
     
     [XWHttpBaseModel BGET:BASE_URL(Countplaytime) parameters:dict extra:kShowProgress success:^(XWHttpBaseModel *model) {
 //        NSLog(@"data is %@", model.data);
@@ -383,7 +362,7 @@ static NSInteger TargetPage = 1;
 }
 
 /** 目标排名*/
-+ (void)getTargetDataWith:(BOOL)isFirstLoad type:(NSString *)type success:(void (^)(NSMutableArray *, BOOL, XWTargetRankModel *))success failure:(XWFailureBlock)failure size:(NSString *)size{
++ (void)getTargetDataWith:(BOOL)isFirstLoad type:(NSString *)type success:(void (^)(NSMutableArray *, BOOL, XWTargetRankModel *))success failure:(XWFailureBlock)failure size:(NSString *)size companyId:(NSString *)companyId{
     if (isFirstLoad) {
         TargetPage = 1;
     }else{
@@ -394,6 +373,8 @@ static NSInteger TargetPage = 1;
     [dict setValue:type forKey:@"type"];
     [dict setValue:size forKey:@"size"];
     [dict setValue:@(TargetPage) forKey:@"page"];
+    [dict setValue:companyId forKey:@"company_id"];
+    
     [XWHttpBaseModel BGET:BASE_URL(GetTargetData) parameters:dict extra:kShowProgress success:^(XWHttpBaseModel *model) {
 //        NSLog(@"data is %@", model.data);
         XWHttpModel *httpModel = [XWHttpModel modelWithJSON:model.data[@"admin_user"]];
@@ -448,18 +429,356 @@ static NSInteger TargetPage = 1;
     }];
 }
 
+/** 获取商学院名称*/
++ (void)getCollegeName{
+    [XWHttpBaseModel BGET:BASE_URL(CollegeName) parameters:nil extra:0 success:^(XWHttpBaseModel *model) {
+        NSLog(@"collegeName is %@", model.data[@"college_name"]);
+        [XWInstance shareInstance].collegeName = model.data[@"college_name"];
+    } failure:^(NSString *error) {
+        
+    }];
+}
 
+#pragma mark - 红包提现相关
 
+/** 红包收益与佣金收益*/
++ (void)getBonusesEarningsWithType:(NSString *)type isFirstLoad:(BOOL)isFirstLoad date:(NSString *)date success:(void (^)(NSMutableArray *, BOOL, NSString *))success failure:(XWFailureBlock)failure{
+    if (isFirstLoad) {
+        incomePage = 1;
+    }else{
+        incomePage ++;
+    }
+    
+    ParmDict
+    [dict setValue:type forKey:@"type"];
+    [dict setValue:PageSize forKey:@"size"];
+    [dict setValue:@(incomePage) forKey:@"page"];
+    [dict setValue:date forKey:@"years"];
+    
+    [XWHttpBaseModel BGET:BASE_URL(BonusesEarnings) parameters:dict extra:0 success:^(XWHttpBaseModel *model) {
+        NSString *key;
+        if ([type isEqualToString:@"2"]) {
+            key = @"commission_record";
+        }else{
+            key = @"bonusesrecord";
+        }
+        XWHttpModel *httpModel = [XWHttpModel modelWithJSON:model.data[key]];
+        NSArray *array = [NSArray modelArrayWithClass:[XWIncomeModel class] json:httpModel.results];
+        NSString *earnings = model.data[@"price"];
+        !success ? : success([array mutableCopy], [httpModel.currentPage integerValue] >= [httpModel.lastPage integerValue], earnings);
+    } failure:^(NSString *error) {
+        !failure ? : failure(error);
+    }];
+}
 
+/** 提现记录*/
++ (void)getMyTransactionListWithIsFirstLoad:(BOOL)isFirstLoad success:(XWSuccessBlock)success failure:(XWFailureBlock)failure{
+    ParmDict
+    if (isFirstLoad) {
+        TransactionPage = 1;
+    }else{
+        TransactionPage ++;
+    }
+    [dict setValue:PageSize forKey:@"size"];
+    [dict setValue:@(TransactionPage) forKey:@"page"];
+    [XWHttpBaseModel BGET:BASE_URL(MyTransactionList) parameters:dict extra:0 success:^(XWHttpBaseModel *model) {
+        XWHttpModel *http = [XWHttpModel modelWithJSON:model.data];
+        NSArray *array = [NSArray modelArrayWithClass:[XWTransactionListModel class] json:http.results];
+        !success ? : success([array mutableCopy], [http.currentPage integerValue] >= [http.lastPage integerValue]);
+    } failure:^(NSString *error) {
+        !failure ? : failure(error);
+    }];
+}
 
+/** 获取提现账号跟可提现金额*/
++ (void)getPayeeAccountSuccess:(void (^)(NSString *, NSString *))success failure:(XWFailureBlock)failure{
+    [XWHttpBaseModel BGET:BASE_URL(GetPayeeAccount) parameters:nil extra:0 success:^(XWHttpBaseModel *model) {
+        !success ? : success(model.data[@"bonuses_price"], model.data[@"payee_account"]);
+    } failure:^(NSString *error) {
+        !failure ? : failure(error);
+    }];
+}
 
+/** 生成提现订单/提交提现申请*/
++ (void)createTransactionRecordWithPrice:(NSString *)price success:(void (^)(XWTransactionRecordModel *))success failure:(XWFailureBlock)failure{
+    ParmDict
+    [dict setValue:price forKey:@"price"];
+    
+    [XWHttpBaseModel BPOST:BASE_URL(CreateTransactionRecord) parameters:dict extra:0 success:^(XWHttpBaseModel *model) {
+        XWTransactionRecordModel *record = [XWTransactionRecordModel modelWithJSON:model.data];
+        !success ? : success(record);
+    } failure:^(NSString *error) {
+        !failure ? : failure(error);
+    }];
+}
 
+/** 绑定支付宝账号*/
++ (void)bindingAccountWithAccount:(NSString *)account realName:(NSString *)realName success:(void (^)(void))success failure:(XWFailureBlock)failure{
+    ParmDict
+    [dict setValue:account forKey:@"payee_account"];
+    [dict setValue:realName forKey:@"real_name"];
+    [XWHttpBaseModel BPOST:BASE_URL(BindingAccount) parameters:dict extra:0 success:^(XWHttpBaseModel *model) {
+        !success ? : success();
+    } failure:^(NSString *error) {
+        !failure ? : failure(error);
+    }];
+}
 
+/** 首页测一测和强推学院*/
++ (void)getJobCollegeSuccess:(void (^)(NSString *, NSMutableArray *))success failure:(XWFailureBlock)failure{
+    [XWHttpBaseModel BGET:BASE_URL(GetJobCollege) parameters:nil extra:0 success:^(XWHttpBaseModel *model) {
+        NSArray *dataSource = [NSArray modelArrayWithClass:[XWCourseLabelModel class] json:model.data[@"college"]];
+        NSString *picture = model.data[@"job"][0][@"picture"];
+        !success ? : success(picture, [dataSource mutableCopy]);
+    } failure:failure];
+}
 
+/** 测一测推荐课程*/
++ (void)getTestRecommendCourseWithTestId:(NSString *)testId success:(XWSuccessBlock)success failure:(XWFailureBlock)failure{
+    ParmDict
+    [dict setValue:testId forKey:@"test_id"];
+    [dict setValue:@"10" forKey:@"size"];
+    [dict setValue:@"1" forKey:@"page"];
+    
+    [XWHttpBaseModel BGET:BASE_URL(GetRecommendCourse) parameters:dict extra:0 success:^(XWHttpBaseModel *model) {
+        XWHttpModel *httpModel = [XWHttpModel modelWithJSON:model.data];
+        NSArray *dataArray = [NSArray modelArrayWithClass:[XWRecommendCourseModel class] json:httpModel.results];
+        !success ? : success([dataArray mutableCopy], YES);
+    } failure:failure];
+}
 
+#pragma mark - 轮播图管理
++ (void)addShufflingFigureWithPictureUrl:(NSString *)pictureUrl pictureLink:(NSString *)pictureLink success:(void (^)(void))success failure:(void (^)(NSString *))failure {
+    
+    ParmDict
+    [dict setValue:@"2" forKey:@"type"];
+    [dict setValue:@"1" forKey:@"picture_sort"];
+    [dict setValue:pictureUrl forKey:@"picture_url"];
+    if (pictureLink != nil && ![pictureLink isEqualToString:@""]) {
+        [dict setValue:pictureLink forKey:@"picture_link"];
+    }
+    
+    [XWHttpBaseModel BPOST:BASE_URL(ShufflingFigure) parameters:dict extra:0 success:^(XWHttpBaseModel *model) {
+        !success ? : success();
+    } failure:^(NSString *error) {
+        !failure ? : failure(error);
+    }];
+}
 
+/** 单个修改轮播图*/
++ (void)putShufflingFigureWithPictureUrl:(NSString *)pictureUrl pictureLink:(NSString *)pictureLink pictureSort:(NSString *)pictureSort bannerId:(NSString *)bannerId success:(void (^)(void))success failure:(void (^)(NSString *))failure {
+    ParmDict
+    [dict setValue:@"2" forKey:@"type"];
+    [dict setValue:pictureSort forKey:@"picture_sort"];
+    [dict setValue:pictureUrl forKey:@"picture_url"];
+    [dict setValue:pictureLink forKey:@"picture_link"];
 
+    [XWHttpBaseModel BPUT:kBASE_URL(FigurePut, bannerId) parameters:dict extra:0 success:^(XWHttpBaseModel *model) {
+        !success ? : success();
+    } failure:^(NSString *error) {
+        !failure ? : failure(error);
+    }];
+}
 
+#pragma mark - 组织管理
+/** 组织管理 - 账号列表*/
++ (void)getAdminUserListWithCompanyId:(NSString *)companyId success:(void (^)(NSMutableArray *))success failure:(void (^)(NSString *))failure {
+    ParmDict
+    [dict setValue:companyId forKey:@"company_id"];
+    [dict setValue:@"1" forKey:@"page"];
+    [dict setValue:@"999" forKey:@"size"];
+    [XWHttpBaseModel BGET:BASE_URL(AccountInfo) parameters:dict extra:0 success:^(XWHttpBaseModel *model) {
+        XWHttpModel *http = [XWHttpModel modelWithJSON:model.data];
+        NSArray *array = [NSArray modelArrayWithClass:[XWOrgManagerModel class] json:http.results];
+        !success ? : success([array mutableCopy]);
+    } failure:^(NSString *error) {
+        !failure ? : failure(error);
+    }];
+}
 
+/** 搜索账号*/
++ (void)searchAdminUserWithName:(NSString *)name success:(void (^)(NSMutableArray *, BOOL))success failure:(void (^)(NSString *))failure isFirstLoad:(BOOL)isFirstLoad {
+    ParmDict
+    [dict setValue:name forKey:@"name"];
+    [dict setValue:@"10" forKey:@"size"];
+    [dict setValue:kUserInfo.company_id forKey:@"company_id"];
+    
+    if (isFirstLoad) {
+        OrgPage = 1;
+    }else {
+        OrgPage ++;
+    }
+    [dict setValue:@(OrgPage) forKey:@"page"];
+    
+    [XWHttpBaseModel BGET:BASE_URL(AccountInfo) parameters:dict extra:0 success:^(XWHttpBaseModel *model) {
+        XWHttpModel *http = [XWHttpModel modelWithJSON:model.data];
+        NSArray *array = [NSArray modelArrayWithClass:[XWOrgManagerModel class] json:http.results];
+        !success ? : success([array mutableCopy], [http.currentPage integerValue] >= [http.lastPage integerValue]);
+    } failure:^(NSString *error) {
+        !failure ? : failure(error);
+    }];
+}
+
+/** 查询公司组织*/
++ (void)getCompanyDepartmentWithCompanyID:(NSString *)companyId dId:(NSString *)dId success:(void (^)(XWDepartmentListModel *))success failure:(void (^)(NSString *))failure {
+    ParmDict
+    [dict setValue:companyId forKey:@"id"];
+    [dict setValue:dId forKey:@"d_id"];
+    
+    [XWHttpBaseModel BGET:BASE_URL(CompanyDepartment) parameters:dict extra:0 success:^(XWHttpBaseModel *model) {
+        XWDepartmentListModel *data = [XWDepartmentListModel modelWithJSON:model.data];
+        !success ? : success(data);
+    } failure:^(NSString *error) {
+        !failure ? : failure(error);
+    }];
+}
+
+/** 添加组织*/
++ (void)addDepartmentWithName:(NSString *)name pid:(NSString *)pid success:(void (^)(void))success failure:(void (^)(NSString *))failure {
+    ParmDict
+    [dict setValue:name forKey:@"department_name"];
+    [dict setValue:pid forKey:@"pid"];
+    
+    [XWHttpBaseModel BPOST:BASE_URL(CompanyDepartment1) parameters:dict extra:0 success:^(XWHttpBaseModel *model) {
+        !success ? : success();
+    } failure:^(NSString *error) {
+        !failure ? : failure(error);
+    }];
+}
+
+/** 删除组织*/
++ (void)deleteDepartmentWithId:(NSString *)oid success:(void (^)(void))success failure:(void (^)(NSString *))failure {
+    
+    [XWHttpBaseModel BDELETE:kBASE_URL(CompanyDepartment1, oid) parameters:nil extra:0 success:^(XWHttpBaseModel *model) {
+        !success ? : success();
+    } failure:^(NSString *error) {
+        !failure ? : failure(error);
+    }];
+}
+
+/** 修改组织*/
++ (void)changeDepartmentWithId:(NSString *)oid name:(NSString *)name success:(void (^)(void))success failure:(void (^)(NSString *))failure {
+    ParmDict
+    [dict setValue:name forKey:@"department_name"];
+    
+    [XWHttpBaseModel BPUT:kBASE_URL(CompanyDepartment1, oid) parameters:dict extra:0 success:^(XWHttpBaseModel *model) {
+        !success ? : success();
+    } failure:^(NSString *error) {
+        !failure ? :failure(error);
+    }];
+}
+
+/** 员工详情*/
++ (void)getStaffInfoWithUserId:(NSString *)userId success:(void (^)(XWStaffInfoModel *))success failure:(void (^)(NSString *))failure {
+    
+    [XWHttpBaseModel BGET:kBASE_URL(AccountInfo, userId) parameters:nil extra:0 success:^(XWHttpBaseModel *model) {
+        XWStaffInfoModel *data = [XWStaffInfoModel modelWithJSON:model.data];
+        !success ? : success(data);
+    } failure:^(NSString *error) {
+        !failure ? : failure(error);
+    }];
+}
+
+/** 课程标签*/
++ (void)getLabelListWithLabelId:(NSString *)labelId success:(void (^)(NSMutableArray *))success failure:(void (^)(NSString *))failure {
+    ParmDict
+    [dict setObject:labelId forKey:@"label_id"];
+    
+    [XWHttpBaseModel BGET:BASE_URL(CoursLabel) parameters:dict extra:0 success:^(XWHttpBaseModel *model) {
+        NSArray *array = [NSArray modelArrayWithClass:[XWLabelModel class] json:model.data[@"children"]];
+        !success ? : success([array mutableCopy]);
+    } failure:^(NSString *error) {
+        !failure ? : failure(error);
+    }];
+}
+
+/** 创建子用户*/
++ (void)createUserWithName:(NSString *)name password:(NSString *)password phone:(NSString *)phone departmentId:(NSString *)departmentId lableId:(NSString *)lableId post:(NSString *)post success:(void (^)(void))success failure:(void (^)(NSString *))failure {
+    ParmDict
+    [dict setValue:name forKey:@"name"];
+    [dict setValue:password forKey:@"password"];
+    [dict setValue:phone forKey:@"phone"];
+    [dict setValue:departmentId forKey:@"department_id"];
+    [dict setValue:lableId forKey:@"lable_id"];
+    [dict setValue:kUserInfo.company_id forKey:@"company_id"];
+    [dict setValue:post forKey:@"post"];
+    
+    [XWHttpBaseModel BPOST:BASE_URL(AccountInfo) parameters:dict extra:0 success:^(XWHttpBaseModel *model) {
+        !success ? : success();
+    } failure:^(NSString *error) {
+        !failure ? : failure(error);
+    }];
+}
+
+/** 更新账号数据*/
++ (void)updateUserInfoWithKey:(NSString *)key value:(NSString *)value userId:(NSString *)userId success:(void (^)(void))success failure:(void (^)(NSString *))failure {
+    ParmDict
+    [dict setValue:value forKey:key];
+    
+    [XWHttpBaseModel BPUT:kBASE_URL(AccountInfo, userId) parameters:dict extra:0 success:^(XWHttpBaseModel *model) {
+        !success ? : success();
+    } failure:^(NSString *error) {
+        !failure ? : failure(error);
+    }];
+}
+
+/** 赠送金币*/
++ (void)giveGoldWithToUserId:(NSString *)toUserId gold:(NSString *)gold success:(void (^)(void))success failure:(void (^)(NSString *))failure {
+    ParmDict
+    [dict setValue:toUserId forKey:@"to_user_id"];
+    [dict setValue:gold forKey:@"gold"];
+    [dict setValue:kUserInfo.company_id forKey:@"company_id"];
+    
+    [XWHttpBaseModel BPOST:BASE_URL(GiveGold) parameters:dict extra:0 success:^(XWHttpBaseModel *model) {
+        !success ? : success();
+    } failure:^(NSString *error) {
+        !failure ? : failure(error);
+    }];
+    
+}
+
+/** 优惠券列表*/
++ (void)getDiscountListSuccess:(void (^)(NSMutableArray *))success failure:(void (^)(NSString *))failure {
+    ParmDict
+    [dict setValue:kUserInfo.company_id forKey:@"company_id"];
+    [dict setValue:@"1" forKey:@"type"];
+    [dict setValue:@"15" forKey:@"size"];
+    
+    [XWHttpBaseModel BGET:BASE_URL(UserCoupon) parameters:dict extra:0 success:^(XWHttpBaseModel *model) {
+        NSArray *dataSource = [NSArray modelArrayWithClass:[XWDiscountModel class] json:model.data[@"data"]];
+        !success ? : success([dataSource mutableCopy]);
+    } failure:^(NSString *error) {
+        !failure ? : failure(error);
+    }];
+    
+}
+
+/** 赠送优惠券*/
++ (void)giveCouponWithUserID:(NSString *)userId couponId:(NSString *)couponId couponPrice:(NSString *)couponPrice success:(void (^)(void))success failure:(void (^)(NSString *))failure {
+    ParmDict
+    [dict setValue:userId forKey:@"user_id"];
+    [dict setValue:couponId forKey:@"coupon_id"];
+    [dict setValue:couponPrice forKey:@"coupon_price"];
+    
+    [XWHttpBaseModel BPOST:BASE_URL(CompanyCoupon) parameters:dict extra:0 success:^(XWHttpBaseModel *model) {
+        !success ? : success();
+    } failure:^(NSString *error) {
+        !failure ? : failure(error);
+    }];
+}
+
+/** 获取部门列表*/
++ (void)getDepartmentListWithCompanyId:(NSString *)companyId did:(NSString *)did success:(void (^)(XWDepartmentModel *))success failure:(void (^)(NSString *))failure {
+    ParmDict
+    [dict setValue:companyId forKey:@"id"];
+    [dict setValue:did forKey:@"d_id"];
+    [XWHttpBaseModel BGET:BASE_URL(CompanyDepartment1) parameters:dict extra:0 success:^(XWHttpBaseModel *model) {
+        NSArray *array = [NSArray modelArrayWithClass:[XWDepartmentModel class] json:model.data];
+        XWDepartmentModel *department = [array firstObject];
+        !success ? : success(department);
+    } failure:^(NSString *error) {
+        !failure ? : failure(error);
+    }];
+}
 
 @end

@@ -24,7 +24,8 @@
              @"oid"     : @"id",
              @"company" : @"profile",
              @"picture" : @"picture_all",
-             @"label_id": @"lable_id"
+             @"label_id": @"lable_id",
+             @"n_role_id" : @"new_role_id"
              };
 }
 
@@ -40,12 +41,14 @@
 - (void)encodeWithCoder:(NSCoder *)aCoder{
     [aCoder encodeObject:self.oid               forKey:@"oid"];
     [aCoder encodeObject:self.role_id           forKey:@"role_id"];
+    [aCoder encodeObject:self.n_role_id         forKey:@"n_role_id"];
     [aCoder encodeObject:self.department_id     forKey:@"department_id"];
     [aCoder encodeObject:self.account           forKey:@"account"];
     [aCoder encodeObject:self.company_id        forKey:@"company_id"];
     [aCoder encodeObject:self.status            forKey:@"status"];
     [aCoder encodeObject:self.pid               forKey:@"pid"];
     [aCoder encodeObject:self.gold              forKey:@"gold"];
+    [aCoder encodeObject:self.earnings_price    forKey:@"earnings_price"];
     [aCoder encodeObject:self.create_time       forKey:@"create_time"];
     [aCoder encodeObject:self.phone             forKey:@"phone"];
     [aCoder encodeObject:self.name              forKey:@"name"];
@@ -62,18 +65,22 @@
     [aCoder encodeObject:self.company           forKey:@"company"];
     [aCoder encodeObject:self.label_id          forKey:@"label_id"];
     [aCoder encodeBool:self.personal            forKey:@"personal"];
+    [aCoder encodeObject:self.company_status    forKey:@"company_status"];
+    [aCoder encodeObject:self.company_gold    forKey:@"company_gold"];
 }
 
 - (id)initWithCoder:(NSCoder *)aDecoder{
     if (self = [super init]) {
         self.oid =              [aDecoder decodeObjectForKey:@"oid"];
         self.role_id =          [aDecoder decodeObjectForKey:@"role_id"];
+        self.n_role_id =        [aDecoder decodeObjectForKey:@"n_role_id"];
         self.department_id =    [aDecoder decodeObjectForKey:@"department_id"];
         self.account =          [aDecoder decodeObjectForKey:@"account"];
         self.company_id =       [aDecoder decodeObjectForKey:@"company_id"];
         self.status =           [aDecoder decodeObjectForKey:@"status"];
         self.pid =              [aDecoder decodeObjectForKey:@"pid"];
         self.gold =             [aDecoder decodeObjectForKey:@"gold"];
+        self.earnings_price =   [aDecoder decodeObjectForKey:@"earnings_price"];
         self.create_time =      [aDecoder decodeObjectForKey:@"create_time"];
         self.phone =            [aDecoder decodeObjectForKey:@"phone"];
         self.name =             [aDecoder decodeObjectForKey:@"name"];
@@ -90,6 +97,8 @@
         self.company =          [aDecoder decodeObjectForKey:@"company"];
         self.label_id =         [aDecoder decodeObjectForKey:@"label_id"];
         self.personal =         [aDecoder decodeBoolForKey:@"personal"];
+        self.company_status =   [aDecoder decodeObjectForKey:@"company_status"];
+        self.company_gold =   [aDecoder decodeObjectForKey:@"company_gold"];
     }
     return self;
 }

@@ -13,6 +13,9 @@
 #import "XWPopupWindow.h"
 #import "Analytics.h"
 #import "XWLastTimeView.h"
+#import "XWCustomPopView.h"
+#import "ClassTestViewController.h"
+#import "QuestionsModel.h"
 
 @interface XWVideoPlayView ()<XWPlayerProgressDelegate, AliyunVodPlayerDelegate, XWLastTimeViewDelegate>
 
@@ -48,14 +51,19 @@
 
 @property (nonatomic, assign) int timeCount;
 
+//控制弹窗
+@property (nonatomic, assign) BOOL isShowPop;
+
 @property (nonatomic, strong) UIView *playView;
 
 @property (nonatomic, strong) XWAudioNodeModel *oldModel;
 
 /** 上次播放时间*/
 @property (nonatomic, strong) XWLastTimeView *lastView;
-
+/** 统计累加时间*/
 @property (nonatomic, assign) NSTimeInterval oldTime;
+
+
 
 @end
 
@@ -151,7 +159,7 @@
 
 - (UIButton *)fullScreen{
     if (!_fullScreen) {
-        _fullScreen = [UIButton buttonWithType:0];
+        _fullScreen = [UIButton buttonWithType:UIButtonTypeCustom];
         [_fullScreen setImage:LoadImage(@"icon_audio_fullscreen") forState:UIControlStateNormal];
         @weakify(self)
         [[[_fullScreen rac_signalForControlEvents:UIControlEventTouchUpInside] takeUntil:self.rac_willDeallocSignal] subscribeNext:^(__kindof UIControl * _Nullable x) {
@@ -260,12 +268,14 @@
     if (self) {
         [self drawUI];
         _disappearTime = 2.0f;
+        
     }
     return self;
 }
 
 - (void)drawUI{
     self.backgroundColor = [UIColor clearColor];
+    self.isShowPop = YES;
     [self addSubview:self.playView];
     [self addSubview:self.coverImgView];
     [self addSubview:self.backBtn];
@@ -351,7 +361,6 @@
 }
 
 - (void)updata{
-    
     [self updateTime:NO];
 }
 
@@ -391,6 +400,7 @@
     if (_totalTime >= 0 && self.progressView.isUserInteractionEnabled && !_sliding) { // 不在滑动状态才设置进度
         _progressView.playProgress = _currentTime * 1.0 / _totalTime;
     }
+    
 }
 
 - (void)setTotalTime:(NSTimeInterval)totalTime{
@@ -547,7 +557,9 @@
         }];
         if (![self.oldModel.nodeID isEqualToString:model.nodeID]) {
             
-            [self.player pause];
+            if (![self.oldModel.nodeID isEqualToString:@""] && self.oldModel.nodeID != nil) {
+                [self updateTime:NO];
+            }
             if ([self.infoModel.type isEqualToString:@"0"]) { // 课程未购买
                 if ([model.state isEqualToString:@"0"]) { // 当前播放节点不免费
                     [MBProgressHUD showTipMessageInWindow:@"请先购买课程!"];
@@ -558,7 +570,7 @@
             
             XWWeakSelf
             [XWNetworking getPlayAuthWithVideoID:model.nodeUrl completionBlock:^(NSString *playAuth) {
-                [weakSelf.player stop];
+//                [weakSelf.player stop];
                 weakSelf.oldModel = model;
                 [weakSelf.player prepareWithVid:model.nodeUrl playAuth:playAuth];
             } failure:^(NSString *errorinfo) {
@@ -576,12 +588,12 @@
                 [XWNetworking getPlayAuthWithVideoID:model.nodeUrl completionBlock:^(NSString *playAuth) {
                     [weakSelf.player prepareWithVid:model.nodeUrl playAuth:playAuth];
                 } failure:^(NSString *errorinfo) {
+                    [self stopAnimation];
                     [MBProgressHUD showTipMessageInWindow:errorinfo];
                 }];
             }
         }
-        /** 开始播放,更新页面标题*/
-        [self postNotificationWithName:@"UPDATETITLE" object:@(self.playIndex)];
+        
     }
 }
 
@@ -657,8 +669,26 @@
     @weakify(self)
     RACSignal *signal1 = [RACSignal createSignal:^RACDisposable * _Nullable(id<RACSubscriber>  _Nonnull subscriber) {
         @strongify(self)
-        [XWNetworking  updateUserViewingRecordWithCourseID:self.oldModel.courseID NodeID:self.oldModel.nodeID watchTime:self.player.currentTime finished:finished completionBlock:^(BOOL succeed) {
+        [XWNetworking  updateNewUserViewingRecordWithCourseID:self.oldModel.courseID NodeID:self.oldModel.nodeID watchTime:self.player.currentTime finished:finished completionBlock:^(NSArray<RecordModel *> *questions) {
             NSLog(@"播放时间更新成功");
+            if (questions.count > 0) {
+                RecordModel * rmodel = questions[0];
+                
+                NSString * testID = rmodel.id;
+                if ( self.currentTime * 1.0 / self.totalTime >= 0.8 && self.isShowPop) {
+                    
+                    self.isShowPop = NO;
+                    [XWNetworking getQuestionsListWithTestID:testID CompletionBlock:^(NSArray<QuestionsModel *> *questions) {
+                        
+                        [[XWCustomPopView shareCustomNew] showFoemSuperView:[UIApplication sharedApplication].keyWindow withTitle:rmodel.title withExamClick:^{
+                            
+                            [[UIViewController getCurrentVC].navigationController pushViewController:[[ClassTestViewController alloc] initWithQuestions:questions withTest:YES withAtid:rmodel.a_t_id]  animated:YES];
+                            NSLog(@"考试");
+                        }];
+                    }];
+                }
+            }
+            
             [subscriber sendNext:@"1"];
         }];
         
@@ -668,6 +698,11 @@
     RACSignal *signal2 = [RACSignal createSignal:^RACDisposable * _Nullable(id<RACSubscriber>  _Nonnull subscriber) {
         @strongify(self)
         NSInteger time = self.player.currentTime - self.oldTime;
+
+        if (time < 0) {
+            time = self.player.currentTime;
+        }
+
         NSLog(@"time is %ld", time);
         [XWHttpTool postStudyTimeWithTime:time userID:[XWInstance shareInstance].userInfo.oid success:^{
             self.oldTime = self.player.currentTime;
@@ -720,6 +755,7 @@
 
 #pragma mark- AliyunVodPlayerDelegate
 - (void)vodPlayer:(AliyunVodPlayer *)vodPlayer onEventCallback:(AliyunVodPlayerEvent)event {
+    [self stopAnimation];
     switch (event) {
         case AliyunVodPlayerEventPrepareDone:{
             //播放准备完成时触发
@@ -728,6 +764,7 @@
             /** 友盟统计*/
             [Analytics event:EventPlayCourse attributes:@{@"CourseID":(self.model.courseId.length > 0) ? self.model.courseId : @"",@"LessionID":(self.oldModel.nodeID.length > 0) ? self.oldModel.nodeID : @""}];
             /** 发送一个通知,告知当前播放的节点上次观看记录*/
+            /*
             if ([self.oldModel.play isEqualToString:@"1"] && ![self.oldModel.finished isEqualToString:@"1"]) {
                 
                 if ([self.oldModel.watchTime integerValue] < 10000) {
@@ -743,6 +780,13 @@
                     
                 }];
             }
+            */
+            NSTimeInterval time = [self.oldModel.watchTime integerValue] / 1000;
+            if ([self.oldModel.play isEqualToString:@"1"]) { // 如果已观看
+                if (self.player.duration * 0.8 > time) { // 如果观看时间大于总时长的80%,就重头开始播放
+                    [self.player seekToTime:time];
+                }
+            }
             
         }break;
         case AliyunVodPlayerEventPlay:{
@@ -750,7 +794,7 @@
             self.status = kStatusPlay;
         }break;
         case AliyunVodPlayerEventFirstFrame:{
-            [self stopAnimation];
+            
             //播放视频首帧显示出来时触发
             self.status = kStatusPlay;
             
@@ -763,12 +807,12 @@
         case AliyunVodPlayerEventStop:{
             //主动使用stop接口时触发
             self.status = kStatusStop;
-            [self updateTime:NO];
+//            [self updateTime:NO];
         }break;
         case AliyunVodPlayerEventFinish:{
             //视频正常播放完成时触发
             self.status = kStatusStop;
-            [self updateTime:YES];
+//            [self updateTime:YES];
             self.playIndex += 1;
             [self playIndex:self.playIndex];
             
@@ -776,6 +820,7 @@
         case AliyunVodPlayerEventBeginLoading:{
             //视频开始载入时触发
             self.status = kStatusLoading;
+            
         }break;
         case AliyunVodPlayerEventEndLoading:{
         
@@ -787,6 +832,7 @@
         case AliyunVodPlayerEventSeekDone:{
             //视频Seek完成时触发
             if (self.player.playerState == AliyunVodPlayerStatePlay) {
+                self.oldTime = self.player.currentTime;
                 self.status = kStatusPlay;
             }
         }break;
@@ -800,6 +846,7 @@
 
 - (void)vodPlayer:(AliyunVodPlayer *)vodPlayer playBackErrorModel:(AliyunPlayerVideoErrorModel *)errorModel{
     NSLog(@"error %@",errorModel.errorMsg);
+    [self stopAnimation];
 }
 
 

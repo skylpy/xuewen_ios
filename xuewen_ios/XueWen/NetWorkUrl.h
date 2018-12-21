@@ -32,11 +32,16 @@
 #define CoursLabel          @"api/v1/CoursLabel/"                   // 课程标签
 #define Cours               @"api/v1/cours/"                        // 课程
 #define CoursCommon         @"api/v1/CoursComment/"                 // 课程评论相关
-#define OSS                 @"api/v1/Oss"                           // OSS
+
+#define OSSSession                 @"api/v1/Oss"                           // OSS
+
+#define addFavorite         @"api/v1/Favorite"                      //添加收藏
 #define FavoriteCourse      @"api/v1/Favorite/"                     // 我的收藏
 #define UserCourse          @"api/v1/UserCourse/"                   // 我的课程相关
 #define CouponRecord        @"api/v1/CouponRecord/"                 // 优惠券
+
 #define VideoPlay           @"api/v1/video_play"                    // 播放视频
+
 #define PayCourse           @"api/v1/pay/"                          // 购买课程
 #define CancelOrder         @"api/v1/PurchaseRecord/"               // 取消订单
 #define UserViewingRecord   @"api/v1/UserViewingRecord"             // 观看记录
@@ -71,7 +76,7 @@
 #define CoursAudio          @"api/v1/CoursAudio/"                   // 课程音频
 #define PlayCourseNodePlay  @"api/v1/node_play"                     // 添加播放量
 
-#define Countplaytime   @"api/v1/Countplaytime/"                     //我的学习记录汇总（有折线图部分）
+#define Countplaytime   @"api/v1/Countplaytime/"                    //我的学习记录汇总（有折线图部分）
 #define CountPlaytimes   @"api/v1/Countplaytime"
 #pragma mark - 新版首页
 
@@ -97,9 +102,59 @@
 #define GetLearning         @"api/v1/learning"                      //大家在学
 #define CompanyCourse       @"api/v1/CompanyCourse"                 //企业课程列表
 #define CompanyInfo         @"api/v1/CompanyInfo/"                  //公司信息
-#define CountPlayTime       @"api/v1/Countplaytime"                //商学院学习排名
+#define CountPlayTime       @"api/v1/Countplaytime"                 //商学院学习排名
 #define GetTargetData       @"api/v1/target"                        //目标排名
 #define PostFabulous        @"api/v1/fabulous_save"                 //添加点赞量
 #define UserFeedback        @"api/v1/UserFeedback"                  //用户上传反馈
+
+#define AchievementThematic     @"api/v1/AchievementThematic"       // 我的证书
+
+#define Achievements            @"api/v1/Achievements"              // 生成证书
+
+#define CollegeName             @"api/v1/college_name"              // 学院名称
+
+#pragma mark- 提现相关
+
+#define BonusesEarnings         @"api/v1/bonuses_earnings"          // 红包收益与佣金收益
+#define MyTransactionList       @"api/v1/getMyTransactionList"      // 提现记录
+#define GetPayeeAccount         @"/api/v1/getPayeeAccount"          // 获取提现账号跟可提现金额
+#define CreateTransactionRecord @"api/v1/createTransactionRecord"   // 生成提现订单/提交提现申请
+#define BindingAccount          @"api/v1/BindingAccount"            // 绑定支付宝账号
+
+
+
+
+
+#define RedBackBonuses          @"api/v1/Bonuses"          //获取红包
+
+#define RedBackBonusesNum       @"api/v1/bonuses_num"          //红包数量
+
+#define RedBackBonusesList      @"api/v1/bonuses_list"        //红包列表
+
+#define GetJobTest              @"api/v1/getJobTest"    //获取测一测列表
+#define Cours_Label             @"api/v1/CoursLabel"     //课程标签列表
+#define Cours_list              @"api/v1/HomeCourse"     // 课程
+
+#define Discovery               @"api/v1/Discovery"   //发现
+#define SuperGroup              @"api/v1/SuperGroup"     //超级组织
+#define GetJobCollege           @"api/v1/getJobCollege"  //首页测一测和强推学院
+#define GetRecommendCourse      @"api/v1/getRecommendCourse" // 获取考试推荐课程
+
+#define CheckApplePay           @"api/pay/ApplePay/CheckApplePay" //苹果验签
+
+#define StoreIsHide                  @"api/v1/isHide"
+
+
+
+#pragma mark - 轮播图管理
+#define FigurePut               @"api/v1/figureput/"        // 单个修改轮播图
+
+#pragma mark - 组织管理
+#define CompanyDepartment       @"api/v1/getCompanyDepartmentList" // 获取组织结构和人员
+#define CompanyDepartment1      @"api/v1/CompanyDepartment/"  // 添加组织
+#define GiveGold                @"api/v1/GiveGold"            // 赠送金币
+#define CompanyCoupon           @"api/v1/CompanyCoupon"       // 管理员赠送用户奖学金
+
+#define pricePCPay              @"api/v1/price"
 
 #endif /* NetWorkUrl_h */

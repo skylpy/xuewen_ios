@@ -44,7 +44,12 @@
     if (status == 200) {
         !success ? : success(model);
     }else{
-        !failure ? : failure(model.message);
+        if (status == 204 || status == 201) {
+            !success ? : success(model);
+        }else{
+            !failure ? : failure(model.message);
+        }
+        
     }
 }
 
@@ -68,7 +73,7 @@
     return @{@"popularCourses" : @"popular_courses",
              @"course" : @"new_course",
              @"freeCourse" : @"free_course",
-             @"hitCourse" : @"hit_course"
+             @"hitCourse" : @"hit_course",
              };
 }
 

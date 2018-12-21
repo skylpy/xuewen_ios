@@ -28,6 +28,7 @@
 #pragma mark- Response
 /** 返回数据统一处理 */
 - (void)handleResponse:(NSHTTPURLResponse *)response responseObject:(id)responseObject error:(NSError *)error completionBlock:(CompleteBlock)completeBlock extra:(ExtraParameters)extraParamters{
+    
     NSInteger statusCode = response.statusCode;
     if (statusCode < 200 && error) { // 通常情况下状态码不会小于200
         [MBProgressHUD showErrorMessage:error.localizedDescription];
@@ -162,6 +163,7 @@
         [self.requestSerializer setValue:instance.general.deviceOs forHTTPHeaderField:@"os"];
         [self.requestSerializer setValue:instance.general.deviceType forHTTPHeaderField:@"model"];
         [self.requestSerializer setValue:time forHTTPHeaderField:@"time"];
+        [self.requestSerializer setValue:[[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleShortVersionString"] forHTTPHeaderField:@"version"];
     }
     return self;
 }

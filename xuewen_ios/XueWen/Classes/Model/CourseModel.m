@@ -75,6 +75,36 @@
 }
 @end
 @implementation CourseModel
+
+/**
+ *注释
+ *YYModel 映射替换字段
+ */
++ (NSDictionary *)modelCustomPropertyMapper {
+    return @{
+             @"courseID"            : @"id",
+             @"courseName"          : @"course_name",
+             @"labelID"             : @"lable_id",
+             @"labelName"           : @"lable_name",
+             @"coverPhoto"          : @"cover_photo_all",
+             @"price"               : @"amount",
+             @"timeLength"          : @"time_length",
+             @"introduction"        : @"introduction",
+             @"teacherName"         : @"tch_org",
+             @"teacherPhoto"        : @"tch_org_photo",
+             @"teacherIntroduction" : @"tch_org_introduction",
+             @"createTime"          : @"create_time",
+             @"lessions"            : @"course_node",
+             @"updateTime"          : @"update_time",
+             @"percentage"          : @"Percentage",
+             @"isOptional"          : @"course_type",
+             @"learningTime"        : @"learning_time",
+             @"hisID"               : @"course_id",
+             @"courseType"          : @"course_type",
+             @"shortIntroduction"  : @"short_introduction"
+             };
+}
+
 + (NSDictionary *)replacedKeyFromPropertyName{
     return @{
              @"courseID"            : @"id",
@@ -95,7 +125,8 @@
              @"isOptional"          : @"course_type",
              @"learningTime"        : @"learning_time",
              @"hisID"               : @"course_id",
-             @"courseType"          : @"course_type"
+             @"courseType"          : @"course_type",
+             @"shortIntroduction"  : @"short_introduction"
              };
 }
 

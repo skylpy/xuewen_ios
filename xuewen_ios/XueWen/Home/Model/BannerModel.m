@@ -15,7 +15,8 @@
              @"imageID"   : @"id",
              @"desc"   : @"picture_desc",
              @"link"   : @"picture_link",
-             @"sort"   : @"picture_sort"
+             @"sort"   : @"picture_sort",
+             @"pictureUrl" : @"picture_url"
              };
 }
 

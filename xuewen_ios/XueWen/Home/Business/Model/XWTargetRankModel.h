@@ -40,7 +40,8 @@
 @property (nonatomic, strong) NSString *fabulousType;
 /** 排名*/
 @property (nonatomic, strong) NSString *ranking;
-
+/** 性别*/
+@property (nonatomic, strong) NSString *sex;
 
 
 @end

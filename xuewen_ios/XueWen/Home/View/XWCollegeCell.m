@@ -9,6 +9,8 @@
 #import "XWCollegeCell.h"
 #import "XWCollegeCollectionCell.h"
 #import "CollegeViewController.h"
+#import "XWCollegeBaseViewController.h"
+#import "ClassesViewController.h"
 
 static NSString *const XWCollegeCollectionCellID = @"XWCollegeCollectionCellID";
 
@@ -27,11 +29,11 @@ static NSString *const XWCollegeCollectionCellID = @"XWCollegeCollectionCellID";
     if (!_collectionView) {
         UICollectionViewFlowLayout *layout = [[UICollectionViewFlowLayout alloc] init];
         layout.scrollDirection = UICollectionViewScrollDirectionHorizontal;
-        layout.itemSize = CGSizeMake(130, 80);
-        layout.minimumLineSpacing = 26;
+        layout.itemSize = CGSizeMake(60, 60);
+        layout.minimumLineSpacing = 12;
         layout.minimumInteritemSpacing = 7;
-        layout.sectionInset = UIEdgeInsetsMake(0, 13, 0, 13);
-        _collectionView = [[UICollectionView alloc] initWithFrame:CGRectMake(0, 0, kWidth, 95) collectionViewLayout:layout];
+        layout.sectionInset = UIEdgeInsetsMake(0, 16, 0, 13);
+        _collectionView = [[UICollectionView alloc] initWithFrame:CGRectMake(0, 0, kWidth, 82) collectionViewLayout:layout];
         _collectionView.backgroundColor = [UIColor whiteColor];
         _collectionView.delegate = self;
         _collectionView.dataSource = self;
@@ -82,6 +84,7 @@ static NSString *const XWCollegeCollectionCellID = @"XWCollegeCollectionCellID";
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath{
     XWCollegeCollectionCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:XWCollegeCollectionCellID forIndexPath:indexPath];
+    
     cell.labelModel = self.array[indexPath.item];
     if (self.colorArray.count <= indexPath.item) {
         
@@ -95,7 +98,61 @@ static NSString *const XWCollegeCollectionCellID = @"XWCollegeCollectionCellID";
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath{
     [collectionView deselectItemAtIndexPath:indexPath animated:YES];
     XWCourseLabelModel *model = self.array[indexPath.item];
-    [self.viewController.navigationController pushViewController:[[CollegeViewController alloc] initWithLabelID:model.labelId title:model.labelName index:indexPath.row] animated:YES];
+    if ([model.labelName isEqualToString:@"全部"]) {
+        [Analytics event:EventAll];
+        ClassesViewController *vc = [[ClassesViewController alloc] init];
+        [self.navigationController pushViewController:vc animated:YES];
+    }else{
+        switch (indexPath.item) {
+            case 1:
+            {
+                [Analytics event:EventHr];
+            }
+                break;
+            case 2:
+            {
+                [Analytics event:EventAdministrative];
+            }
+                break;
+            case 3:
+            {
+                [Analytics event:EventMarketing];
+            }
+                break;
+            case 4:
+            {
+                [Analytics event:EventTreasure];
+            }
+                break;
+            case 5:
+            {
+                [Analytics event:EventProduce];
+            }
+                break;
+            case 6:
+            {
+                [Analytics event:EventStorage];
+            }
+                break;
+            case 7:
+            {
+                [Analytics event:EventInternet];
+            }
+                break;
+            case 8:
+            {
+                [Analytics event:EventService];
+            }
+                break;
+                
+            default:
+                break;
+        }
+        XWCollegeBaseViewController *vc = [[XWCollegeBaseViewController alloc] init];
+        vc.labelID = model.labelId;
+        [self.navigationController pushViewController:vc animated:YES];
+    }
+    
 }
 
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated {

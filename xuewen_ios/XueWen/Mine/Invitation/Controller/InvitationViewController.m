@@ -39,7 +39,7 @@
 }
 
 - (void)didSelectItemAtIndex:(NSInteger)index{
-    UIImage *saveImage = [self.saveImage addImageLogo:self.QRImage frame:CGRectMake(120, 1006, 156, 156)];
+    UIImage *saveImage = [self.saveImage addImageLogo:self.QRImage frame:CGRectMake(50, 1001, 243, 243)];
     switch (index) {
         case 0:{
             // 保存到本地
@@ -185,9 +185,8 @@
     [button setTitleColor:DefaultTitleAColor forState:UIControlStateNormal];
     [self.view addSubview:self.backgroundView];
     [self.view addSubview:self.shareButton];
-//    [self.view addSubview:self.QRView];
+    [self.view addSubview:self.QRView];
     [self.view addSubview:self.invitationButton];
-    
     [self.backgroundView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.right.top.mas_equalTo(self.view);
         make.bottom.mas_equalTo(self.view).offset(-kBottomH);
@@ -195,24 +194,29 @@
     
     [self.shareButton mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.right.mas_equalTo(self.view);
-        make.height.mas_equalTo(47);
+        make.height.mas_equalTo(46);
         make.bottom.mas_equalTo(self.view).offset(-kBottomH);
     }];
     
-//    [self.QRView mas_makeConstraints:^(MASConstraintMaker *make) {
-//        make.size.mas_equalTo(CGSizeMake(120, 120));
-//        make.centerX.mas_equalTo(self.view);
-//        make.centerY.mas_equalTo(self.view).multipliedBy(1.2);
-//    }];
-    
     CGFloat height;
+    CGFloat width;
     if (kWidth == 320) {
-        height = 70;
-    }else if (kWidth == 375){
         height = 90;
+        width = 90;
+    }else if (kWidth == 375){
+        height = 130;
+        width = 110;
     }else{
-        height = 110;
+        height = 150;
+        width = 130;
     }
+    
+    [self.QRView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.size.mas_equalTo(CGSizeMake(width, width));
+        make.centerX.mas_equalTo(self.view).multipliedBy(0.5);
+        make.bottom.mas_equalTo(self.view).offset(-kBottomH-42);
+    }];
+    
     [self.invitationButton mas_makeConstraints:^(MASConstraintMaker *make) {
         make.centerX.mas_equalTo(self.view);
         make.bottom.mas_equalTo(self.shareButton.mas_top).offset(-height);
@@ -248,7 +252,7 @@
 
 - (UIImageView *)backgroundView{
     if (!_backgroundView) {
-        _backgroundView = [[UIImageView alloc] initWithImage:LoadImage(@"invitation_bg")];
+        _backgroundView = [[UIImageView alloc] initWithImage:LoadImage(@"picture")];
     }
     return _backgroundView;
 }

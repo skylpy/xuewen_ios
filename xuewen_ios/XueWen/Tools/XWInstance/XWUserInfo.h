@@ -14,6 +14,8 @@
 @property (nonatomic, strong) NSString *oid;
 /** 角色ID */
 @property (nonatomic, strong) NSString *role_id;
+/** 新角色id*/
+@property (nonatomic, strong) NSString *n_role_id;
 /** 部门ID */
 @property (nonatomic, strong) NSString *department_id;
 /** 账号 */
@@ -28,6 +30,8 @@
 @property (nonatomic, strong) NSString *pid;
 /** 金钱 */
 @property (nonatomic, strong) NSString *gold;
+/** 收益*/
+@property (nonatomic, strong) NSString *earnings_price;
 /** 优惠券总金额*/
 @property (nonatomic, strong) NSString *user_coupon;
 /** 创建时间 */
@@ -62,4 +66,9 @@
 @property (nonatomic, strong) NSArray<CouponModel *> *coupons;
 /** 是否是个人用户 */
 @property (nonatomic, assign) BOOL personal;
+/** 这个字段为1 就有企业管理员*/
+@property (nonatomic, strong) NSString *company_status;
+/** 企业钱包 */
+@property (nonatomic, strong) NSString *company_gold;
+
 @end

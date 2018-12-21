@@ -192,6 +192,16 @@
     return [formatter stringFromDate:date];
 }
 
+/** 标准时间格式转化成任意格式*/
+- (NSString *)transTimeWithDateFormatter:(NSString *)dateFormatter {
+    NSDateFormatter *dateFormatter1 = [[NSDateFormatter alloc] init];
+    [dateFormatter1 setTimeZone:[NSTimeZone localTimeZone]]; //设置本地时区
+    [dateFormatter1 setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
+    NSDate *date = [dateFormatter1 dateFromString:self];
+    NSString *timeSp = [NSString stringWithFormat:@"%ld", (long)[date timeIntervalSince1970]];//时间戳
+    return [timeSp stringWithDataFormatter:dateFormatter];
+}
+
 /** 时间戳转换成时间(刚刚、几分钟前、几小时前形式) */
 - (NSString *)translateDateFormatter:(NSString *)dateFormatter{
     NSTimeInterval timeInterval = (self.length == 10) ? [self integerValue] : [self integerValue] * 1000;

@@ -59,4 +59,9 @@
     [self.imgView sd_setImageWithURL:[NSURL URLWithString:_model.coverPhotoAll] placeholderImage:nil];
 }
 
+- (void)setPicUrl:(NSString *)picUrl{
+    _picUrl = picUrl;
+    [self.imgView sd_setImageWithURL:[NSURL URLWithString:_picUrl] placeholderImage:DefaultImage];
+}
+
 @end

@@ -39,6 +39,14 @@ static NSString *const XWRankTableCellID = @"XWRankTableCellID";
         [table registerNib:[UINib nibWithNibName:@"XWStudyRankCell" bundle:nil] forCellReuseIdentifier:XWStudyRankCellID];
         [table registerNib:[UINib nibWithNibName:@"XWRankTableCell" bundle:nil] forCellReuseIdentifier:XWRankTableCellID];
         table.tableHeaderView = self.headerView;
+        if (self.isMyCompany) {
+            self.headerView.height = 90;
+            self.headerView.hidden = NO;
+        }else{
+            self.headerView.height = 0;
+            self.headerView.hidden = YES;
+        }
+        
         _tableView = table;
     }
     return _tableView;
@@ -47,6 +55,7 @@ static NSString *const XWRankTableCellID = @"XWRankTableCellID";
 - (XWStudyHeaderView *)headerView{
     if (!_headerView) {
         _headerView = [[XWStudyHeaderView alloc] initWithFrame:CGRectMake(0, 0, kWidth, 90)];
+//        _headerView.type = self.type;
     }
     return _headerView;
 }
@@ -85,6 +94,7 @@ static NSString *const XWRankTableCellID = @"XWRankTableCellID";
 - (void)setRankModel:(XWCountPlayTimeModel *)rankModel{
     _rankModel = rankModel;
     self.headerView.rankModel = _rankModel;
+    self.headerView.type = ControllerTypeWeek;
 }
 
 - (void)setTargetArray:(NSMutableArray *)targetArray{
@@ -128,7 +138,7 @@ static NSString *const XWRankTableCellID = @"XWRankTableCellID";
             cell.targetModel = self.targetArray[indexPath.row];
         }
         cell.idx = indexPath.row;
-        
+        cell.isMyCompany = self.isMyCompany;
         return cell;
     }
     XWStudyRankCell *cell = [tableView dequeueReusableCellWithIdentifier:XWStudyRankCellID forIndexPath:indexPath];
@@ -140,7 +150,7 @@ static NSString *const XWRankTableCellID = @"XWRankTableCellID";
         cell.targetModel = self.targetArray[indexPath.row];
     }
     cell.idx = indexPath.row;
-    
+    cell.isMyCompany = self.isMyCompany;
     return cell;
 }
 
@@ -179,6 +189,11 @@ static NSString *const XWRankTableCellID = @"XWRankTableCellID";
         make.right.mas_equalTo(backView).offset(-12);
         make.bottom.mas_equalTo(label.mas_bottom);
     }];
+    if (self.isMyCompany) {
+        self.moreBtn.hidden = NO;
+    }else{
+        self.moreBtn.hidden = YES;
+    }
     return bgView;
 }
 

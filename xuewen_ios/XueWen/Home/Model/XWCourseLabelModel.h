@@ -23,5 +23,7 @@
 @property (nonatomic, strong) NSString *labelPictureAll;
 /** */
 @property (nonatomic, strong) NSString *labelPicture;
-
+/** */
+@property (nonatomic, strong) NSString *coverAll;
+@property (nonatomic, strong) NSString *cover;
 @end

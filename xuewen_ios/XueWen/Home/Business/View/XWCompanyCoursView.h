@@ -16,4 +16,6 @@
 
 @property (nonatomic, strong) NSMutableArray *companyCoursArray;
 
+@property (nonatomic, assign) BOOL isMyCompany;
+
 @end

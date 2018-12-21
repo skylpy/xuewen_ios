@@ -14,7 +14,8 @@
     return @{@"labelId" : @"id",
              @"labelName": @"label_name",
              @"labelPictureAll" : @"label_picture_all",
-             @"labelPicture" : @"label_picture"
+             @"labelPicture" : @"label_picture",
+             @"coverAll" : @"cover_all"
              };
 }
 

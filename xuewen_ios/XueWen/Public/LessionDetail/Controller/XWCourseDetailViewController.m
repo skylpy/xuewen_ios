@@ -254,14 +254,6 @@
 
 - (void)addObserver{
     [self addNotificationWithName:UIDeviceOrientationDidChangeNotification selector:@selector(orientationDidChange:)];
-    
-    @weakify(self)
-    [[[[NSNotificationCenter defaultCenter] rac_addObserverForName:@"UPDATETITLE" object:nil] takeUntil:self.rac_willDeallocSignal] subscribeNext:^(NSNotification * _Nullable x) {
-        @strongify(self)
-        NSInteger idx = [x.object integerValue];
-        XWAudioNodeModel *model1 = self.nodeArray[idx];
-        self.title = model1.nodeTitle;
-    }];
 }
 
 - (void)reloadData{
@@ -424,7 +416,7 @@
 /** 跳转考试界面 */
 - (void)pushExamViewController{
     if (self.questions.count > 0) {
-        [self.navigationController pushViewController:[[ClassTestViewController alloc] initWithQuestions:self.questions] animated:YES];
+        [self.navigationController pushViewController:[[ClassTestViewController alloc] initWithQuestions:self.questions withTest:NO withAtid:self.courseID] animated:YES];
     }else{
         [XWPopupWindow popupWindowsWithTitle:@"错误" message:@"暂时没有对应的试题" buttonTitle:@"好的" buttonBlock:nil];
     }

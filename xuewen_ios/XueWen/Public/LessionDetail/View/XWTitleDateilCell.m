@@ -184,6 +184,11 @@
     self.presonLabel.text = [NSString stringWithFormat:@"%@人学习",_model.total];
 }
 
+- (void)setClassCourse:(NSString *)classCourse{
+    _classCourse = classCourse;
+    self.timeLabel.text = [NSString stringWithFormat:@"%@课时", _classCourse];
+}
+
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated {
     [super setSelected:selected animated:animated];
 

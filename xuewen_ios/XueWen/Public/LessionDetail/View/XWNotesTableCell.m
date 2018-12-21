@@ -68,7 +68,13 @@
 #pragma mark - Setter
 - (void)setCommentModel:(XWCommentModel *)commentModel{
     _commentModel = commentModel;
-    [self.headImgView sd_setImageWithURL:[NSURL URLWithString:_commentModel.pictureAll] placeholderImage:DefaultImage];
+    UIImage *defaultImg = [[UIImage alloc] init];
+    if ([_commentModel.sex isEqualToString:@"0"]){
+        defaultImg = DefaultImageGril;
+    }else{
+        defaultImg = DefaultImageBoy;
+    }
+    [self.headImgView sd_setImageWithURL:[NSURL URLWithString:_commentModel.pictureAll] placeholderImage:defaultImg];
     self.nickLabel.text = _commentModel.nickName;
     self.timeLabel.text = [_commentModel.createTime translateDateFormatter:@"yyyy-MM-dd"];
     self.contentLabel.text = _commentModel.comment;
@@ -76,7 +82,13 @@
 
 - (void)setNoteModel:(XWNotesModel *)noteModel{
     _noteModel = noteModel;
-    [self.headImgView sd_setImageWithURL:[NSURL URLWithString:_noteModel.pictureAll] placeholderImage:DefaultImage];
+    UIImage *defaultImg = [[UIImage alloc] init];
+    if ([_noteModel.sex isEqualToString:@"0"]){
+        defaultImg = DefaultImageGril;
+    }else{
+        defaultImg = DefaultImageBoy;
+    }
+    [self.headImgView sd_setImageWithURL:[NSURL URLWithString:_noteModel.pictureAll] placeholderImage:defaultImg];
     self.nickLabel.text = _noteModel.nickName;
     self.timeLabel.text = [_noteModel.createTime translateDateFormatter:@"yyyy-MM-dd"];
     self.contentLabel.text = _noteModel.noteContent;

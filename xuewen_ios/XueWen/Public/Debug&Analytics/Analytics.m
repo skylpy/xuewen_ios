@@ -17,4 +17,9 @@
 + (void)event:(NSString *)event attributes:(NSDictionary *)attributes{
     [MobClick event:event attributes:attributes];
 }
+
++ (void)event:(NSString *)event{
+    [MobClick event:event];
+}
+
 @end

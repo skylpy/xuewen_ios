@@ -21,11 +21,11 @@
     
     
     // 去除导航栏底部细线
-//    [self.navigationBar setBackgroundImage:[UIImage new] forBarMetrics:(UIBarMetricsDefault)];
-//    self.navigationBar.shadowImage = [UIImage new];
+    [self.navigationBar setBackgroundImage:[UIImage new] forBarMetrics:(UIBarMetricsDefault)];
+    self.navigationBar.shadowImage = [UIImage new];
     // 自定义底部细线
-//    [self.navigationBar addSubview:self.line];
-//    self.line.sd_layout.leftSpaceToView(self.navigationBar,0).rightSpaceToView(self.navigationBar,0).bottomSpaceToView(self.navigationBar,0).heightIs(0.5);
+    [self.navigationBar addSubview:self.line];
+    self.line.sd_layout.leftSpaceToView(self.navigationBar,0).rightSpaceToView(self.navigationBar,0).bottomSpaceToView(self.navigationBar,0).heightIs(0.5);
     
     
     

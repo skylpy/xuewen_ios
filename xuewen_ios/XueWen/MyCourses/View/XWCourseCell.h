@@ -12,5 +12,5 @@
 @interface XWCourseCell : UICollectionViewCell
 
 @property (nonatomic,strong) CourseModel * model;
-
+@property (nonatomic, assign) BOOL buy;
 @end

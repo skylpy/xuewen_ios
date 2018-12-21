@@ -21,4 +21,6 @@
 @property (nonatomic, strong) NSString *nickName;
 /** （域名加用户头像）*/
 @property (nonatomic, strong) NSString *pictureAll;
+/** 性别*/
+@property (nonatomic, strong) NSString *sex;
 @end

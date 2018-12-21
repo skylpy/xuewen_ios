@@ -10,4 +10,8 @@
 
 @interface MyWalletViewController : XWBaseViewController
 
+//是否企业充值
+@property (nonatomic,assign) BOOL isCompany;
+
+
 @end

@@ -111,7 +111,7 @@ static NSString *const XWRankTableCellID = @"XWRankTableCellID";
         [XWHttpTool getCountPlayTimeWithOrderType:self.orderType isFirstLoad:YES success:^(NSMutableArray *array, BOOL isLast, XWCountPlayTimeModel *rankModel) {
             weakSelf.dataArray = array;
             weakSelf.headerView.rankModel = rankModel;
-            
+            weakSelf.headerView.type = self.type;
             [weakSelf.tableView.mj_header endRefreshing];
             [weakSelf.tableView reloadData];
             if (isLast) {
@@ -123,7 +123,7 @@ static NSString *const XWRankTableCellID = @"XWRankTableCellID";
             [MBProgressHUD showTipMessageInWindow:errorInfo];
             
             [weakSelf.tableView.mj_header endRefreshing];
-        } size:@"100"];
+        } size:@"100" companyId:@""];
     }else{ // 目标排名
         XWWeakSelf
         [XWHttpTool getTargetDataWith:YES type:self.orderType success:^(NSMutableArray *array, BOOL isLast, XWTargetRankModel *rankModel) {
@@ -131,6 +131,7 @@ static NSString *const XWRankTableCellID = @"XWRankTableCellID";
             
             weakSelf.headerView.goalModel = rankModel;
             [weakSelf.tableView.mj_header endRefreshing];
+            weakSelf.headerView.type = self.type;
             [weakSelf.tableView reloadData];
             if (isLast) {
                 [weakSelf.tableView.mj_footer endRefreshingWithNoMoreData];
@@ -141,7 +142,7 @@ static NSString *const XWRankTableCellID = @"XWRankTableCellID";
             [MBProgressHUD showTipMessageInWindow:errorInfo];
             
             [weakSelf.tableView.mj_header endRefreshing];
-        } size:@"100"];
+        } size:@"100" companyId:@""];
     }
 }
 
@@ -161,7 +162,7 @@ static NSString *const XWRankTableCellID = @"XWRankTableCellID";
             [MBProgressHUD showTipMessageInWindow:errorInfo];
             
             [weakSelf.tableView.mj_header endRefreshing];
-        } size:@"100"];
+        } size:@"100" companyId:@""];
     }else{ // 目标排名
         XWWeakSelf
         [XWHttpTool getTargetDataWith:NO type:self.orderType success:^(NSMutableArray *array, BOOL isLast, XWTargetRankModel *rankModel) {
@@ -177,7 +178,7 @@ static NSString *const XWRankTableCellID = @"XWRankTableCellID";
             [MBProgressHUD showTipMessageInWindow:errorInfo];
             
             [weakSelf.tableView.mj_header endRefreshing];
-        } size:@"100"];
+        } size:@"100" companyId:@""];
     }
 }
 

@@ -25,8 +25,8 @@ pod 'UMCAnalytics'
 pod 'UMCErrorCatch'
 pod 'WechatOpenSDK'
 pod 'YYKit', '~> 1.0.9'
-pod 'MLeaksFinder'
+#pod 'MLeaksFinder'
 pod 'AliyunPlayer_iOS/AliyunVodPlayerSDK'
-pod 'pop', '~> 1.0.10'
-
+#pod 'pop', '~> 1.0.10'
+pod 'Bugly'
 end

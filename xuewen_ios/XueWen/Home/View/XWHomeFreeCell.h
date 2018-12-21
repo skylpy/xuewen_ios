@@ -13,4 +13,6 @@
 
 @property (nonatomic, strong) XWCourseIndexModel *model;
 
+@property (nonatomic, strong) NSString *picUrl;
+
 @end

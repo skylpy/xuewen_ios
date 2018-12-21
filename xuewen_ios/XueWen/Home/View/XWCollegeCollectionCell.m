@@ -11,6 +11,7 @@
 @interface XWCollegeCollectionCell ()
 
 @property (weak, nonatomic) IBOutlet UIImageView *imgView;
+@property (weak, nonatomic) IBOutlet UILabel *nickLabel;
 
 @end
 @implementation XWCollegeCollectionCell
@@ -42,7 +43,8 @@
 //        self.imgView.image = LoadImage(@"生产管理.jpg");
 //    }
     
-    [self.imgView sd_setImageWithURL:[NSURL URLWithString:_labelModel.labelPictureAll] placeholderImage:DefaultImage];
+    [self.imgView sd_setImageWithURL:[NSURL URLWithString:_labelModel.coverAll] placeholderImage:DefaultImage];
+    self.nickLabel.text = _labelModel.labelName;
 }
 
 

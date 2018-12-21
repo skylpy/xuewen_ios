@@ -355,11 +355,12 @@
             AliyunVodPlayer *player = [XWAudioInstanceController shareInstance].player;
             self.totalTime = player.duration;
             self.currentTime = player.currentTime;
-            self.status = [XWAudioInstanceController shareInstance].status;
+//            self.status = [XWAudioInstanceController shareInstance].status;
             self.playIndex = [XWAudioInstanceController shareInstance].playIndex;
         }
     }];
     
+    /*
     [[[[NSNotificationCenter defaultCenter] rac_addObserverForName:@"LASTWATCHTIME" object:nil] takeUntil:self.rac_willDeallocSignal] subscribeNext:^(NSNotification * _Nullable x) {
         @strongify(self)
         self.lastView.lastTime = x.object;
@@ -369,7 +370,7 @@
             [weakSelf performSelector:@selector(hideLastView) withObject:nil afterDelay:4];
         }];
     }];
-    
+    */
 }
 
 #pragma mark - Custom Methods
@@ -455,6 +456,14 @@
 
 /** 播放*/
 - (void)playBtnAction:(UIButton *)sender{
+    
+    //不同课程需要停止之后再开始播放
+    if (![_model.courseId isEqualToString:[XWAudioInstanceController shareInstance].model.courseId]) {
+        
+        [[XWAudioInstanceController shareInstance].player stop];
+        
+    }
+    
     if ([XWAudioInstanceController shareInstance].player.playerState == AliyunVodPlayerStatePlay) {
         [[XWAudioInstanceController shareInstance].player pause];
     }else if ([XWAudioInstanceController shareInstance].player.playerState == AliyunVodPlayerStatePause){

@@ -28,7 +28,7 @@
 - (UIImageView *)headImgView{
     if (!_headImgView) {
         _headImgView = [[UIImageView alloc] init];
-        _headImgView.image = DefaultImage;
+        _headImgView.image = DefaultImageBoy;
         [_headImgView rounded:67/2];
     }
     return _headImgView;
@@ -130,7 +130,13 @@
     }
     self.nickLabel.text = _rankModel.name;
     self.bmLabel.text = _rankModel.departmentName;
-    [self.headImgView sd_setImageWithURL:[NSURL URLWithString:_rankModel.coverPictureAll] placeholderImage:DefaultImage];
+    UIImage *defaultImg = [[UIImage alloc] init];
+    if ([_rankModel.sex isEqualToString:@"0"]){
+        defaultImg = DefaultImageGril;
+    }else{
+        defaultImg = DefaultImageBoy;
+    }
+    [self.headImgView sd_setImageWithURL:[NSURL URLWithString:_rankModel.coverPictureAll] placeholderImage:defaultImg];
     self.zanLabel.text = _rankModel.praise;
     if ([_rankModel.fabulousType isEqualToString:@"1"]) { // 已点赞
         self.zanImgView.image = LoadImage(@"icon_dianzan");
@@ -143,7 +149,7 @@
     if (_rankModel.ranking == nil) {
         _rankModel.ranking = @"0";
     }
-    self.rankLabel.text = [NSString stringWithFormat:@"本周排名: %@", _rankModel.ranking];
+    
     self.timeLabel.text = [NSString stringWithFormat:@"学习时长: %@分钟", _rankModel.totalTime];
     NSRange range1 = [self.timeLabel.text rangeOfString:_rankModel.totalTime];
     NSMutableAttributedString *attr1 = [[NSMutableAttributedString alloc] initWithString:self.timeLabel.text];
@@ -151,13 +157,19 @@
     [attr1 addAttribute:NSFontAttributeName value:[UIFont fontWithName:kMedFont size:10] range:range1];
     self.timeLabel.attributedText = attr1;
     
-    NSRange range2 = [self.rankLabel.text rangeOfString:_rankModel.ranking];
+}
+
+-(void)setType:(RankControllerType)type {
+    _type = type;
+    NSString * nameStr = type == ControllerTypeWeek?
+                    @"本周排名":type == ControllerTypeMonth?
+                    @"本月排名":@"总排名";
+    self.rankLabel.text = [NSString stringWithFormat:@"%@: %@",nameStr, self.rankModel == nil?_goalModel.ranking:_rankModel.ranking];
+    NSRange range2 = [self.rankLabel.text rangeOfString:self.rankModel == nil?_goalModel.ranking:_rankModel.ranking];
     NSMutableAttributedString *attr2 = [[NSMutableAttributedString alloc] initWithString:self.rankLabel.text];
     [attr2 addAttribute:NSForegroundColorAttributeName value:Color(@"#FFCC00") range:range2];
     [attr2 addAttribute:NSFontAttributeName value:[UIFont fontWithName:kMedFont size:16] range:range2];
     self.rankLabel.attributedText = attr2;
-    
-    
 }
 
 - (void)setGoalModel:(XWTargetRankModel *)goalModel{
@@ -172,7 +184,13 @@
     if (_goalModel.ranking == nil) {
         _goalModel.ranking = @"0";
     }
-    [self.headImgView sd_setImageWithURL:[NSURL URLWithString:_goalModel.pictureAll] placeholderImage:DefaultImage];
+    UIImage *defaultImg = [[UIImage alloc] init];
+    if ([_goalModel.sex isEqualToString:@"0"]){
+        defaultImg = DefaultImageGril;
+    }else{
+        defaultImg = DefaultImageBoy;
+    }
+    [self.headImgView sd_setImageWithURL:[NSURL URLWithString:_goalModel.pictureAll] placeholderImage:defaultImg];
     self.bmLabel.text = [NSString stringWithFormat:@"完成计划：%@", _goalModel.count];
     self.timeLabel.text = [NSString stringWithFormat:@"达成率：%@%%", _goalModel.completion];
     self.rankLabel.text = [NSString stringWithFormat:@"本周排名：%@", _goalModel.ranking];

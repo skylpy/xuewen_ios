@@ -10,4 +10,7 @@
 
 @interface XWHistoricalViewController : XWBaseViewController
 
+@property (nonatomic,copy) NSString * size;
+
+
 @end

@@ -18,6 +18,9 @@
 #import <UMCommon/UMCommon.h>           // 公共组件是所有友盟产品的基础组件，必选
 #import <UMAnalytics/MobClick.h>        // 统计组件
 #import "WXApi.h"
+#import <AVFoundation/AVFoundation.h>
+#import <Bugly/Bugly.h>
+
 @interface AppDelegate ()<WXApiDelegate>
 
 @end
@@ -41,9 +44,13 @@
 
 #pragma mark - 配置信息
 - (void)setSomeThing {
+    AVAudioSession *session = [AVAudioSession sharedInstance];
+    [session setCategory:AVAudioSessionCategoryPlayback error:nil];
+    [session setActive:YES error:nil];
     // 获取服务器时间
     [XWNetworking getServerTime];
-    
+    // 获取商学院名称
+    [XWHttpTool getCollegeName];
     /*** 设置导航条统一风格 ***/
     [self setNaviBar];
     
@@ -66,6 +73,8 @@
     [self setUMCAnalytics];
     // 微信
     [self setupWXapi];
+    // bugly
+    [Bugly startWithAppId:@"1a53db716e"];
 }
 
 #pragma mark- 回调接口
@@ -99,7 +108,7 @@
 }
 #pragma mark- 微信相关
 - (void)setupWXapi{
-    [WXApi registerApp:@"wxbcc7f95dca9933e1"];
+    [WXApi registerApp:@"wx29c64388f7cd0d75"];
 }
 /*! @brief 收到一个来自微信的请求，第三方应用程序处理完后调用sendResp向微信发送结果
  *
